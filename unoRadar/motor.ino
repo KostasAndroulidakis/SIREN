@@ -16,7 +16,11 @@ Servo radarServo;                    ///< Servo motor object for radar platform
 const int SERVO_PIN = 9;             ///< PWM pin connected to servo control signal
 const int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
 const int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
-const int SERVO_DELAY = 200;         ///< Delay in milliseconds after servo movement
+
+// Military radar performance optimization
+const int SERVO_STEP_DELAY = 20;     ///< Optimized delay for 50°/second speed (military grade)
+const int SENSOR_SETTLE_TIME = 10;   ///< Minimal ultrasonic sensor settling time
+const int DEGREE_STEP = 2;           ///< Step size in degrees for faster sweep
 
 /**
  * @brief Initialize the servo motor
@@ -29,15 +33,31 @@ void initMotor() {
 }
 
 /**
- * @brief Move servo to specified angle
+ * @brief Move servo to specified angle with military-grade timing
  * @param angle Target angle in degrees (should be between MIN_ANGLE and MAX_ANGLE)
  * 
- * Commands the servo to move to the specified angle and waits for the movement
- * to complete. The delay ensures mechanical stability before the next operation.
+ * Commands the servo to move to the specified angle with optimized timing
+ * for realistic military radar sweep speeds (30-60°/second).
  */
 void moveServoToAngle(int angle) {
   radarServo.write(angle);
-  delay(SERVO_DELAY);
+  delay(SERVO_STEP_DELAY);  // Optimized for 50°/second military speed
+}
+
+/**
+ * @brief Get optimized degree step size for fast sweep
+ * @return Degree step size for military-grade performance
+ */
+int getDegreeStep() {
+  return DEGREE_STEP;
+}
+
+/**
+ * @brief Get sensor settling time
+ * @return Minimal sensor settling time in milliseconds
+ */
+int getSensorSettleTime() {
+  return SENSOR_SETTLE_TIME;
 }
 
 /**

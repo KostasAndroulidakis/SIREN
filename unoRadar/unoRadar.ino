@@ -9,8 +9,9 @@
  * radar sweep system with web visualization capabilities.
  */
 
-// System configuration constants
-const int SWEEP_DELAY_MS = 1000;    ///< Delay between radar sweep cycles
+// Military radar performance configuration
+const int SWEEP_DELAY_MS = 100;     ///< Optimized delay between radar sweep cycles for military speed
+const bool PERFORMANCE_MODE = true; ///< Enable military-grade performance optimizations
 
 // Function declarations - implemented in separate module files
 void initMotor();                           ///< Initialize servo motor (motor.ino)
@@ -21,7 +22,10 @@ int getDistance();                          ///< Get distance measurement (senso
 int getMinAngle();                          ///< Get minimum sweep angle (motor.ino)
 int getMaxAngle();                          ///< Get maximum sweep angle (motor.ino)
 void performRadarSweep();                   ///< Execute complete radar sweep (radar.ino)
+void performSurveillanceSweep();            ///< Execute single-direction surveillance sweep (radar.ino)
 void sendRadarData(int angle, int distance); ///< Send data via serial (communication.ino)
+int getDegreeStep();                        ///< Get optimized degree step size (motor.ino)
+int getSensorSettleTime();                  ///< Get sensor settling time (motor.ino)
 
 /**
  * @brief Initialize all system components

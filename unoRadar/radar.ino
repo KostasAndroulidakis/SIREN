@@ -10,30 +10,53 @@
  */
 
 /**
- * @brief Execute complete bidirectional radar sweep
+ * @brief Execute military-grade bidirectional radar sweep
  * 
- * Performs a full radar sweep cycle consisting of:
- * 1. Forward sweep: minimum angle to maximum angle
- * 2. Backward sweep: maximum angle to minimum angle
+ * Performs optimized radar sweep cycle for defense-grade performance:
+ * - Target speed: 50°/second (realistic military radar)
+ * - Optimized step size for smooth tracking
+ * - Minimal delays while maintaining sensor accuracy
  * 
  * At each angle position, the system:
- * - Moves servo to target angle
- * - Takes distance measurement
+ * - Moves servo to target angle with optimized timing
+ * - Takes distance measurement with minimal settling
  * - Transmits data via serial communication
  */
 void performRadarSweep() {
-  // Forward sweep: scan from minimum to maximum angle in 1-degree increments
-  for(int angle = getMinAngle(); angle <= getMaxAngle(); angle++) {
+  int stepSize = getDegreeStep();
+  int settleTime = getSensorSettleTime();
+  
+  // Forward sweep: military-grade speed optimization
+  for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
     moveServoToAngle(angle);
-    delay(50); // Additional settling time for smooth motion
+    delay(settleTime); // Minimal sensor settling for accuracy
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
   
-  // Backward sweep: scan from maximum to minimum angle in 1-degree increments  
-  for(int angle = getMaxAngle(); angle >= getMinAngle(); angle--) {
+  // Backward sweep: maintain consistent military timing
+  for(int angle = getMaxAngle(); angle >= getMinAngle(); angle -= stepSize) {
     moveServoToAngle(angle);
-    delay(50); // Additional settling time for smooth motion
+    delay(settleTime); // Minimal sensor settling for accuracy
+    int distance = getDistance();
+    sendRadarData(angle, distance);
+  }
+}
+
+/**
+ * @brief Execute single-direction high-speed sweep (surveillance mode)
+ * 
+ * Optimized for maximum coverage speed, typically used in
+ * surveillance radar applications.
+ */
+void performSurveillanceSweep() {
+  int stepSize = getDegreeStep();
+  int settleTime = getSensorSettleTime();
+  
+  // Single direction sweep for maximum speed
+  for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
+    moveServoToAngle(angle);
+    delay(settleTime);
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
