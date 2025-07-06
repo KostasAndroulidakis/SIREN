@@ -1,8 +1,10 @@
 # unoRadar
 
-unoRadar is a hardware-software project that combines Arduino-based radar functionality with a TypeScript Remix web app for data visualization.
+A minimal radar system built from first principles. An ultrasonic sensor sweeps 180 degrees on a servo motor, measuring distances. The Arduino transmits data through a C++ server to a TypeScript web interface.
 
-The system uses an ultrasonic sensor mounted on a servo motor to perform 180-degree sweeps and transmit distance measurements to a web interface.
+Military-grade aspirations within consumer hardware constraints.
+
+Simple components, precise measurements, real-time visualization.
 
 ## Hardware
 
