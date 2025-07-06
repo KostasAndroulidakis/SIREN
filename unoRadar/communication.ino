@@ -31,12 +31,12 @@ void initCommunication() {
  * @param angle The servo angle in degrees (0-180)
  * @param distance The measured distance in centimeters
  * 
- * Transmits formatted radar data using the protocol: "angle,distance."
- * Example output: "90,150." represents 90 degrees, 150cm distance
+ * Transmits formatted radar data in human-readable format.
+ * Example output: "Angle: 90 - Distance: 150"
  */
 void sendRadarData(int angle, int distance) {
+  Serial.print("Angle: ");
   Serial.print(angle);
-  Serial.print(DATA_SEPARATOR);
-  Serial.print(distance);
-  Serial.print(DATA_TERMINATOR);
+  Serial.print(" - Distance: ");
+  Serial.println(distance);
 }
