@@ -4,6 +4,19 @@ unoRadar is a hardware-software project that combines Arduino-based radar functi
 
 The system uses an ultrasonic sensor mounted on a servo motor to perform 180-degree sweeps and transmit distance measurements to a web interface.
 
+## TECH STACK
+
+### Hardware
+
+- Language: C/C++ but stored in Arduino `ino` files
+- IDE: Arduino IDE
+
+### Software
+
+- Language: TypeScript
+- Framework: Remix
+- IDE: VSCode
+
 ## Parts &  PIN Connections
 
 ### Elegoo UNO R3 (Arduino UNO clone)
