@@ -21,24 +21,24 @@ The system uses an ultrasonic sensor mounted on a servo motor to perform 180-deg
 
 ### Elegoo UNO R3 (Arduino UNO clone)
 
-| From            | To                |
-| --------------- | ----------------- |
-| 5V (Power)      | Breadboard (+)    |
-| GND (Power)     | Breadboard (-)    |
+| From                     | To                       |
+| ------------------------ | ------------------------ |
+| 5V (Power)               | Breadboard (+)           |
+| GND (Power)              | Breadboard (-)           |
 
 ### Ultrasonic sensor HC-SR04
 
-| From            | To                |
-| --------------- | ----------------- |
-| VCC             | Breadboard (+)    |
-| Trig            | UNO D2            |
-| Echo            | UNO D3 PWM        |
-| GND             | Breadboard (-)    |
+| From                     | To                       |
+| ------------------------ | ------------------------ |
+| VCC                      | Breadboard (+)           |
+| Trig                     | UNO D2                   |
+| Echo                     | UNO D3 PWM               |
+| GND                      | Breadboard (-)           |
 
 ### Micro Servo Motor SG90
 
-| From            | To                |
-| --------------- | ----------------- |
-| 1 (+)           | Breadboard (+)    |
-| 2 pulse         | UNO D9 PWM        |
-| 3 (-)           | Breadboard (-)    |
+| From                     | To                       |
+| ------------------------ | ------------------------ |
+| 1 (+)                    | Breadboard (+)           |
+| 2 pulse                  | UNO D9 PWM               |
+| 3 (-)                    | Breadboard (-)           |
