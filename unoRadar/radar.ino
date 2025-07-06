@@ -22,16 +22,18 @@
  * - Transmits data via serial communication
  */
 void performRadarSweep() {
-  // Forward sweep: scan from minimum to maximum angle
+  // Forward sweep: scan from minimum to maximum angle in 1-degree increments
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle++) {
     moveServoToAngle(angle);
+    delay(50); // Additional settling time for smooth motion
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
   
-  // Backward sweep: scan from maximum to minimum angle
+  // Backward sweep: scan from maximum to minimum angle in 1-degree increments  
   for(int angle = getMaxAngle(); angle >= getMinAngle(); angle--) {
     moveServoToAngle(angle);
+    delay(50); // Additional settling time for smooth motion
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
