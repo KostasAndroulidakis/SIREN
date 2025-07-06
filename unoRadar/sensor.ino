@@ -25,6 +25,9 @@ const int TRIGGER_DELAY_HIGH_US = 10;          ///< High trigger pulse duration 
 const float SOUND_SPEED_CONVERSION = 0.034;    ///< Sound speed conversion factor (cm/μs)
 const int SOUND_TRAVEL_DIVISOR = 2;            ///< Divisor for round-trip time calculation
 
+// Function declarations
+bool isValidDistance(int distance);
+
 /**
  * @brief Initialize the ultrasonic sensor
  * 
