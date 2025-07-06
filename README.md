@@ -8,14 +8,16 @@ The system uses an ultrasonic sensor mounted on a servo motor to perform 180-deg
 
 ### Hardware
 
-- Language: C/C++ but stored in Arduino `ino` files
-- IDE: Arduino IDE
+I used Arduino IDE for coding.
+
+- Language: C++ in `ino` files
 
 ### Software
 
+I used VSCode for coding.
+
 - Language: TypeScript
 - Framework: Remix
-- IDE: VSCode
 
 ## Parts &  PIN Connections
 
