@@ -87,7 +87,7 @@ export function useWebSocket(url: string = 'ws://localhost:8080'): UseWebSocketR
         type: 'connection-request',
         payload: {
           config: {
-            path: '/dev/ttyUSB0', // Default path
+            path: '/dev/cu.usbmodem21201', // Mac Arduino path
             baudRate: 9600
           }
         }

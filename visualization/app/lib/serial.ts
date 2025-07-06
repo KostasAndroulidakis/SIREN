@@ -150,6 +150,6 @@ export class ArduinoSerial {
  * Default serial configuration for Arduino
  */
 export const DEFAULT_SERIAL_CONFIG: SerialConfig = {
-  path: '/dev/ttyUSB0', // Common Linux Arduino path
-  baudRate: 9600,       // Must match Arduino SERIAL_BAUD_RATE
+  path: '/dev/cu.usbmodem21201', // Mac Arduino path
+  baudRate: 9600,                // Must match Arduino SERIAL_BAUD_RATE
 };
