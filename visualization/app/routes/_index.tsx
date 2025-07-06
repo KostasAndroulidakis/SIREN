@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useWebSocket } from "../hooks/useWebSocket";
+import { RawDataDisplay } from "../components/RawDataDisplay";
 
 export const meta: MetaFunction = () => {
   return [
@@ -22,7 +23,7 @@ export default function Index() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <h1 className="text-green-400 font-mono text-2xl font-bold mb-8 text-center">
-          UNO RADAR - CONNECTION TEST
+          UNO RADAR - RAW DATA DISPLAY
         </h1>
 
         {/* Connection Status */}
@@ -73,24 +74,8 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Data Display */}
-        <div className="bg-gray-900 border border-green-900 rounded-lg p-6">
-          <h2 className="text-green-400 font-mono font-bold mb-4">LAST MESSAGE</h2>
-
-          <div className="bg-black border border-green-800 rounded p-4 font-mono text-green-300 text-sm min-h-[100px]">
-            {lastMessage ? (
-              <div>
-                <span className="text-green-500">DATA:</span> {lastMessage}
-                <br />
-                <span className="text-green-600 text-xs">
-                  {new Date().toLocaleTimeString()}
-                </span>
-              </div>
-            ) : (
-              <span className="text-gray-500">No data received yet...</span>
-            )}
-          </div>
-        </div>
+        {/* Raw Data Display */}
+        <RawDataDisplay rawData={lastMessage} maxLines={15} />
 
         {/* Instructions */}
         <div className="mt-8 text-green-600 font-mono text-xs text-center">
