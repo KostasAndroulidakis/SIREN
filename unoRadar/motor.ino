@@ -16,7 +16,7 @@ Servo radarServo;                    ///< Servo motor object for radar platform
 const int SERVO_PIN = 9;             ///< PWM pin connected to servo control signal
 const int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
 const int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
-const int SERVO_DELAY = 30;          ///< Delay in milliseconds after servo movement
+const int SERVO_DELAY = 200;         ///< Delay in milliseconds after servo movement
 
 /**
  * @brief Initialize the servo motor
