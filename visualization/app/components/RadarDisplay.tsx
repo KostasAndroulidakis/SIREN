@@ -223,9 +223,11 @@ export default function RadarDisplay({
 
       {/* SVG Display */}
       <svg
-        width={width}
+        width="100%"
         height={height}
-        className="border border-green-900 rounded bg-black"
+        viewBox={`0 0 ${width} ${height}`}
+        className="border border-green-900 rounded bg-black w-full"
+        preserveAspectRatio="xMidYMid meet"
       >
         {/* Grid */}
         {showGrid && (
