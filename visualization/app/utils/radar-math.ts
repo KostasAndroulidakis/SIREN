@@ -29,8 +29,8 @@ export function polarToCartesian(
 ): CartesianPoint {
   // Arduino servo: 15° = left, 90° = center, 165° = right
   // Display should show: 0° = left, 90° = center, 180° = right
-  // REVERSE the mapping: Arduino 15° = Display 180°, Arduino 165° = Display 0°
-  const displayAngle = 180 - ((angleInDegrees - 15) / (165 - 15)) * 180;
+  // CORRECT mapping: Arduino 15° = Display 0°, Arduino 165° = Display 180°
+  const displayAngle = ((angleInDegrees - 15) / (165 - 15)) * 180;
   const radians = (displayAngle * Math.PI) / 180;
 
   return {
