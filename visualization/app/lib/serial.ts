@@ -11,6 +11,7 @@
 import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 import type { SerialConfig, SerialStatus } from '~/types';
+import { SERIAL_CONFIG } from '../constants';
 
 /**
  * Serial communication manager for Arduino radar
@@ -150,6 +151,6 @@ export class ArduinoSerial {
  * Default serial configuration for Arduino
  */
 export const DEFAULT_SERIAL_CONFIG: SerialConfig = {
-  path: '/dev/cu.usbmodem21201', // Mac Arduino path
-  baudRate: 9600,                // Must match Arduino SERIAL_BAUD_RATE
+  path: SERIAL_CONFIG.DEFAULT_PATH,
+  baudRate: SERIAL_CONFIG.BAUD_RATE,
 };
