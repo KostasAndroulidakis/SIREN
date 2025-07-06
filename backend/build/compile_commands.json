@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/Users/kanon/projects/unoRadar/backend/build",
+  "command": "/usr/bin/clang++ -DBOOST_ASIO_HAS_KQUEUE -DBOOST_SYSTEM_DYN_LINK -DBOOST_SYSTEM_NO_LIB -DBOOST_THREAD_DYN_LINK -DBOOST_THREAD_NO_LIB -I/Users/kanon/projects/unoRadar/backend/include -isystem /opt/homebrew/include -O0 -g -fsanitize=address -fno-omit-frame-pointer -std=c++17 -arch arm64 -mcpu=apple-m1 -o CMakeFiles/unoRadar_server.dir/src/main.cpp.o -c /Users/kanon/projects/unoRadar/backend/src/main.cpp",
+  "file": "/Users/kanon/projects/unoRadar/backend/src/main.cpp",
+  "output": "CMakeFiles/unoRadar_server.dir/src/main.cpp.o"
+}
+]
