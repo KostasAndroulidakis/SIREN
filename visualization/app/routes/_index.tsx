@@ -23,9 +23,14 @@ export default function Index() {
     <div className="min-h-screen bg-black p-8">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <h1 className="text-green-400 font-mono text-2xl font-bold mb-8 text-center">
-          UNO RADAR - LIVE VISUALIZATION
-        </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-green-400 font-mono text-4xl font-bold tracking-widest">
+            <span className="text-green-500">uno</span><span className="text-green-300">Radar</span>
+          </h1>
+          <div className="text-green-600 text-xs font-mono tracking-[0.3em] mt-1">
+            TACTICAL SURVEILLANCE SYSTEM
+          </div>
+        </div>
 
         {/* Radar Control Strip */}
         <div className="bg-black border border-green-500 rounded-sm p-3 mb-6">
