@@ -21,26 +21,28 @@ states/
 .DS_Store
 
 # C++ build artifacts
-build/
-*.o
-*.obj
-*.exe
-*.out
-*.a
-*.so
-*.dll
-*.dylib
+backend/build/
+backend/*.o
+backend/*.obj
+backend/*.exe
+backend/*.out
+backend/*.a
+backend/*.so
+backend/*.dll
+backend/*.dylib
+
+backend/.cache/
 
 # CMake
-CMakeCache.txt
-CMakeFiles/
-CMakeScripts/
-cmake_install.cmake
-Makefile
-install_manifest.txt
-compile_commands.json
-CTestTestfile.cmake
-_deps/
+backend/CMakeCache.txt
+backend/CMakeFiles/
+backend/CMakeScripts/
+backend/cmake_install.cmake
+backend/Makefile
+backend/install_manifest.txt
+backend/compile_commands.json
+backend/CTestTestfile.cmake
+backend/_deps/
 
 # Debug files
 *.dSYM/
