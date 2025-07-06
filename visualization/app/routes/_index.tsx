@@ -1,5 +1,5 @@
 import type { MetaFunction } from "@remix-run/node";
-import { useWebSocket } from "~/hooks/useWebSocket";
+import { useWebSocket } from "../hooks/useWebSocket";
 
 export const meta: MetaFunction = () => {
   return [
@@ -9,12 +9,12 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  const { 
-    isConnected, 
-    serialStatus, 
-    lastMessage, 
-    connectToArduino, 
-    disconnectFromArduino 
+  const {
+    isConnected,
+    serialStatus,
+    lastMessage,
+    connectToArduino,
+    disconnectFromArduino
   } = useWebSocket();
 
   return (
@@ -28,7 +28,7 @@ export default function Index() {
         {/* Connection Status */}
         <div className="bg-gray-900 border border-green-900 rounded-lg p-6 mb-6">
           <h2 className="text-green-400 font-mono font-bold mb-4">CONNECTION STATUS</h2>
-          
+
           <div className="grid grid-cols-2 gap-4 text-green-300 font-mono text-sm">
             <div className="flex justify-between">
               <span>WebSocket:</span>
@@ -36,14 +36,14 @@ export default function Index() {
                 {isConnected ? '🟢 CONNECTED' : '🔴 DISCONNECTED'}
               </span>
             </div>
-            
+
             <div className="flex justify-between">
               <span>Arduino Serial:</span>
               <span className={
-                serialStatus === 'connected' ? 'text-green-400' : 
+                serialStatus === 'connected' ? 'text-green-400' :
                 serialStatus === 'connecting' ? 'text-yellow-400' : 'text-red-400'
               }>
-                {serialStatus === 'connected' ? '🟢 CONNECTED' : 
+                {serialStatus === 'connected' ? '🟢 CONNECTED' :
                  serialStatus === 'connecting' ? '🟡 CONNECTING' : '🔴 DISCONNECTED'}
               </span>
             </div>
@@ -53,7 +53,7 @@ export default function Index() {
         {/* Controls */}
         <div className="bg-gray-900 border border-green-900 rounded-lg p-6 mb-6">
           <h2 className="text-green-400 font-mono font-bold mb-4">CONTROLS</h2>
-          
+
           <div className="flex gap-4">
             <button
               onClick={connectToArduino}
@@ -62,7 +62,7 @@ export default function Index() {
             >
               CONNECT ARDUINO
             </button>
-            
+
             <button
               onClick={disconnectFromArduino}
               disabled={!isConnected || serialStatus === 'disconnected'}
@@ -76,7 +76,7 @@ export default function Index() {
         {/* Data Display */}
         <div className="bg-gray-900 border border-green-900 rounded-lg p-6">
           <h2 className="text-green-400 font-mono font-bold mb-4">LAST MESSAGE</h2>
-          
+
           <div className="bg-black border border-green-800 rounded p-4 font-mono text-green-300 text-sm min-h-[100px]">
             {lastMessage ? (
               <div>
@@ -96,7 +96,7 @@ export default function Index() {
         <div className="mt-8 text-green-600 font-mono text-xs text-center">
           <p>1. Start radar server: npm run radar-server</p>
           <p>2. Connect Arduino to USB port</p>
-          <p>3. Click "CONNECT ARDUINO" button</p>
+          <p>3. Click &quot;CONNECT ARDUINO&quot; button</p>
         </div>
       </div>
     </div>
