@@ -4,7 +4,7 @@ unoRadar is a hardware-software project that combines Arduino-based radar functi
 
 The system uses an ultrasonic sensor mounted on a servo motor to perform 180-degree sweeps and transmit distance measurements to a web interface.
 
-## TECH STACK
+## Tech Stack
 
 ### Hardware
 
@@ -22,14 +22,14 @@ The system uses an ultrasonic sensor mounted on a servo motor to perform 180-deg
 ### Elegoo UNO R3 (Arduino UNO clone)
 
 | From | To |
-| -------- | ------- |
-| 5V (POWER) | Breadboard (+) |
-| GND (POWER) | Breadboard (-) |
+| -------- | -------------- |
+| 5V (Power) | Breadboard (+) |
+| GND (Power) | Breadboard (-) |
 
 ### Ultrasonic sensor HC-SR04
 
 | From | To |
-| -------- | ------- |
+| -------- | -------------- |
 | VCC | Breadboard (+) |
 | Trig | UNO D2 |
 | Echo | UNO D3 PWM |
@@ -38,7 +38,7 @@ The system uses an ultrasonic sensor mounted on a servo motor to perform 180-deg
 ### Micro Servo Motor SG90
 
 | From | To |
-| -------- | ------- |
+| -------- | -------------- |
 | 1 (+) | Breadboard (+) |
-| 2 pulse | UNO D9 PWM (UNO R3) |
+| 2 pulse | UNO D9 PWM |
 | 3 (-) | Breadboard (-) |
