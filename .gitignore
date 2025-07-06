@@ -13,3 +13,9 @@ states/
 # Optional
 .env
 .env.local
+
+.vscode/
+.DS_Store
+
+CLAUDE.md
+CLAUDE/
