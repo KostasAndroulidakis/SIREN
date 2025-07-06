@@ -7,6 +7,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import type { SerialStatus } from '~/types';
+import { SERIAL_CONFIG, WEBSOCKET_CONFIG } from '../constants';
 
 interface WebSocketMessage {
   type: 'radar-data' | 'serial-status' | 'connection-response';
@@ -25,7 +26,7 @@ interface UseWebSocketReturn {
   disconnectFromArduino: () => void;
 }
 
-export function useWebSocket(url: string = 'ws://localhost:8080'): UseWebSocketReturn {
+export function useWebSocket(url: string = WEBSOCKET_CONFIG.DEFAULT_URL): UseWebSocketReturn {
   const [ws, setWs] = useState<WebSocket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [serialStatus, setSerialStatus] = useState<SerialStatus>('disconnected');
@@ -87,8 +88,8 @@ export function useWebSocket(url: string = 'ws://localhost:8080'): UseWebSocketR
         type: 'connection-request',
         payload: {
           config: {
-            path: '/dev/cu.usbmodem21201', // Mac Arduino path
-            baudRate: 9600
+            path: SERIAL_CONFIG.DEFAULT_PATH,
+            baudRate: SERIAL_CONFIG.BAUD_RATE
           }
         }
       };
