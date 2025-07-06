@@ -24,20 +24,20 @@
  */
 void performRadarSweep() {
   int stepSize = getDegreeStep();
-  int settleTime = getSensorSettleTime();
+  int measurementTime = getSensorMeasurementTime();
   
-  // Forward sweep: military-grade speed optimization
+  // Forward sweep: HC-SR04 compliant military-grade performance
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
     moveServoToAngle(angle);
-    delay(settleTime); // Minimal sensor settling for accuracy
+    delay(measurementTime); // HC-SR04 compliant timing (60ms cycle requirement)
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
   
-  // Backward sweep: maintain consistent military timing
+  // Backward sweep: maintain HC-SR04 compliant timing
   for(int angle = getMaxAngle(); angle >= getMinAngle(); angle -= stepSize) {
     moveServoToAngle(angle);
-    delay(settleTime); // Minimal sensor settling for accuracy
+    delay(measurementTime); // HC-SR04 compliant timing (60ms cycle requirement)
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
@@ -51,12 +51,12 @@ void performRadarSweep() {
  */
 void performSurveillanceSweep() {
   int stepSize = getDegreeStep();
-  int settleTime = getSensorSettleTime();
+  int measurementTime = getSensorMeasurementTime();
   
-  // Single direction sweep for maximum speed
+  // Single direction sweep with HC-SR04 compliant timing
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
     moveServoToAngle(angle);
-    delay(settleTime);
+    delay(measurementTime); // HC-SR04 compliant 60ms cycle
     int distance = getDistance();
     sendRadarData(angle, distance);
   }

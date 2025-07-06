@@ -25,7 +25,7 @@ void performRadarSweep();                   ///< Execute complete radar sweep (r
 void performSurveillanceSweep();            ///< Execute single-direction surveillance sweep (radar.ino)
 void sendRadarData(int angle, int distance); ///< Send data via serial (communication.ino)
 int getDegreeStep();                        ///< Get optimized degree step size (motor.ino)
-int getSensorSettleTime();                  ///< Get sensor settling time (motor.ino)
+int getSensorMeasurementTime();             ///< Get HC-SR04 measurement time (motor.ino)
 
 /**
  * @brief Initialize all system components
