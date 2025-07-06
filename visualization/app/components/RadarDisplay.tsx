@@ -90,9 +90,11 @@ function RadarAngleLines({
   return (
     <g className="radar-angles">
       {RADAR_GRID.ANGLE_LINES.map((displayAngle) => {
-        // Convert display angle (0°-180°) back to Arduino angle for positioning
-        const arduinoAngle = 15 + (displayAngle / 180) * (165 - 15);
-        const { x, y } = polarToCartesian(centerX, centerY, maxRadius, arduinoAngle);
+        // Direct conversion: 0° = left (180° in radians), 180° = right (0° in radians)
+        const radians = ((180 - displayAngle) * Math.PI) / 180;
+        const x = centerX + maxRadius * Math.cos(radians);
+        const y = centerY - maxRadius * Math.sin(radians);
+        
         return (
           <g key={displayAngle}>
             <line
