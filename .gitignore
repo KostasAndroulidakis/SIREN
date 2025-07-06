@@ -14,8 +14,13 @@ states/
 .env
 .env.local
 
+# VSCode specific files
 .vscode/
+
+# macOS specific files
 .DS_Store
 
+# Ignore Claude files
+.claude/
 CLAUDE.md
 CLAUDE/
