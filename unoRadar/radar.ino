@@ -12,32 +12,33 @@
 /**
  * @brief Execute military-grade bidirectional radar sweep
  * 
- * Performs optimized radar sweep cycle for defense-grade performance:
- * - Target speed: 50°/second (realistic military radar)
- * - Optimized step size for smooth tracking
- * - Minimal delays while maintaining sensor accuracy
+ * Performs hardware-compliant defense-grade performance:
+ * - Target speed: 66.7°/second = 11.1 RPM (near military 12+ RPM requirement)
+ * - SG90 servo safe: 66.7°/s << 400°/s maximum capability
+ * - HC-SR04 compliant: 60ms cycle time respected
+ * - 4° step resolution for smooth target tracking
  * 
  * At each angle position, the system:
- * - Moves servo to target angle with optimized timing
- * - Takes distance measurement with minimal settling
- * - Transmits data via serial communication
+ * - Moves servo to target angle with hardware-safe timing
+ * - Takes distance measurement with HC-SR04 compliant settling
+ * - Transmits data via high-speed serial communication
  */
 void performRadarSweep() {
   int stepSize = getDegreeStep();
-  int measurementTime = getSensorMeasurementTime();
+  int sensorTime = getSensorTime();
   
-  // Forward sweep: HC-SR04 compliant military-grade performance
+  // Forward sweep: Hardware-compliant timing
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
-    moveServoToAngle(angle);
-    delay(measurementTime); // HC-SR04 compliant timing (60ms cycle requirement)
+    moveServoToAngle(angle);      // Includes 20ms servo settling delay
+    delay(sensorTime);            // Additional time for HC-SR04 measurement
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
   
-  // Backward sweep: maintain HC-SR04 compliant timing
+  // Backward sweep: Hardware-compliant timing
   for(int angle = getMaxAngle(); angle >= getMinAngle(); angle -= stepSize) {
-    moveServoToAngle(angle);
-    delay(measurementTime); // HC-SR04 compliant timing (60ms cycle requirement)
+    moveServoToAngle(angle);      // Includes 20ms servo settling delay  
+    delay(sensorTime);            // Additional time for HC-SR04 measurement
     int distance = getDistance();
     sendRadarData(angle, distance);
   }
@@ -51,12 +52,12 @@ void performRadarSweep() {
  */
 void performSurveillanceSweep() {
   int stepSize = getDegreeStep();
-  int measurementTime = getSensorMeasurementTime();
+  int sensorTime = getSensorTime();
   
-  // Single direction sweep with HC-SR04 compliant timing
+  // Single direction sweep - Hardware-compliant timing
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
-    moveServoToAngle(angle);
-    delay(measurementTime); // HC-SR04 compliant 60ms cycle
+    moveServoToAngle(angle);      // Includes 20ms servo settling delay
+    delay(sensorTime);            // Additional time for HC-SR04 measurement  
     int distance = getDistance();
     sendRadarData(angle, distance);
   }

@@ -13,7 +13,7 @@
  */
 export const SERIAL_CONFIG = {
   DEFAULT_PATH: '/dev/cu.usbmodem21201', // Mac Arduino path (update per machine)
-  BAUD_RATE: 9600,                       // Must match Arduino SERIAL_BAUD_RATE
+  BAUD_RATE: 9600,                       // Reliable serial communication (matches Arduino)
   CONNECTION_TIMEOUT_MS: 5000,           // Connection timeout in milliseconds
   RETRY_ATTEMPTS: 3,                     // Number of connection retry attempts
 } as const;

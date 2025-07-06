@@ -17,10 +17,10 @@ const int SERVO_PIN = 9;             ///< PWM pin connected to servo control sig
 const int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
 const int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
 
-// Military radar performance optimization (HC-SR04 compliant)
-const int SERVO_STEP_DELAY = 25;     ///< Servo movement time for smooth operation
-const int SENSOR_MEASUREMENT_TIME = 35; ///< HC-SR04 measurement + safety margin (60ms cycle requirement)
-const int DEGREE_STEP = 3;           ///< Optimized step size for 50°/second with HC-SR04 constraints
+// Hardware-compliant timing (SG90 + HC-SR04 specifications)
+const int SERVO_SETTLE_TIME = 20;    ///< SG90 minimum settle time (15-20ms recommended)
+const int SENSOR_TIME = 40;          ///< HC-SR04 measurement time including safety margin
+const int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliable operation
 
 /**
  * @brief Initialize the servo motor
@@ -33,15 +33,15 @@ void initMotor() {
 }
 
 /**
- * @brief Move servo to specified angle with military-grade timing
+ * @brief Move servo to specified angle with proper settling time
  * @param angle Target angle in degrees (should be between MIN_ANGLE and MAX_ANGLE)
  * 
- * Commands the servo to move to the specified angle with optimized timing
- * for realistic military radar sweep speeds (30-60°/second).
+ * Commands the servo to move and waits for proper settling time.
+ * SG90 requires 15-20ms minimum between commands for reliable operation.
  */
 void moveServoToAngle(int angle) {
   radarServo.write(angle);
-  delay(SERVO_STEP_DELAY);  // Optimized for 50°/second military speed
+  delay(SERVO_SETTLE_TIME);  // SG90 hardware requirement: 15-20ms settling
 }
 
 /**
@@ -53,11 +53,11 @@ int getDegreeStep() {
 }
 
 /**
- * @brief Get sensor measurement time (HC-SR04 compliant)
- * @return HC-SR04 measurement time including safety margin
+ * @brief Get sensor measurement time for HC-SR04
+ * @return Sensor measurement time in milliseconds
  */
-int getSensorMeasurementTime() {
-  return SENSOR_MEASUREMENT_TIME;
+int getSensorTime() {
+  return SENSOR_TIME;
 }
 
 /**

@@ -9,8 +9,8 @@
  * and distance measurements.
  */
 
-// Communication configuration constants
-const int SERIAL_BAUD_RATE = 9600; ///< Serial communication baud rate
+// Communication configuration constants  
+const int SERIAL_BAUD_RATE = 9600;   ///< Reliable serial communication (Arduino standard)
 
 // Communication protocol constants
 const char DATA_SEPARATOR = ',';  ///< Character separating angle and distance values
