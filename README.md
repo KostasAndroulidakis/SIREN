@@ -4,43 +4,49 @@ unoRadar is a hardware-software project that combines Arduino-based radar functi
 
 The system uses an ultrasonic sensor mounted on a servo motor to perform 180-degree sweeps and transmit distance measurements to a web interface.
 
-## Tech Stack
+## Hardware
 
-### Hardware
+- __Development board:__    Elegoo UNO R3 (Arduino UNO R3 Clone)
+- __Micro Servo Motor:__    SG90
+- __Ultrasonic Sensor:__    HC-SR04s
 
-I used Arduino IDE for coding.
+## Software
 
-- Language: C++ in `ino` files
+### Development Board
 
-### Software
+- Language: C++
 
-I used VSCode for coding.
+### Backend
 
-- Language: TypeScript
-- Framework: Remix
+- Language: C++
 
-## Parts &  PIN Connections
+### Frontend
+
+- Language: TypeScript, CSS
+- Frameworks: Remix, Tailwind CSS
+
+## PIN Connections
 
 ### Elegoo UNO R3 (Arduino UNO clone)
 
-| From                     | To                       |
-| ------------------------ | ------------------------ |
-| 5V (Power)               | Breadboard (+)           |
-| GND (Power)              | Breadboard (-)           |
+```text
+5V (Power)  ──→  Breadboard (+)
+GND (Power) ──→  Breadboard (-)
+```
 
 ### Ultrasonic sensor HC-SR04
 
-| From                     | To                       |
-| ------------------------ | ------------------------ |
-| VCC                      | Breadboard (+)           |
-| Trig                     | UNO D2                   |
-| Echo                     | UNO D3 PWM               |
-| GND                      | Breadboard (-)           |
+```text
+VCC   ──→  Breadboard (+)
+Trig  ──→  UNO D2
+Echo  ──→  UNO D3 PWM
+GND   ──→  Breadboard (-)
+```
 
 ### Micro Servo Motor SG90
 
-| From                     | To                       |
-| ------------------------ | ------------------------ |
-| 1 (+)                    | Breadboard (+)           |
-| 2 pulse                  | UNO D9 PWM               |
-| 3 (-)                    | Breadboard (-)           |
+```text
+Pin 1 (+)    ──→  Breadboard (+)
+Pin 2 (PWM)  ──→  UNO D9 PWM
+Pin 3 (-)    ──→  Breadboard (-)
+```
