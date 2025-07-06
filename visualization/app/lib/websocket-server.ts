@@ -10,6 +10,7 @@
 
 import { WebSocketServer, WebSocket } from 'ws';
 import { ArduinoSerial, DEFAULT_SERIAL_CONFIG } from './serial';
+import { WEBSOCKET_CONFIG } from '../constants';
 import type { SerialConfig, SerialStatus } from '~/types';
 
 /**
@@ -33,7 +34,7 @@ export class RadarWebSocketServer {
   private arduino: ArduinoSerial;
   private clients: Set<WebSocket> = new Set();
 
-  constructor(port: number = 8080) {
+  constructor(port: number = WEBSOCKET_CONFIG.DEFAULT_PORT) {
     this.wss = new WebSocketServer({ port });
     this.arduino = new ArduinoSerial();
     this.setupWebSocketServer();
