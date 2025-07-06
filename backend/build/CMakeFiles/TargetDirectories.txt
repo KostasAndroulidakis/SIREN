@@ -1,7 +1,0 @@
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/unoRadar_server.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/edit_cache.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/rebuild_cache.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/list_install_components.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/install.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/install/local.dir
-/Users/kanon/projects/unoRadar/backend/build/CMakeFiles/install/strip.dir

@@ -20,6 +20,39 @@ states/
 # macOS specific files
 .DS_Store
 
+# C++ build artifacts
+build/
+*.o
+*.obj
+*.exe
+*.out
+*.a
+*.so
+*.dll
+*.dylib
+
+# CMake
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+cmake_install.cmake
+Makefile
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps/
+
+# Debug files
+*.dSYM/
+*.pdb
+*.ilk
+
+# IDE files
+*.vcxproj*
+*.sln
+*.suo
+*.user
+
 # Ignore Claude files
 .claude/
 CLAUDE.md
