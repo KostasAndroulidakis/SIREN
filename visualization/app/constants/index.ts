@@ -6,3 +6,4 @@
  */
 
 export * from './radar';
+export * from './config';
