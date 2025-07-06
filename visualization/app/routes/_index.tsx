@@ -27,52 +27,51 @@ export default function Index() {
           UNO RADAR - LIVE VISUALIZATION
         </h1>
 
-        {/* Connection Status */}
-        <div className="bg-gray-900 border border-green-900 rounded-lg p-6 mb-6">
-          <h2 className="text-green-400 font-mono font-bold mb-4">CONNECTION STATUS</h2>
+        {/* Radar Control Strip */}
+        <div className="bg-black border border-green-500 rounded-sm p-3 mb-6">
+          <div className="flex items-center justify-between font-mono text-sm">
+            <span className="text-green-400 font-bold tracking-wider">RADAR CONTROL</span>
+            
+            <div className="flex items-center gap-6">
+              {/* WebSocket Status */}
+              <div className="flex items-center gap-2">
+                <span className="text-green-300">WEBSOCKET</span>
+                <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-500'}`}></div>
+                <span className={`text-xs ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
+                  {isConnected ? 'CONNECTED' : 'DISCONNECTED'}
+                </span>
+              </div>
 
-          <div className="grid grid-cols-2 gap-4 text-green-300 font-mono text-sm">
-            <div className="flex justify-between">
-              <span>WebSocket:</span>
-              <span className={isConnected ? 'text-green-400' : 'text-red-400'}>
-                {isConnected ? '🟢 CONNECTED' : '🔴 DISCONNECTED'}
-              </span>
+              {/* Arduino Status */}
+              <div className="flex items-center gap-2">
+                <span className="text-green-300">ARDUINO</span>
+                <div className={`w-2 h-2 rounded-full ${
+                  serialStatus === 'connected' ? 'bg-green-400' :
+                  serialStatus === 'connecting' ? 'bg-yellow-400 animate-pulse' : 'bg-red-500'
+                }`}></div>
+                <span className={`text-xs ${
+                  serialStatus === 'connected' ? 'text-green-400' :
+                  serialStatus === 'connecting' ? 'text-yellow-400' : 'text-red-400'
+                }`}>
+                  {serialStatus === 'connected' ? 'CONNECTED' :
+                   serialStatus === 'connecting' ? 'SYNC' : 'DISCONNECTED'}
+                </span>
+              </div>
+
+              {/* Single Toggle Button */}
+              <button
+                onClick={serialStatus === 'connected' ? disconnectFromArduino : connectToArduino}
+                disabled={!isConnected || serialStatus === 'connecting'}
+                className={`px-4 py-1 border font-mono text-xs tracking-wider transition-all duration-200 ${
+                  serialStatus === 'connected' 
+                    ? 'bg-red-900 hover:bg-red-800 border-red-600 text-red-100' 
+                    : 'bg-green-900 hover:bg-green-800 border-green-600 text-green-100'
+                } disabled:bg-gray-700 disabled:border-gray-600 disabled:text-gray-400 disabled:cursor-not-allowed`}
+              >
+                {serialStatus === 'connected' ? 'DISCONNECT' :
+                 serialStatus === 'connecting' ? 'CONNECTING...' : 'CONNECT'}
+              </button>
             </div>
-
-            <div className="flex justify-between">
-              <span>Arduino Serial:</span>
-              <span className={
-                serialStatus === 'connected' ? 'text-green-400' :
-                serialStatus === 'connecting' ? 'text-yellow-400' : 'text-red-400'
-              }>
-                {serialStatus === 'connected' ? '🟢 CONNECTED' :
-                 serialStatus === 'connecting' ? '🟡 CONNECTING' : '🔴 DISCONNECTED'}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Controls */}
-        <div className="bg-gray-900 border border-green-900 rounded-lg p-6 mb-6">
-          <h2 className="text-green-400 font-mono font-bold mb-4">CONTROLS</h2>
-
-          <div className="flex gap-4">
-            <button
-              onClick={connectToArduino}
-              disabled={!isConnected || serialStatus === 'connected'}
-              className="px-6 py-2 bg-green-800 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded border border-green-600 font-mono text-sm text-green-100 transition-colors"
-            >
-              {serialStatus === 'connected' ? 'ARDUINO CONNECTED' : 
-               serialStatus === 'connecting' ? 'CONNECTING...' : 'CONNECT ARDUINO'}
-            </button>
-
-            <button
-              onClick={disconnectFromArduino}
-              disabled={!isConnected || serialStatus === 'disconnected'}
-              className="px-6 py-2 bg-red-800 hover:bg-red-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded border border-red-600 font-mono text-sm text-red-100 transition-colors"
-            >
-              DISCONNECT ARDUINO
-            </button>
           </div>
         </div>
 
