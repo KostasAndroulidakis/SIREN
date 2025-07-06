@@ -62,7 +62,8 @@ export default function Index() {
               disabled={!isConnected || serialStatus === 'connected'}
               className="px-6 py-2 bg-green-800 hover:bg-green-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded border border-green-600 font-mono text-sm text-green-100 transition-colors"
             >
-              CONNECT ARDUINO
+              {serialStatus === 'connected' ? 'ARDUINO CONNECTED' : 
+               serialStatus === 'connecting' ? 'CONNECTING...' : 'CONNECT ARDUINO'}
             </button>
 
             <button
