@@ -60,13 +60,13 @@ function RadarGrid({
             />
             <text
               x={centerX + radius - 10}
-              y={centerY - 5}
+              y={centerY + 15}
               fill={RADAR_COLORS.TEXT_SECONDARY}
               fontSize="10"
               fontFamily="ui-monospace, monospace"
               className="select-none"
             >
-              {distance}
+              {distance}cm
             </text>
           </g>
         );
@@ -89,10 +89,12 @@ function RadarAngleLines({
 }) {
   return (
     <g className="radar-angles">
-      {RADAR_GRID.ANGLE_LINES.map((angle) => {
-        const { x, y } = polarToCartesian(centerX, centerY, maxRadius, angle);
+      {RADAR_GRID.ANGLE_LINES.map((displayAngle) => {
+        // Convert display angle (0°-180°) back to Arduino angle for positioning
+        const arduinoAngle = 15 + (displayAngle / 180) * (165 - 15);
+        const { x, y } = polarToCartesian(centerX, centerY, maxRadius, arduinoAngle);
         return (
-          <g key={angle}>
+          <g key={displayAngle}>
             <line
               x1={centerX}
               y1={centerY}
@@ -103,14 +105,14 @@ function RadarAngleLines({
               className="opacity-40"
             />
             <text
-              x={x + (angle < 90 ? 5 : angle > 90 ? -15 : -5)}
+              x={x + (displayAngle < 90 ? 5 : displayAngle > 90 ? -15 : -5)}
               y={y - 5}
               fill={RADAR_COLORS.TEXT_SECONDARY}
               fontSize="9"
               fontFamily="ui-monospace, monospace"
               className="select-none"
             >
-              {angle}°
+              {displayAngle}°
             </text>
           </g>
         );
@@ -202,8 +204,8 @@ export default function RadarDisplay({
   showSweepLine = true,
 }: RadarDisplayProps) {
   const centerX = width / 2;
-  const centerY = height - RADAR_DIMENSIONS.HEADER_HEIGHT;
-  const maxRadius = Math.min(width / 2, height - RADAR_DIMENSIONS.HEADER_HEIGHT) - RADAR_DIMENSIONS.MIN_PADDING;
+  const centerY = height - RADAR_DIMENSIONS.MIN_PADDING;
+  const maxRadius = Math.min(width / 2, height - RADAR_DIMENSIONS.MIN_PADDING) - RADAR_DIMENSIONS.MIN_PADDING;
 
   return (
     <div className="bg-black rounded-lg border border-green-900 p-4 font-mono">

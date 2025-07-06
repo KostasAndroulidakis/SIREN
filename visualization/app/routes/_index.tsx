@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { RawDataDisplay } from "../components/RawDataDisplay";
+import { LiveRadarDisplay } from "../components/LiveRadarDisplay";
 
 export const meta: MetaFunction = () => {
   return [
@@ -20,10 +21,10 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bg-black p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         {/* Header */}
         <h1 className="text-green-400 font-mono text-2xl font-bold mb-8 text-center">
-          UNO RADAR - RAW DATA DISPLAY
+          UNO RADAR - LIVE VISUALIZATION
         </h1>
 
         {/* Connection Status */}
@@ -74,8 +75,19 @@ export default function Index() {
           </div>
         </div>
 
+        {/* Live Radar Display */}
+        <div className="mb-6">
+          <LiveRadarDisplay 
+            rawData={lastMessage} 
+            maxDistance={400}
+            maxDataPoints={50}
+            width={800}
+            height={450}
+          />
+        </div>
+
         {/* Raw Data Display */}
-        <RawDataDisplay rawData={lastMessage} maxLines={15} />
+        <RawDataDisplay rawData={lastMessage} maxLines={10} />
 
         {/* Instructions */}
         <div className="mt-8 text-green-600 font-mono text-xs text-center">

@@ -18,7 +18,7 @@ export interface CartesianPoint {
  * @param centerX Center X coordinate
  * @param centerY Center Y coordinate
  * @param radius Distance from center
- * @param angleInDegrees Angle in degrees (Arduino format: 0° = up, clockwise)
+ * @param angleInDegrees Angle in degrees (Arduino format: 15° = left, 165° = right)
  * @returns Cartesian coordinates
  */
 export function polarToCartesian(
@@ -27,12 +27,15 @@ export function polarToCartesian(
   radius: number,
   angleInDegrees: number
 ): CartesianPoint {
-  // Convert Arduino angle (0° = up, clockwise) to standard math coordinates
-  const adjustedAngle = (90 - angleInDegrees) * (Math.PI / 180);
-  
+  // Arduino servo: 15° = left, 90° = center, 165° = right
+  // Display should show: 0° = left, 90° = center, 180° = right
+  // REVERSE the mapping: Arduino 15° = Display 180°, Arduino 165° = Display 0°
+  const displayAngle = 180 - ((angleInDegrees - 15) / (165 - 15)) * 180;
+  const radians = (displayAngle * Math.PI) / 180;
+
   return {
-    x: centerX + radius * Math.cos(adjustedAngle),
-    y: centerY - radius * Math.sin(adjustedAngle),
+    x: centerX + radius * Math.cos(radians),
+    y: centerY - radius * Math.sin(radians),
   };
 }
 
