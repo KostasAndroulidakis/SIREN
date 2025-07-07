@@ -9,15 +9,13 @@
  */
 
 #include "websocket/websocket_server.hpp"
-#include "utils/constants.hpp"
 #include "utils/json_serializer.hpp"
 #include <iostream>
 #include <chrono>
-#include <algorithm>
 
 namespace unoradar::websocket {
 
-namespace constants = unoradar::constants;
+namespace http = beast::http;  // Local alias for HTTP functionality
 
 // WebSocketSession Implementation
 

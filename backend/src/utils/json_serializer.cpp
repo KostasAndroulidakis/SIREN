@@ -8,7 +8,6 @@
 #include "utils/json_serializer.hpp"
 #include "utils/constants.hpp"
 #include <sstream>
-#include <iomanip>
 
 namespace unoradar::utils {
 
