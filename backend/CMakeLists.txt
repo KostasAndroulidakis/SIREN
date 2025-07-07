@@ -66,6 +66,11 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx"
     )
 
+    # Ensure statistics_calculator.cpp is included
+    if(NOT "${CMAKE_CURRENT_SOURCE_DIR}/src/utils/statistics_calculator.cpp" IN_LIST EXISTING_SOURCES)
+        list(APPEND EXISTING_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/utils/statistics_calculator.cpp")
+    endif()
+
     if(EXISTING_SOURCES)
         add_executable(unoRadar_server ${EXISTING_SOURCES})
         target_link_libraries(unoRadar_server PRIVATE unoRadar_lib)

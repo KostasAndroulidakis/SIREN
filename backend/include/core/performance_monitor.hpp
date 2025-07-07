@@ -13,6 +13,7 @@
 #include <mutex>
 #include <functional>
 #include "data/radar_types.hpp"
+#include "utils/statistics_calculator.hpp"
 
 namespace unoradar::core {
 
@@ -81,6 +82,12 @@ public:
      */
     void resetMetrics();
 
+    /**
+     * @brief Get detailed latency statistics
+     * @return Current latency statistics from StatisticsCalculator
+     */
+    utils::UInt32StatsCalculator::Statistics getLatencyStatistics() const;
+
 private:
     mutable std::mutex metrics_mutex_;
     data::PerformanceMetrics current_metrics_;
@@ -92,6 +99,11 @@ private:
     // Message counting
     uint64_t total_messages_;
     uint64_t messages_since_last_update_;
+
+    // Military-grade statistics calculators
+    utils::UInt32StatsCalculator latency_calculator_;
+    utils::UInt32StatsCalculator throughput_calculator_;
+    utils::UInt64StatsCalculator memory_calculator_;
 
     // Callback
     MetricsCallback metrics_callback_;

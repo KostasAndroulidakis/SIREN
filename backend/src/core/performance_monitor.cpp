@@ -7,8 +7,8 @@
 
 #include "core/performance_monitor.hpp"
 #include "utils/constants.hpp"
+#include "utils/statistics_calculator.hpp"
 #include <iostream>
-#include <algorithm>
 
 namespace unoradar::core {
 
@@ -20,9 +20,12 @@ PerformanceMonitor::PerformanceMonitor()
     , last_update_(std::chrono::steady_clock::now())
     , total_messages_(0)
     , messages_since_last_update_(0)
+    , latency_calculator_(unoradar::utils::performance_stats::createLatencyCalculator())
+    , throughput_calculator_(unoradar::utils::performance_stats::createThroughputCalculator())
+    , memory_calculator_(unoradar::utils::performance_stats::createMemoryUsageCalculator())
     , monitoring_(false)
 {
-    std::cout << "[PerformanceMonitor] Initializing performance monitoring..." << std::endl;
+    std::cout << "[PerformanceMonitor] Initializing military-grade performance monitoring with StatisticsCalculator..." << std::endl;
 }
 
 void PerformanceMonitor::start() {
@@ -63,18 +66,12 @@ void PerformanceMonitor::recordProcessingTime(uint64_t processing_time_us) {
         return;
     }
 
-    // Update average latency using exponential moving average
-    auto alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA;
-    current_metrics_.avg_latency_us = static_cast<uint32_t>(
-        alpha * static_cast<double>(processing_time_us) +
-        (1.0 - alpha) * static_cast<double>(current_metrics_.avg_latency_us)
-    );
+    // Use StatisticsCalculator instead of duplicate moving average calculation
+    auto latency_stats = latency_calculator_.addSample(static_cast<uint32_t>(processing_time_us));
 
-    // Update maximum latency
-    current_metrics_.max_latency_us = std::max(
-        current_metrics_.max_latency_us,
-        static_cast<uint32_t>(processing_time_us)
-    );
+    // Update metrics from statistics calculator
+    current_metrics_.avg_latency_us = latency_stats.exponential_average;
+    current_metrics_.max_latency_us = latency_stats.maximum_value;
 
     updateCalculatedMetrics();
 }
@@ -122,7 +119,12 @@ void PerformanceMonitor::resetMetrics() {
     start_time_ = std::chrono::steady_clock::now();
     last_update_ = start_time_;
 
-    std::cout << "[PerformanceMonitor] 🔄 Metrics reset" << std::endl;
+    // Reset statistics calculators
+    latency_calculator_.reset();
+    throughput_calculator_.reset();
+    memory_calculator_.reset();
+
+    std::cout << "[PerformanceMonitor] 🔄 Metrics and statistics calculators reset" << std::endl;
 }
 
 void PerformanceMonitor::updateCalculatedMetrics() {
@@ -161,6 +163,14 @@ void PerformanceMonitor::updateMemoryUsage() {
         constants::performance::BASE_MEMORY_USAGE_BYTES;
 
     current_metrics_.memory_usage_bytes = estimated_usage;
+
+    // Update memory statistics calculator
+    memory_calculator_.addSample(estimated_usage);
+}
+
+utils::UInt32StatsCalculator::Statistics PerformanceMonitor::getLatencyStatistics() const {
+    std::lock_guard<std::mutex> lock(metrics_mutex_);
+    return latency_calculator_.getStatistics();
 }
 
 } // namespace unoradar::core
