@@ -13,23 +13,21 @@
 #include <boost/asio.hpp>
 
 // Military-grade configuration headers
-#include "core/config.hpp"
 #include "data/radar_types.hpp"
 #include "utils/constants.hpp"
 #include "core/master_controller.hpp"
 
 int main() {
-    namespace cfg = unoradar::config;
     namespace cnst = unoradar::constants;
 
-    std::cout << "unoRadar Military-Grade Server v" << cfg::system::VERSION << std::endl;
-    std::cout << "Boost version: " << BOOST_VERSION / 100000 << "."
-              << BOOST_VERSION / 100 % 1000 << "."
-              << BOOST_VERSION % 100 << std::endl;
+    std::cout << "unoRadar Military-Grade Server v" << cnst::version::VERSION_STRING << std::endl;
+    std::cout << "Boost version: " << BOOST_VERSION / cnst::magic_numbers::BOOST_VERSION_MAJOR_DIVISOR << "."
+              << BOOST_VERSION / cnst::magic_numbers::BOOST_VERSION_MINOR_DIVISOR % cnst::magic_numbers::BOOST_VERSION_MINOR_MODULO << "."
+              << BOOST_VERSION % cnst::magic_numbers::BOOST_VERSION_PATCH_MODULO << std::endl;
     std::cout << "Boost.Asio version: " << BOOST_ASIO_VERSION << std::endl;
     std::cout << "Build type: " << cnst::version::BUILD_TYPE << std::endl;
-    std::cout << "WebSocket port: " << cfg::websocket::DEFAULT_PORT << std::endl;
-    std::cout << "Serial baud rate: " << cfg::serial::BAUD_RATE << std::endl;
+    std::cout << "WebSocket port: " << cnst::websocket::DEFAULT_PORT << std::endl;
+    std::cout << "Serial baud rate: " << cnst::serial::BAUD_RATE << std::endl;
 
     // Test configuration system - all values from constants, no magic numbers
     std::cout << "\n=== Military-Grade Configuration Test ===" << std::endl;
@@ -40,7 +38,7 @@ int main() {
     std::cout << "Target latency: " << cnst::performance::TARGET_LOOP_TIME_US << "μs" << std::endl;
 
     // Test data types
-    unoradar::data::RadarDataPoint test_point(90, 150);
+    unoradar::data::RadarDataPoint test_point(cnst::test_values::TEST_ANGLE_DEGREES, cnst::test_values::TEST_DISTANCE_CM);
     std::cout << "Test data point: angle=" << test_point.angle
               << "°, distance=" << test_point.distance << "cm" << std::endl;
 
@@ -65,15 +63,15 @@ int main() {
     std::cout << "System healthy: " << (controller.isHealthy() ? "Yes" : "No") << std::endl;
 
     // Run for a short time to test event loop
-    std::cout << "Running controller for 2 seconds..." << std::endl;
+    std::cout << "Running controller for " << cnst::test_values::TEST_RUN_DURATION.count() << " seconds..." << std::endl;
     auto start_time = std::chrono::steady_clock::now();
 
     std::thread controller_thread([&controller]() {
         controller.run();
     });
 
-    // Let it run for 2 seconds
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    // Let it run for the specified test duration
+    std::this_thread::sleep_for(cnst::test_values::TEST_RUN_DURATION);
 
     std::cout << "Stopping controller..." << std::endl;
     controller.stop();

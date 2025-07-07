@@ -289,8 +289,12 @@ void SerialInterface::handleRead(const boost::system::error_code& error,
 
         {
             std::lock_guard<std::mutex> lock(stats_mutex_);
-            statistics_.avg_processing_time_us =
-                (statistics_.avg_processing_time_us + static_cast<uint32_t>(processing_time)) / 2;
+            // Use exponential moving average instead of simple /2 division
+            auto alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA;
+            statistics_.avg_processing_time_us = static_cast<uint32_t>(
+                alpha * static_cast<double>(processing_time) +
+                (1.0 - alpha) * static_cast<double>(statistics_.avg_processing_time_us)
+            );
         }
 
         last_data_time_ = std::chrono::steady_clock::now();
@@ -383,9 +387,9 @@ void SerialInterface::attemptReconnection() {
     updateConnectionState(ConnectionState::RECONNECTING);
 
     std::cout << "[SerialInterface] 🔄 Attempting reconnection in "
-              << constants::serial::RECONNECT_DELAY_SEC << " seconds..." << std::endl;
+              << constants::serial::RECONNECT_DELAY.count() << " seconds..." << std::endl;
 
-    reconnect_timer_->expires_after(std::chrono::seconds(constants::serial::RECONNECT_DELAY_SEC));
+    reconnect_timer_->expires_after(constants::serial::RECONNECT_DELAY);
     reconnect_timer_->async_wait(
         [this](const boost::system::error_code& error) {
             onReconnectTimer(error);

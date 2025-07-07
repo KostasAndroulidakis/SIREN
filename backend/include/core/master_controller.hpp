@@ -15,9 +15,8 @@
 #include <thread>
 #include <boost/asio.hpp>
 
-#include "core/config.hpp"
-#include "data/radar_types.hpp"
 #include "utils/constants.hpp"
+#include "data/radar_types.hpp"
 
 namespace unoradar::core {
 

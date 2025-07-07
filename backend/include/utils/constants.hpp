@@ -1,101 +1,110 @@
 /**
  * @file constants.hpp
- * @brief Global constants and compile-time configurations
+ * @brief Single Source of Truth (SSOT) for all unoRadar system constants
  * @author unoRadar Project
  * @date 2025
  *
- * Contains all compile-time constants used across the system.
- * No magic numbers - everything is properly named and documented.
+ * Central repository for ALL compile-time constants and configuration values.
+ * Eliminates magic numbers and ensures consistent values across the system.
+ *
+ * SRP: Single responsibility - constant definition and organization
+ * SSOT: Single source of truth - all constants defined here ONLY
  */
 
 #pragma once
 
 #include <cstdint>
 #include <cstddef>
+#include <chrono>
+#ifdef __cpp_lib_math_constants
+#include <numbers>
+#endif
 
 namespace unoradar { namespace constants {
 
 // ============================================================================
-// HARDWARE SPECIFICATIONS
+// HARDWARE SPECIFICATIONS (Physical constraints from hardware datasheets)
 // ============================================================================
 
-/// Arduino hardware configuration
+/// Arduino UNO R3 hardware specifications
 namespace arduino {
-    /// Arduino serial communication baud rate
+    /// Serial communication baud rate (Arduino standard)
     constexpr uint32_t SERIAL_BAUD_RATE = 9600;
 
-    /// Expected data format from Arduino
-    constexpr const char* DATA_FORMAT = "Angle: {} - Distance: {}";
+    /// Maximum expected response time from Arduino
+    constexpr auto MAX_RESPONSE_TIME = std::chrono::milliseconds(100);
 
-    /// Maximum expected response time from Arduino (ms)
-    constexpr uint32_t MAX_RESPONSE_TIME_MS = 100;
+    /// Expected data format pattern from Arduino
+    constexpr const char* DATA_FORMAT_REGEX = R"(Angle:\s*(\d+)\s*-\s*Distance:\s*(\d+))";
 }
 
-/// Servo motor (SG90) specifications
+/// SG90 Servo Motor specifications (from datasheet)
 namespace servo {
-    /// Minimum servo angle in degrees
+    /// Minimum servo angle in degrees (hardware limit)
     constexpr int16_t MIN_ANGLE_DEGREES = 15;
 
-    /// Maximum servo angle in degrees
+    /// Maximum servo angle in degrees (hardware limit)
     constexpr int16_t MAX_ANGLE_DEGREES = 165;
 
-    /// Servo step size for military-grade precision
+    /// Angular step size for military-grade precision
     constexpr int16_t STEP_SIZE_DEGREES = 2;
 
-    /// Servo settling time in milliseconds
-    constexpr uint32_t SETTLING_TIME_MS = 20;
+    /// Servo settling time after movement command
+    constexpr auto SETTLING_TIME = std::chrono::milliseconds(20);
 
-    /// Total sweep range in degrees
+    /// Total sweep range calculation
     constexpr int16_t SWEEP_RANGE_DEGREES = MAX_ANGLE_DEGREES - MIN_ANGLE_DEGREES;
 
-    /// Number of steps in full sweep
+    /// Number of discrete positions in full sweep
     constexpr uint16_t STEPS_PER_SWEEP = SWEEP_RANGE_DEGREES / STEP_SIZE_DEGREES;
 }
 
-/// Ultrasonic sensor (HC-SR04) specifications
+/// HC-SR04 Ultrasonic Sensor specifications (from datasheet)
 namespace sensor {
-    /// Minimum reliable distance in centimeters
+    /// Minimum reliable measurement distance
     constexpr int16_t MIN_DISTANCE_CM = 2;
 
-    /// Maximum reliable distance in centimeters
+    /// Maximum reliable measurement distance
     constexpr int16_t MAX_DISTANCE_CM = 400;
 
-    /// Sensor measurement accuracy in centimeters
+    /// Measurement accuracy specification
     constexpr float ACCURACY_CM = 0.3f;
 
-    /// Sound speed in air at 20°C (cm/μs)
+    /// Sound speed in air at 20°C for distance calculation
     constexpr float SOUND_SPEED_CM_PER_US = 0.0343f;
 
-    /// Sensor measurement timeout in microseconds
-    constexpr uint32_t MEASUREMENT_TIMEOUT_US = 30000;
+    /// Sensor measurement timeout
+    constexpr auto MEASUREMENT_TIMEOUT = std::chrono::microseconds(30000);
 }
 
 // ============================================================================
 // SERIAL COMMUNICATION CONSTANTS
 // ============================================================================
 
-/// Arduino serial communication configuration
 namespace serial {
-    /// Serial baud rate (standard Arduino rate)
-    constexpr uint32_t BAUD_RATE = 9600;
+    /// Arduino serial baud rate (must match Arduino sketch)
+    constexpr uint32_t BAUD_RATE = arduino::SERIAL_BAUD_RATE;
 
-    /// Read buffer size in bytes
+    /// Serial read buffer size for incoming data
     constexpr size_t BUFFER_SIZE = 256;
 
-    /// Maximum message length in characters
+    /// Maximum length of a single message from Arduino
     constexpr size_t MAX_MESSAGE_LENGTH = 128;
 
-    /// Connection timeout in seconds
-    constexpr uint32_t CONNECTION_TIMEOUT_SEC = 10;
+    /// Connection establishment timeout
+    constexpr auto CONNECTION_TIMEOUT = std::chrono::seconds(10);
 
-    /// Reconnection delay in seconds
-    constexpr uint32_t RECONNECT_DELAY_SEC = 5;
+    /// Delay between reconnection attempts
+    constexpr auto RECONNECT_DELAY = std::chrono::seconds(5);
 
-    /// Maximum reconnection attempts
+    /// Maximum number of reconnection attempts before giving up
     constexpr uint32_t MAX_RECONNECT_ATTEMPTS = 10;
 
-    /// Data timeout in seconds (no data received)
-    constexpr uint32_t DATA_TIMEOUT_SEC = 30;
+    /// Data timeout - maximum time without receiving data
+    constexpr auto DATA_TIMEOUT = std::chrono::seconds(30);
+
+    /// Buffer overflow threshold multiplier
+    constexpr size_t BUFFER_OVERFLOW_MULTIPLIER = 2;
 }
 
 // ============================================================================
@@ -219,28 +228,6 @@ namespace logging {
     constexpr uint16_t MAX_LOG_LINE_LENGTH = 2048;
 }
 
-// ============================================================================
-// MATHEMATICAL CONSTANTS
-// ============================================================================
-
-/// Mathematical values for radar calculations
-namespace math {
-    /// Pi constant for angular calculations
-    constexpr double PI = 3.14159265358979323846;
-
-    /// Degrees to radians conversion factor
-    constexpr double DEG_TO_RAD = PI / 180.0;
-
-    /// Radians to degrees conversion factor
-    constexpr double RAD_TO_DEG = 180.0 / PI;
-
-    /// Radar coordinate system constants
-    constexpr double RADAR_CENTER_X = 0.0;
-    constexpr double RADAR_CENTER_Y = 0.0;
-
-    /// Distance measurement precision
-    constexpr double DISTANCE_PRECISION = 0.1;  // 1mm precision
-}
 
 // ============================================================================
 // VERSION AND BUILD INFORMATION
@@ -265,6 +252,74 @@ namespace version {
 
     /// API version for WebSocket communication
     constexpr uint8_t API_VERSION = 1;
+
+    /// Full version string
+    constexpr const char* VERSION_STRING = "1.0.0";
+
+    /// Build information
+    constexpr const char* AUTHOR = "unoRadar Project";
+    constexpr const char* SERVER_NAME = "unoRadar-server";
+    constexpr const char* USER_AGENT = "unoRadar/1.0.0 (military-grade)";
+}
+
+// ============================================================================
+// MATHEMATICAL CONSTANTS (Use std::numbers for PI, etc.)
+// ============================================================================
+
+namespace math {
+    // Use C++20 std::numbers::pi or fallback to high-precision value
+    #ifdef __cpp_lib_math_constants
+        constexpr double PI = std::numbers::pi;
+    #else
+        constexpr double PI = 3.14159265358979323846;
+    #endif
+
+    /// Degrees to radians conversion factor
+    constexpr double DEG_TO_RAD = PI / 180.0;
+
+    /// Radians to degrees conversion factor
+    constexpr double RAD_TO_DEG = 180.0 / PI;
+
+    /// Radar coordinate system origin
+    constexpr double RADAR_CENTER_X = 0.0;
+    constexpr double RADAR_CENTER_Y = 0.0;
+
+    /// Distance measurement precision (1mm)
+    constexpr double DISTANCE_PRECISION = 0.1;
+}
+
+// ============================================================================
+// MAGIC NUMBER ELIMINATION CONSTANTS
+// ============================================================================
+
+namespace magic_numbers {
+    /// Moving average calculation factor (replaces hardcoded /2)
+    constexpr double MOVING_AVERAGE_ALPHA = 0.1;  // Weight for new values in exponential moving average
+
+    /// CPU spin prevention divisor (replaces hardcoded /10)
+    constexpr uint32_t SPIN_PREVENTION_DIVISOR = 10;
+
+    /// Health check timeout threshold (replaces hardcoded 5 seconds)
+    constexpr uint32_t HEALTH_CHECK_TIMEOUT_SEC = 5;
+
+    /// Boost version display divisors (for clean main.cpp)
+    constexpr uint32_t BOOST_VERSION_MAJOR_DIVISOR = 100000;
+    constexpr uint32_t BOOST_VERSION_MINOR_DIVISOR = 100;
+    constexpr uint32_t BOOST_VERSION_MINOR_MODULO = 1000;
+    constexpr uint32_t BOOST_VERSION_PATCH_MODULO = 100;
+}
+
+// ============================================================================
+// TEST AND DEMONSTRATION VALUES
+// ============================================================================
+
+namespace test_values {
+    /// Test radar data point values for demonstrations
+    constexpr int16_t TEST_ANGLE_DEGREES = 90;
+    constexpr int16_t TEST_DISTANCE_CM = 150;
+
+    /// Test controller run duration
+    constexpr auto TEST_RUN_DURATION = std::chrono::seconds(2);
 }
 
 } } // namespace unoradar::constants

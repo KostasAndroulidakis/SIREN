@@ -15,7 +15,6 @@
 namespace unoradar::core {
 
 using namespace std::chrono_literals;
-namespace cfg = unoradar::config;
 namespace cnst = unoradar::constants;
 
 MasterController::MasterController()
@@ -128,7 +127,7 @@ void MasterController::run() {
 
                 // If no work was done, sleep briefly to prevent CPU spinning
                 if (processed == 0) {
-                    std::this_thread::sleep_for(std::chrono::microseconds(cnst::performance::TARGET_LOOP_TIME_US / 10));
+                    std::this_thread::sleep_for(std::chrono::microseconds(cnst::performance::TARGET_LOOP_TIME_US / cnst::magic_numbers::SPIN_PREVENTION_DIVISOR));
                 }
 
                 // Maintain target loop timing
@@ -407,7 +406,7 @@ void MasterController::performHealthCheck() {
     auto metrics_age = std::chrono::duration_cast<std::chrono::seconds>(
         now - last_metrics_update_).count();
 
-    if (metrics_age > 5) { // No metrics update in 5 seconds = potential hang
+    if (metrics_age > cnst::magic_numbers::HEALTH_CHECK_TIMEOUT_SEC) { // No metrics update = potential hang
         overall_health = false;
     }
 
