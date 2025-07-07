@@ -171,6 +171,12 @@ namespace performance {
 
     /// High-priority thread stack size in bytes
     constexpr uint32_t HIGH_PRIORITY_STACK_SIZE = 65536;  // 64KB
+
+    /// Estimated memory per WebSocket connection in bytes
+    constexpr uint32_t ESTIMATED_CONNECTION_MEMORY_BYTES = 8192;  // 8KB per connection
+
+    /// Base system memory usage estimate in bytes
+    constexpr uint32_t BASE_MEMORY_USAGE_BYTES = 1048576;  // 1MB base usage
 }
 
 /// Buffer and queue sizes
@@ -307,6 +313,34 @@ namespace magic_numbers {
     constexpr uint32_t BOOST_VERSION_MINOR_DIVISOR = 100;
     constexpr uint32_t BOOST_VERSION_MINOR_MODULO = 1000;
     constexpr uint32_t BOOST_VERSION_PATCH_MODULO = 100;
+}
+
+// ============================================================================
+// JSON SERIALIZATION CONSTANTS (SSOT for all JSON operations)
+// ============================================================================
+
+/// JSON field names - eliminates hardcoded strings
+namespace json_fields {
+    constexpr const char* TYPE = "type";
+    constexpr const char* TIMESTAMP = "timestamp";
+    constexpr const char* ANGLE = "angle";
+    constexpr const char* DISTANCE = "distance";
+    constexpr const char* QUALITY = "quality";
+    constexpr const char* MESSAGES_PER_SECOND = "messages_per_second";
+    constexpr const char* AVG_LATENCY_US = "avg_latency_us";
+    constexpr const char* MAX_LATENCY_US = "max_latency_us";
+    constexpr const char* MEMORY_USAGE_BYTES = "memory_usage_bytes";
+    constexpr const char* ACTIVE_CONNECTIONS = "active_connections";
+    constexpr const char* SERIAL_STATUS = "serial_status";
+}
+
+/// JSON message types - SSOT for message type identification
+namespace json_types {
+    constexpr const char* RADAR_DATA = "radar_data";
+    constexpr const char* PERFORMANCE_METRICS = "performance_metrics";
+    constexpr const char* STATUS_UPDATE = "status_update";
+    constexpr const char* ERROR_REPORT = "error_report";
+    constexpr const char* KEEPALIVE = "keepalive";
 }
 
 // ============================================================================

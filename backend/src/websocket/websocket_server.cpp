@@ -10,11 +10,10 @@
 
 #include "websocket/websocket_server.hpp"
 #include "utils/constants.hpp"
+#include "utils/json_serializer.hpp"
 #include <iostream>
 #include <chrono>
 #include <algorithm>
-#include <sstream>
-#include <iomanip>
 
 namespace unoradar::websocket {
 
@@ -197,24 +196,11 @@ void WebSocketSession::handleError(const std::string& error_message, beast::erro
 }
 
 std::string WebSocketSession::serializeRadarData(const data::RadarDataPoint& data) {
-    std::ostringstream oss;
-    oss << "{\"type\":\"radar_data\",\"timestamp\":" << data.timestamp_us
-        << ",\"angle\":" << data.angle
-        << ",\"distance\":" << data.distance
-        << ",\"quality\":" << static_cast<int>(data.quality) << "}";
-    return oss.str();
+    return utils::JsonSerializer::serialize(data);
 }
 
 std::string WebSocketSession::serializePerformanceMetrics(const data::PerformanceMetrics& metrics) {
-    std::ostringstream oss;
-    oss << "{\"type\":\"performance_metrics\""
-        << ",\"messages_per_second\":" << metrics.messages_per_second
-        << ",\"avg_latency_us\":" << metrics.avg_latency_us
-        << ",\"max_latency_us\":" << metrics.max_latency_us
-        << ",\"memory_usage_bytes\":" << metrics.memory_usage_bytes
-        << ",\"active_connections\":" << metrics.active_connections
-        << ",\"serial_status\":" << static_cast<int>(metrics.serial_status) << "}";
-    return oss.str();
+    return utils::JsonSerializer::serialize(metrics);
 }
 
 // WebSocketServer Implementation

@@ -12,11 +12,9 @@
 
 #include <memory>
 #include <string>
-#include <vector>
 #include <unordered_set>
 #include <functional>
 #include <atomic>
-#include <thread>
 #include <mutex>
 #include <queue>
 #include <boost/asio.hpp>

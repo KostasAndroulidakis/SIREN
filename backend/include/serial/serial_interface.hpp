@@ -14,9 +14,7 @@
 #include <string>
 #include <functional>
 #include <atomic>
-#include <thread>
 #include <mutex>
-#include <queue>
 #include <optional>
 #include <boost/asio.hpp>
 
