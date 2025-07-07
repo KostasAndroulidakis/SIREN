@@ -1,5 +1,5 @@
 /**
- * @file websocket_connection_manager.hpp
+ * @file connection_manager.hpp
  * @brief Military-grade WebSocket connection manager for TCP connection acceptance
  * @author unoRadar Project
  * @date 2025

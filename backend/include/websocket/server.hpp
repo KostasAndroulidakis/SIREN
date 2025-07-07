@@ -1,5 +1,5 @@
 /**
- * @file websocket_server.hpp
+ * @file server.hpp
  * @brief Military-grade WebSocket server for real-time radar data streaming
  * @author unoRadar Project
  * @date 2025
@@ -21,9 +21,9 @@
 #include <boost/beast/websocket.hpp>
 
 #include "data/radar_types.hpp"
-#include "websocket/websocket_connection_manager.hpp"
-#include "websocket/websocket_session_manager.hpp"
-#include "websocket/websocket_message_broadcaster.hpp"
+#include "websocket/connection_manager.hpp"
+#include "websocket/session_manager.hpp"
+#include "websocket/message_broadcaster.hpp"
 
 namespace unoradar::websocket {
 

@@ -1,5 +1,5 @@
 /**
- * @file websocket_session_manager.hpp
+ * @file session_manager.hpp
  * @brief Military-grade WebSocket session manager for active session lifecycle
  * @author unoRadar Project
  * @date 2025

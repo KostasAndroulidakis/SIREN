@@ -1,5 +1,5 @@
 /**
- * @file websocket_session_manager.cpp
+ * @file session_manager.cpp
  * @brief Implementation of military-grade WebSocket session manager
  * @author unoRadar Project
  * @date 2025
@@ -9,8 +9,8 @@
  * health monitoring, and cleanup.
  */
 
-#include "websocket/websocket_session_manager.hpp"
-#include "websocket/websocket_server.hpp"
+#include "websocket/session_manager.hpp"
+#include "websocket/server.hpp"
 #include <iostream>
 
 namespace unoradar::websocket {

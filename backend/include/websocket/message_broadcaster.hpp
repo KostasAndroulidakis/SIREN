@@ -1,5 +1,5 @@
 /**
- * @file websocket_message_broadcaster.hpp
+ * @file message_broadcaster.hpp
  * @brief Military-grade WebSocket message broadcaster for data distribution
  * @author unoRadar Project
  * @date 2025

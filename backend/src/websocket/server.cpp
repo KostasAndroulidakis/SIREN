@@ -1,5 +1,5 @@
 /**
- * @file websocket_server.cpp
+ * @file server.cpp
  * @brief Implementation of military-grade WebSocket server
  * @author unoRadar Project
  * @date 2025
@@ -8,7 +8,7 @@
  * with military-grade reliability and error handling.
  */
 
-#include "websocket/websocket_server.hpp"
+#include "websocket/server.hpp"
 #include "utils/json_serializer.hpp"
 #include "constants/message.hpp"
 #include "utils/error_handler.hpp"

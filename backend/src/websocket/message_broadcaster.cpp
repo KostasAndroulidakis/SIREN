@@ -1,5 +1,5 @@
 /**
- * @file websocket_message_broadcaster.cpp
+ * @file message_broadcaster.cpp
  * @brief Implementation of military-grade WebSocket message broadcaster
  * @author unoRadar Project
  * @date 2025
@@ -9,8 +9,8 @@
  * and distribution coordination.
  */
 
-#include "websocket/websocket_message_broadcaster.hpp"
-#include "websocket/websocket_server.hpp"
+#include "websocket/message_broadcaster.hpp"
+#include "websocket/server.hpp"
 #include "utils/json_serializer.hpp"
 #include <iostream>
 #include <chrono>

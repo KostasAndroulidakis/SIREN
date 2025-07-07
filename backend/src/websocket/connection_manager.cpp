@@ -1,5 +1,5 @@
 /**
- * @file websocket_connection_manager.cpp
+ * @file connection_manager.cpp
  * @brief Implementation of military-grade WebSocket connection manager
  * @author unoRadar Project
  * @date 2025
@@ -8,7 +8,7 @@
  * coordination. Follows SRP by focusing exclusively on connection lifecycle.
  */
 
-#include "websocket/websocket_connection_manager.hpp"
+#include "websocket/connection_manager.hpp"
 #include <iostream>
 
 namespace unoradar::websocket {
