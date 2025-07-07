@@ -9,6 +9,7 @@
 
 #include "core/master_controller.hpp"
 #include "utils/constants.hpp"
+#include "utils/error_handler.hpp"
 #include <iostream>
 #include <chrono>
 #include <exception>
@@ -51,7 +52,7 @@ bool MasterController::initialize() {
 
         std::cout << "[MasterController] Phase 2: Subsystems initialization..." << std::endl;
         if (!initializeSubsystems()) {
-            handleSystemError("Failed to initialize subsystems", data::ErrorSeverity::CRITICAL);
+            utils::ErrorHandler::handleInitializationError("MasterController", "subsystem initialization", "Failed to initialize subsystems");
             return false;
         }
 
@@ -65,8 +66,7 @@ bool MasterController::initialize() {
         return true;
 
     } catch (const std::exception& e) {
-        handleSystemError("Initialization exception: " + std::string(e.what()),
-                         data::ErrorSeverity::FATAL);
+        utils::ErrorHandler::handleException("MasterController", "initialization", e, data::ErrorSeverity::FATAL);
         return false;
     }
 }
@@ -83,7 +83,8 @@ bool MasterController::start() {
         std::cout << "[MasterController] 🚀 Starting military-grade operations..." << std::endl;
 
         if (!state_manager_->updateState(SystemStateManager::SystemState::RUNNING)) {
-            handleSystemError("Failed to transition to running state", data::ErrorSeverity::ERROR);
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "Failed to transition to running state", data::ErrorSeverity::ERROR);
             return false;
         }
 
@@ -91,8 +92,8 @@ bool MasterController::start() {
         return true;
 
     } catch (const std::exception& e) {
-        handleSystemError("Start exception: " + std::string(e.what()),
-                         data::ErrorSeverity::CRITICAL);
+        utils::ErrorHandler::handleException("MasterController",
+            "Start operation", e, data::ErrorSeverity::CRITICAL);
         return false;
     }
 }
@@ -145,8 +146,7 @@ void MasterController::run() {
                 }
 
             } catch (const std::exception& e) {
-                handleSystemError("Event loop exception: " + std::string(e.what()),
-                                 data::ErrorSeverity::ERROR);
+                utils::ErrorHandler::handleException("MasterController", "event loop processing", e, data::ErrorSeverity::ERROR);
                 std::this_thread::sleep_for(100ms);
             }
         }
@@ -154,8 +154,7 @@ void MasterController::run() {
         std::cout << "[MasterController] 🛑 Event loop terminated" << std::endl;
 
     } catch (const std::exception& e) {
-        handleSystemError("Critical event loop failure: " + std::string(e.what()),
-                         data::ErrorSeverity::FATAL);
+        utils::ErrorHandler::handleException("MasterController", "critical event loop", e, data::ErrorSeverity::FATAL);
     }
 
     cleanup();
@@ -269,15 +268,7 @@ void MasterController::onHeartbeat(const boost::system::error_code& error) {
         });
 }
 
-void MasterController::handleSystemError(const std::string& error_message,
-                                       data::ErrorSeverity severity) {
-    std::cout << "[MasterController] ERROR [" << static_cast<int>(severity)
-              << "]: " << error_message << std::endl;
-
-    if (severity >= data::ErrorSeverity::CRITICAL) {
-        state_manager_->updateState(SystemStateManager::SystemState::ERROR);
-    }
-}
+// handleSystemError method removed - now using centralized ErrorHandler utility
 
 void MasterController::cleanup() {
     std::cout << "[MasterController] 🧹 Cleaning up resources..." << std::endl;

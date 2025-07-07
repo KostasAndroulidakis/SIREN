@@ -212,6 +212,9 @@ namespace error_handling {
     /// Maximum retry delay in milliseconds (exponential backoff)
     constexpr uint32_t MAX_RETRY_DELAY_MS = 5000;
 
+    /// Maximum error message length for security (prevent information leakage)
+    constexpr size_t MAX_ERROR_MESSAGE_LENGTH = 512;
+
     /// Error code ranges
     constexpr uint32_t SERIAL_ERROR_BASE = 1000;
     constexpr uint32_t NETWORK_ERROR_BASE = 2000;

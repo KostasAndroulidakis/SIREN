@@ -142,11 +142,7 @@ private:
      */
     void onHeartbeat(const boost::system::error_code& error);
 
-    /**
-     * @brief Handle system errors
-     */
-    void handleSystemError(const std::string& error_message,
-                          data::ErrorSeverity severity);
+    // handleSystemError removed - now using centralized ErrorHandler utility
 
     /**
      * @brief Cleanup all resources
