@@ -57,5 +57,11 @@ backend/_deps/
 
 # Ignore Claude files
 .claude/
+AGENTS.md
 CLAUDE.md
 CLAUDE/
+REQUIREMENTS.md
+VSA.md
+
+# referrer files
+frontend_referrence/
