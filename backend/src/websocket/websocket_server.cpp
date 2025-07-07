@@ -10,7 +10,7 @@
 
 #include "websocket/websocket_server.hpp"
 #include "utils/json_serializer.hpp"
-#include "utils/constants.hpp"
+#include "constants/message.hpp"
 #include "utils/error_handler.hpp"
 #include <iostream>
 #include <chrono>
@@ -35,13 +35,13 @@ WebSocketSession::WebSocketSession(tcp::socket&& socket,
         auto endpoint = ws_.next_layer().socket().remote_endpoint();
         client_endpoint_ = endpoint.address().to_string() + ":" + std::to_string(endpoint.port());
     } catch (...) {
-        client_endpoint_ = cnst::websocket_messages::UNKNOWN_CLIENT;
+        client_endpoint_ = cnst::message::websocket_status::UNKNOWN_CLIENT;
     }
 }
 
 void WebSocketSession::start() {
-    std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-              << cnst::websocket_messages::SESSION_STARTING << ": " << client_endpoint_ << std::endl;
+    std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+              << cnst::message::websocket_status::SESSION_STARTING << ": " << client_endpoint_ << std::endl;
 
     // Set WebSocket options
     ws_.set_option(websocket::stream_base::timeout::suggested(
@@ -50,7 +50,7 @@ void WebSocketSession::start() {
     // Set a decorator to change the Server of the handshake
     ws_.set_option(websocket::stream_base::decorator(
         [](websocket::response_type& res) {
-            res.set(http::field::server, cnst::version::SERVER_NAME);
+            res.set(http::field::server, cnst::message::version::SERVER_NAME);
         }));
 
     // Accept the websocket handshake
@@ -60,14 +60,14 @@ void WebSocketSession::start() {
 
 void WebSocketSession::onAccept(beast::error_code ec) {
     if (ec) {
-        utils::ErrorHandler::handleBoostError(cnst::websocket_messages::SESSION_PREFIX,
-                                               cnst::websocket_messages::HANDSHAKE_FAILED_ERROR, ec,
+        utils::ErrorHandler::handleBoostError(cnst::message::websocket_status::SESSION_PREFIX,
+                                               cnst::message::websocket_status::HANDSHAKE_FAILED_ERROR, ec,
                                                data::ErrorSeverity::ERROR);
         return;
     }
 
-    std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-              << cnst::websocket_messages::HANDSHAKE_COMPLETE << ": " << client_endpoint_ << std::endl;
+    std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+              << cnst::message::websocket_status::HANDSHAKE_COMPLETE << ": " << client_endpoint_ << std::endl;
 
     // Start reading messages
     ws_.async_read(
@@ -78,10 +78,10 @@ void WebSocketSession::onAccept(beast::error_code ec) {
 void WebSocketSession::onRead(beast::error_code ec, std::size_t bytes_transferred) {
     if (ec) {
         if (ec == websocket::error::closed) {
-            std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-                      << cnst::websocket_messages::CLIENT_DISCONNECTED << ": " << client_endpoint_ << std::endl;
+            std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+                      << cnst::message::websocket_status::CLIENT_DISCONNECTED << ": " << client_endpoint_ << std::endl;
         } else {
-            utils::ErrorHandler::handleBoostError(cnst::websocket_messages::SESSION_PREFIX,
+            utils::ErrorHandler::handleBoostError(cnst::message::websocket_status::SESSION_PREFIX,
                                                    "Read error", ec,
                                                    data::ErrorSeverity::ERROR);
         }
@@ -90,8 +90,8 @@ void WebSocketSession::onRead(beast::error_code ec, std::size_t bytes_transferre
 
     // Process incoming message (for now, just log it)
     std::string message = beast::buffers_to_string(buffer_.data());
-    std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-              << cnst::websocket_messages::RECEIVED_MESSAGE << " " << client_endpoint_
+    std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+              << cnst::message::websocket_status::RECEIVED_MESSAGE << " " << client_endpoint_
               << ": " << message << std::endl;
 
     // Clear buffer for next message
@@ -146,8 +146,8 @@ void WebSocketSession::onWrite(beast::error_code ec, std::size_t bytes_transferr
     write_in_progress_.store(false);
 
     if (ec) {
-        utils::ErrorHandler::handleBoostError(cnst::websocket_messages::SESSION_PREFIX,
-                                               cnst::websocket_messages::WRITE_ERROR, ec,
+        utils::ErrorHandler::handleBoostError(cnst::message::websocket_status::SESSION_PREFIX,
+                                               cnst::message::websocket_status::WRITE_ERROR, ec,
                                                data::ErrorSeverity::ERROR);
         return;
     }
@@ -169,15 +169,15 @@ void WebSocketSession::close() {
         return; // Already closing
     }
 
-    std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-              << cnst::websocket_messages::CLOSING_CONNECTION << ": " << client_endpoint_ << std::endl;
+    std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+              << cnst::message::websocket_status::CLOSING_CONNECTION << ": " << client_endpoint_ << std::endl;
 
     // Close the WebSocket
     ws_.async_close(websocket::close_code::normal,
         [self = shared_from_this()](beast::error_code ec) {
             if (ec) {
-                std::cout << cnst::websocket_messages::SESSION_PREFIX << " "
-                          << cnst::websocket_messages::ERROR_CLOSING << ": " << ec.message() << std::endl;
+                std::cout << cnst::message::websocket_status::SESSION_PREFIX << " "
+                          << cnst::message::websocket_status::ERROR_CLOSING << ": " << ec.message() << std::endl;
             }
             self->is_alive_.store(false);
         });
@@ -192,7 +192,7 @@ std::string WebSocketSession::getClientEndpoint() const {
 }
 
 void WebSocketSession::handleError(const std::string& error_message, beast::error_code ec) {
-    utils::ErrorHandler::handleConnectionError(cnst::websocket_messages::SESSION_PREFIX,
+    utils::ErrorHandler::handleConnectionError(cnst::message::websocket_status::SESSION_PREFIX,
                                                 client_endpoint_,
                                                 error_message + ": " + ec.message(),
                                                 data::ErrorSeverity::ERROR);
@@ -215,8 +215,8 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
     , shutdown_requested_(false)
     , server_start_time_(std::chrono::steady_clock::now())
 {
-    std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-              << cnst::websocket_messages::INITIALIZING_SERVER << " " << port << std::endl;
+    std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+              << cnst::message::websocket_status::INITIALIZING_SERVER << " " << port << std::endl;
 
     // Initialize statistics
     statistics_ = data::WebSocketStatistics{};
@@ -237,17 +237,17 @@ bool WebSocketServer::initialize() {
     try {
         // Initialize connection manager
         if (!connection_manager_->initialize()) {
-            utils::ErrorHandler::handleInitializationError(cnst::websocket_messages::SERVER_PREFIX,
+            utils::ErrorHandler::handleInitializationError(cnst::message::websocket_status::SERVER_PREFIX,
                                                             "connection_manager",
-                                                            cnst::websocket_messages::INIT_FAILED_CONNECTION_MANAGER);
+                                                            cnst::message::websocket_status::INIT_FAILED_CONNECTION_MANAGER);
             return false;
         }
 
         // Initialize message broadcaster
         if (!message_broadcaster_->initialize()) {
-            utils::ErrorHandler::handleInitializationError(cnst::websocket_messages::SERVER_PREFIX,
+            utils::ErrorHandler::handleInitializationError(cnst::message::websocket_status::SERVER_PREFIX,
                                                             "message_broadcaster",
-                                                            cnst::websocket_messages::INIT_FAILED_BROADCASTER);
+                                                            cnst::message::websocket_status::INIT_FAILED_BROADCASTER);
             return false;
         }
 
@@ -272,13 +272,13 @@ bool WebSocketServer::initialize() {
                 onBroadcastCompleted(sessions_reached);
             });
 
-        std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-                  << cnst::websocket_messages::SERVER_INITIALIZED << " " << port_ << std::endl;
+        std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+                  << cnst::message::websocket_status::SERVER_INITIALIZED << " " << port_ << std::endl;
         return true;
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(cnst::websocket_messages::SERVER_PREFIX,
-                                              cnst::websocket_messages::INIT_FAILED_EXCEPTION,
+        utils::ErrorHandler::handleException(cnst::message::websocket_status::SERVER_PREFIX,
+                                              cnst::message::websocket_status::INIT_FAILED_EXCEPTION,
                                               e, data::ErrorSeverity::FATAL);
         return false;
     }
@@ -286,8 +286,8 @@ bool WebSocketServer::initialize() {
 
 bool WebSocketServer::start() {
     if (running_.load()) {
-        utils::ErrorHandler::handleSystemError(cnst::websocket_messages::SERVER_PREFIX,
-                                                cnst::websocket_messages::SERVER_ALREADY_RUNNING,
+        utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
+                                                cnst::message::websocket_status::SERVER_ALREADY_RUNNING,
                                                 data::ErrorSeverity::WARNING);
         return true;
     }
@@ -295,16 +295,16 @@ bool WebSocketServer::start() {
     try {
         // Start connection manager
         if (!connection_manager_->start()) {
-            utils::ErrorHandler::handleSystemError(cnst::websocket_messages::SERVER_PREFIX,
-                                                    cnst::websocket_messages::START_FAILED_CONNECTION_MANAGER,
+            utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
+                                                    cnst::message::websocket_status::START_FAILED_CONNECTION_MANAGER,
                                                     data::ErrorSeverity::ERROR);
             return false;
         }
 
         // Start message broadcaster
         if (!message_broadcaster_->start()) {
-            utils::ErrorHandler::handleSystemError(cnst::websocket_messages::SERVER_PREFIX,
-                                                    cnst::websocket_messages::START_FAILED_BROADCASTER,
+            utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
+                                                    cnst::message::websocket_status::START_FAILED_BROADCASTER,
                                                     data::ErrorSeverity::ERROR);
             connection_manager_->stop();
             return false;
@@ -313,14 +313,14 @@ bool WebSocketServer::start() {
         running_.store(true);
         server_start_time_ = std::chrono::steady_clock::now();
 
-        std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-                  << cnst::websocket_messages::SERVER_STARTED << " " << port_ << std::endl;
+        std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+                  << cnst::message::websocket_status::SERVER_STARTED << " " << port_ << std::endl;
 
         return true;
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(cnst::websocket_messages::SERVER_PREFIX,
-                                              cnst::websocket_messages::START_FAILED_EXCEPTION,
+        utils::ErrorHandler::handleException(cnst::message::websocket_status::SERVER_PREFIX,
+                                              cnst::message::websocket_status::START_FAILED_EXCEPTION,
                                               e, data::ErrorSeverity::FATAL);
         return false;
     }
@@ -331,8 +331,8 @@ void WebSocketServer::stop() {
         return;
     }
 
-    std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-              << cnst::websocket_messages::STOPPING_SERVER << std::endl;
+    std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+              << cnst::message::websocket_status::STOPPING_SERVER << std::endl;
 
     shutdown_requested_.store(true);
     running_.store(false);
@@ -350,8 +350,8 @@ void WebSocketServer::stop() {
         session_manager_->closeAllSessions();
     }
 
-    std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-              << cnst::websocket_messages::SERVER_STOPPED << std::endl;
+    std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+              << cnst::message::websocket_status::SERVER_STOPPED << std::endl;
 }
 
 bool WebSocketServer::isRunning() const noexcept {
@@ -415,9 +415,9 @@ void WebSocketServer::onConnectionAccepted(tcp::socket socket) {
     // Start the session
     session->start();
 
-    std::cout << cnst::websocket_messages::SERVER_PREFIX << " "
-              << cnst::websocket_messages::NEW_CLIENT_CONNECTED << ": " << session->getClientEndpoint()
-              << " " << cnst::websocket_messages::TOTAL_CLIENTS << " " << getActiveConnections() << ")" << std::endl;
+    std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
+              << cnst::message::websocket_status::NEW_CLIENT_CONNECTED << ": " << session->getClientEndpoint()
+              << " " << cnst::message::websocket_status::TOTAL_CLIENTS << " " << getActiveConnections() << ")" << std::endl;
 
     // Update statistics
     {
@@ -428,11 +428,11 @@ void WebSocketServer::onConnectionAccepted(tcp::socket socket) {
 
 void WebSocketServer::onConnectionError(const std::string& error_message, beast::error_code ec) {
     if (ec) {
-        utils::ErrorHandler::handleBoostError(cnst::websocket_messages::SERVER_PREFIX,
+        utils::ErrorHandler::handleBoostError(cnst::message::websocket_status::SERVER_PREFIX,
                                                error_message, ec,
                                                data::ErrorSeverity::ERROR);
     } else {
-        utils::ErrorHandler::handleSystemError(cnst::websocket_messages::SERVER_PREFIX,
+        utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
                                                 error_message,
                                                 data::ErrorSeverity::ERROR);
     }

@@ -8,7 +8,8 @@
  */
 
 #include "serial/arduino_protocol_parser.hpp"
-#include "utils/constants.hpp"
+#include "constants/hardware.hpp"
+#include "constants/performance.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -17,7 +18,7 @@ namespace unoradar::serial {
 namespace constants = unoradar::constants;
 
 ArduinoProtocolParser::ArduinoProtocolParser()
-    : pattern_(constants::arduino::DATA_FORMAT_REGEX)
+    : pattern_(constants::hardware::arduino::DATA_FORMAT_REGEX)
 {
     std::cout << "[ArduinoProtocolParser] Initializing military-grade Arduino protocol parser..." << std::endl;
     std::cout << "[ArduinoProtocolParser] ✅ Parser initialized with regex pattern" << std::endl;
@@ -69,14 +70,14 @@ std::optional<data::RadarDataPoint> ArduinoProtocolParser::parseRadarData(const 
 
 bool ArduinoProtocolParser::validateHardwareConstraints(const data::RadarDataPoint& data_point) const {
     // Validate angle range against SG90 servo specifications
-    if (data_point.angle < constants::servo::MIN_ANGLE_DEGREES ||
-        data_point.angle > constants::servo::MAX_ANGLE_DEGREES) {
+    if (data_point.angle < constants::hardware::servo::MIN_ANGLE_DEGREES ||
+        data_point.angle > constants::hardware::servo::MAX_ANGLE_DEGREES) {
         return false;
     }
 
     // Validate distance range against HC-SR04 sensor specifications
-    if (data_point.distance < constants::sensor::MIN_DISTANCE_CM ||
-        data_point.distance > constants::sensor::MAX_DISTANCE_CM) {
+    if (data_point.distance < constants::hardware::sensor::MIN_DISTANCE_CM ||
+        data_point.distance > constants::hardware::sensor::MAX_DISTANCE_CM) {
         return false;
     }
 
@@ -111,7 +112,7 @@ void ArduinoProtocolParser::updateStatistics(uint32_t parsing_time_us, bool pars
     if (statistics_.avg_parsing_time_us == 0) {
         statistics_.avg_parsing_time_us = parsing_time_us;
     } else {
-        auto alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA;
+        auto alpha = constants::performance::optimization::MOVING_AVERAGE_ALPHA;
         statistics_.avg_parsing_time_us = static_cast<uint32_t>(
             alpha * static_cast<double>(parsing_time_us) +
             (1.0 - alpha) * static_cast<double>(statistics_.avg_parsing_time_us)

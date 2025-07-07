@@ -8,7 +8,8 @@
  */
 
 #include "serial/serial_interface.hpp"
-#include "utils/constants.hpp"
+#include "constants/communication.hpp"
+#include "constants/performance.hpp"
 #include <iostream>
 #include <chrono>
 #include <filesystem>
@@ -168,7 +169,7 @@ void SerialInterface::sendCommand(const std::string& command) {
     }
 
     try {
-        std::string cmd_with_newline = command + constants::serial::COMMAND_TERMINATOR;
+        std::string cmd_with_newline = command + constants::communication::serial::COMMAND_TERMINATOR;
         boost::asio::write(*serial_port_, boost::asio::buffer(cmd_with_newline));
 
         {
@@ -203,7 +204,7 @@ std::string SerialInterface::autoDetectArduinoPort() {
 bool SerialInterface::configurePort() {
     try {
         // Set baud rate
-        serial_port_->set_option(boost::asio::serial_port_base::baud_rate(constants::serial::BAUD_RATE));
+        serial_port_->set_option(boost::asio::serial_port_base::baud_rate(constants::communication::serial::BAUD_RATE));
 
         // Set character size (8 bits)
         serial_port_->set_option(boost::asio::serial_port_base::character_size(8));
@@ -220,7 +221,7 @@ bool SerialInterface::configurePort() {
         serial_port_->set_option(boost::asio::serial_port_base::flow_control(
             boost::asio::serial_port_base::flow_control::none));
 
-        std::cout << "[SerialInterface] Port configured: " << constants::serial::BAUD_RATE
+        std::cout << "[SerialInterface] Port configured: " << constants::communication::serial::BAUD_RATE
                   << " baud, 8N1, no flow control" << std::endl;
 
         return true;
@@ -290,7 +291,7 @@ void SerialInterface::handleRead(const boost::system::error_code& error,
         {
             std::lock_guard<std::mutex> lock(stats_mutex_);
             // Use exponential moving average instead of simple /2 division
-            auto alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA;
+            auto alpha = constants::performance::optimization::MOVING_AVERAGE_ALPHA;
             statistics_.avg_processing_time_us = static_cast<uint32_t>(
                 alpha * static_cast<double>(processing_time) +
                 (1.0 - alpha) * static_cast<double>(statistics_.avg_processing_time_us)
@@ -359,9 +360,9 @@ void SerialInterface::attemptReconnection() {
     updateConnectionState(ConnectionState::RECONNECTING);
 
     std::cout << "[SerialInterface] 🔄 Attempting reconnection in "
-              << constants::serial::RECONNECT_DELAY.count() << " seconds..." << std::endl;
+              << constants::communication::serial::RECONNECT_DELAY.count() << " seconds..." << std::endl;
 
-    reconnect_timer_->expires_after(constants::serial::RECONNECT_DELAY);
+    reconnect_timer_->expires_after(constants::communication::serial::RECONNECT_DELAY);
     reconnect_timer_->async_wait(
         [this](const boost::system::error_code& error) {
             onReconnectTimer(error);

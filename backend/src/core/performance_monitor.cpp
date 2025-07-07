@@ -6,7 +6,7 @@
  */
 
 #include "core/performance_monitor.hpp"
-#include "utils/constants.hpp"
+#include "constants/performance.hpp"
 #include "utils/statistics_calculator.hpp"
 #include <iostream>
 
@@ -159,8 +159,8 @@ void PerformanceMonitor::updateMemoryUsage() {
     // In a real implementation, this would use platform-specific APIs
     size_t estimated_usage =
         sizeof(data::PerformanceMetrics) +
-        (current_metrics_.active_connections * constants::performance::ESTIMATED_CONNECTION_MEMORY_BYTES) +
-        constants::performance::BASE_MEMORY_USAGE_BYTES;
+        (current_metrics_.active_connections * constants::performance::memory::ESTIMATED_CONNECTION_MEMORY_BYTES) +
+        constants::performance::memory::BASE_USAGE_BYTES;
 
     current_metrics_.memory_usage_bytes = estimated_usage;
 

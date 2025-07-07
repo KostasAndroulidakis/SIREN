@@ -19,7 +19,7 @@
 #include <type_traits>
 #include <stdexcept>
 #include <mutex>
-#include "utils/constants.hpp"
+#include "constants/performance.hpp"
 
 namespace unoradar {
 namespace utils {
@@ -69,7 +69,7 @@ public:
      * @param alpha Smoothing factor for exponential moving average (0.0 < alpha <= 1.0)
      * @throws std::invalid_argument if alpha is outside valid range
      */
-    explicit StatisticsCalculator(double alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA)
+    explicit StatisticsCalculator(double alpha = constants::performance::optimization::MOVING_AVERAGE_ALPHA)
         : alpha_(alpha)
         , statistics_{}
         , sum_for_simple_average_(0.0)
@@ -115,7 +115,7 @@ public:
      * @return Updated exponential moving average
      */
     static T calculateExponentialMovingAverage(T new_value, T current_average,
-                                             double alpha = constants::magic_numbers::MOVING_AVERAGE_ALPHA) {
+                                             double alpha = constants::performance::optimization::MOVING_AVERAGE_ALPHA) {
         validateAlpha(alpha);
 
         if constexpr (std::is_integral_v<T>) {

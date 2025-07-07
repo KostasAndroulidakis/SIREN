@@ -8,7 +8,8 @@
  */
 
 #include "core/master_controller.hpp"
-#include "utils/constants.hpp"
+#include "constants/performance.hpp"
+#include "constants/error.hpp"
 #include "utils/error_handler.hpp"
 #include <iostream>
 #include <chrono>
@@ -128,26 +129,26 @@ void MasterController::run() {
                 performance_monitor_->recordProcessingTime(work_us);
 
                 // Check for high latency
-                if (work_us > cnst::performance::MAX_LATENCY_US) {
+                if (work_us > cnst::performance::timing::MAX_LATENCY_US) {
                     std::cout << "[MasterController] ⚠️ High latency detected: "
                               << work_us << "μs (target: "
-                              << cnst::performance::TARGET_LOOP_TIME_US << "μs)" << std::endl;
+                              << cnst::performance::timing::TARGET_LOOP_TIME_US << "μs)" << std::endl;
                 }
 
                 // Maintain target timing
                 if (processed == 0) {
                     std::this_thread::sleep_for(std::chrono::microseconds(
-                        cnst::performance::TARGET_LOOP_TIME_US / cnst::magic_numbers::SPIN_PREVENTION_DIVISOR));
+                        cnst::performance::timing::TARGET_LOOP_TIME_US / cnst::performance::optimization::SPIN_PREVENTION_DIVISOR));
                 }
 
-                auto remaining_time = std::chrono::microseconds(cnst::performance::TARGET_LOOP_TIME_US) - work_duration;
+                auto remaining_time = std::chrono::microseconds(cnst::performance::timing::TARGET_LOOP_TIME_US) - work_duration;
                 if (remaining_time > std::chrono::microseconds::zero()) {
                     std::this_thread::sleep_for(remaining_time);
                 }
 
             } catch (const std::exception& e) {
                 utils::ErrorHandler::handleException("MasterController", "event loop processing", e, data::ErrorSeverity::ERROR);
-                std::this_thread::sleep_for(cnst::error_handling::ERROR_RECOVERY_DELAY);
+                std::this_thread::sleep_for(cnst::error::handling::ERROR_RECOVERY_DELAY);
             }
         }
 

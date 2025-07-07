@@ -147,7 +147,7 @@ UInt32StatsCalculator createLatencyCalculator() {
  */
 UInt32StatsCalculator createThroughputCalculator() {
     // Use standard alpha for throughput - we want stability over responsiveness
-    return UInt32StatsCalculator(constants::magic_numbers::MOVING_AVERAGE_ALPHA);
+    return UInt32StatsCalculator(constants::performance::optimization::MOVING_AVERAGE_ALPHA);
 }
 
 /**
@@ -166,7 +166,7 @@ UInt64StatsCalculator createMemoryUsageCalculator() {
  */
 Int32StatsCalculator createRadarMeasurementCalculator() {
     // Use default alpha for radar measurements
-    return Int32StatsCalculator(constants::magic_numbers::MOVING_AVERAGE_ALPHA);
+    return Int32StatsCalculator(constants::performance::optimization::MOVING_AVERAGE_ALPHA);
 }
 
 } // namespace performance_stats
