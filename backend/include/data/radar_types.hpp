@@ -28,19 +28,27 @@ struct RadarDataPoint {
     /// Measured distance in centimeters (2-400 range)
     int16_t distance;
 
-    /// Timestamp when measurement was taken
-    std::chrono::steady_clock::time_point timestamp;
+    /// Timestamp when measurement was taken (microseconds since epoch)
+    uint64_t timestamp_us;
 
     /// Quality indicator (0-100, higher is better)
     uint8_t quality;
 
     /// Default constructor
     RadarDataPoint()
-        : angle(0), distance(0), timestamp(std::chrono::steady_clock::now()), quality(0) {}
+        : angle(0), distance(0), quality(0) {
+        auto now = std::chrono::steady_clock::now();
+        timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
+            now.time_since_epoch()).count();
+    }
 
     /// Constructor with values
     RadarDataPoint(int16_t a, int16_t d, uint8_t q = 100)
-        : angle(a), distance(d), timestamp(std::chrono::steady_clock::now()), quality(q) {}
+        : angle(a), distance(d), quality(q) {
+        auto now = std::chrono::steady_clock::now();
+        timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
+            now.time_since_epoch()).count();
+    }
 };
 
 /// Sweep direction for radar operation
@@ -233,6 +241,33 @@ struct SystemError {
     SystemError(ErrorSeverity sev, uint32_t code, const std::string& msg, const std::string& src)
         : severity(sev), error_code(code), message(msg), source(src)
         , timestamp(std::chrono::steady_clock::now()) {}
+};
+
+// ============================================================================
+// WEBSOCKET COMMUNICATION TYPES
+// ============================================================================
+
+/// WebSocket server statistics
+struct WebSocketStatistics {
+    /// Total connections accepted
+    uint64_t connections_accepted;
+
+    /// Total messages sent to clients
+    uint64_t messages_sent;
+
+    /// Total connection errors
+    uint32_t connection_errors;
+
+    /// Active connections count
+    size_t active_connections;
+
+    /// Server uptime in seconds
+    uint64_t uptime_seconds;
+
+    /// Default constructor
+    WebSocketStatistics()
+        : connections_accepted(0), messages_sent(0), connection_errors(0)
+        , active_connections(0), uptime_seconds(0) {}
 };
 
 // ============================================================================
