@@ -11,7 +11,6 @@
 #include "utils/constants.hpp"
 #include <iostream>
 #include <chrono>
-#include <regex>
 #include <filesystem>
 #include <algorithm>
 
@@ -25,6 +24,7 @@ SerialInterface::SerialInterface(boost::asio::io_context& io_context)
     , reconnect_timer_(nullptr)
     , connection_state_(ConnectionState::DISCONNECTED)
     , shutdown_requested_(false)
+    , protocol_parser_(std::make_unique<ArduinoProtocolParser>())
     , last_data_time_(std::chrono::steady_clock::now())
     , connection_start_time_(std::chrono::steady_clock::now())
 {
@@ -304,37 +304,9 @@ void SerialInterface::handleRead(const boost::system::error_code& error,
     startAsyncRead();
 }
 
-std::optional<data::RadarDataPoint> SerialInterface::parseRadarData(const std::string& message) {
-    try {
-        // Expected format: "Angle: X - Distance: Y"
-        std::regex pattern(R"(Angle:\s*(\d+)\s*-\s*Distance:\s*(\d+))");
-        std::smatch matches;
-
-        if (std::regex_search(message, matches, pattern)) {
-            int angle = std::stoi(matches[1].str());
-            int distance = std::stoi(matches[2].str());
-
-            data::RadarDataPoint point(angle, distance);
-
-            if (validateRadarData(point)) {
-                return point;
-            } else {
-                std::cout << "[SerialInterface] ⚠️ Invalid radar data: angle="
-                          << angle << "°, distance=" << distance << "cm" << std::endl;
-            }
-        } else {
-            std::cout << "[SerialInterface] ⚠️ Failed to parse message: " << message << std::endl;
-        }
-
-    } catch (const std::exception& e) {
-        std::cout << "[SerialInterface] ❌ Parse exception: " << e.what() << std::endl;
-    }
-
-    return std::nullopt;
-}
 
 void SerialInterface::processMessage(const std::string& message) {
-    auto radar_data = parseRadarData(message);
+    auto radar_data = protocol_parser_->parseRadarData(message);
 
     if (radar_data.has_value()) {
         // Update statistics
@@ -431,21 +403,6 @@ void SerialInterface::updateConnectionState(ConnectionState new_state) {
     }
 }
 
-bool SerialInterface::validateRadarData(const data::RadarDataPoint& data_point) const {
-    // Validate angle range
-    if (data_point.angle < constants::servo::MIN_ANGLE_DEGREES ||
-        data_point.angle > constants::servo::MAX_ANGLE_DEGREES) {
-        return false;
-    }
-
-    // Validate distance range
-    if (data_point.distance < constants::sensor::MIN_DISTANCE_CM ||
-        data_point.distance > constants::sensor::MAX_DISTANCE_CM) {
-        return false;
-    }
-
-    return true;
-}
 
 std::vector<std::string> SerialInterface::getAvailablePorts() {
     std::vector<std::string> ports;

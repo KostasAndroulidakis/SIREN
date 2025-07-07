@@ -15,10 +15,10 @@
 #include <functional>
 #include <atomic>
 #include <mutex>
-#include <optional>
 #include <boost/asio.hpp>
 
 #include "data/radar_types.hpp"
+#include "serial/arduino_protocol_parser.hpp"
 
 namespace unoradar::serial {
 
@@ -137,6 +137,7 @@ private:
     static constexpr size_t BUFFER_SIZE = 256;
     std::array<char, BUFFER_SIZE> read_buffer_;
     std::string message_buffer_;
+    std::unique_ptr<ArduinoProtocolParser> protocol_parser_;
 
     // Callbacks
     DataCallback data_callback_;
@@ -164,13 +165,6 @@ private:
      * @param bytes_transferred Number of bytes received
      */
     void handleRead(const boost::system::error_code& error, std::size_t bytes_transferred);
-
-    /**
-     * @brief Parse radar data from Arduino message
-     * @param message Complete message from Arduino
-     * @return Parsed radar data point, or nullopt if parsing failed
-     */
-    std::optional<data::RadarDataPoint> parseRadarData(const std::string& message);
 
     /**
      * @brief Process complete message from Arduino
@@ -208,12 +202,6 @@ private:
      */
     void updateStatistics();
 
-    /**
-     * @brief Validate radar data point
-     * @param data_point Data point to validate
-     * @return true if data is valid
-     */
-    bool validateRadarData(const data::RadarDataPoint& data_point) const;
 
     /**
      * @brief Get list of available serial ports
