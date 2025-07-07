@@ -112,19 +112,15 @@ private:
     void processNextMessage();
 
     /**
+     * @brief Enqueue message for sending (SSOT for message queuing)
+     * @param message Serialized message to send
+     */
+    void enqueueMessage(const std::string& message);
+
+    /**
      * @brief Handle connection errors
      */
     void handleError(const std::string& error_message, beast::error_code ec);
-
-    /**
-     * @brief Serialize radar data to JSON
-     */
-    std::string serializeRadarData(const data::RadarDataPoint& data);
-
-    /**
-     * @brief Serialize performance metrics to JSON
-     */
-    std::string serializePerformanceMetrics(const data::PerformanceMetrics& metrics);
 
     beast::flat_buffer buffer_;
 };

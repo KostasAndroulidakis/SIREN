@@ -362,6 +362,39 @@ namespace json_types {
 }
 
 // ============================================================================
+// WEBSOCKET SESSION LOGGING CONSTANTS
+// ============================================================================
+
+/// WebSocket session logging messages - SSOT for consistent logging
+namespace websocket_messages {
+    constexpr const char* SESSION_STARTING = "🚀 Starting session for client";
+    constexpr const char* HANDSHAKE_COMPLETE = "✅ WebSocket handshake complete for";
+    constexpr const char* CLIENT_DISCONNECTED = "🔌 Client disconnected";
+    constexpr const char* RECEIVED_MESSAGE = "📨 Received from";
+    constexpr const char* CLOSING_CONNECTION = "🔌 Closing connection to";
+    constexpr const char* ERROR_CLOSING = "⚠️ Error closing connection";
+    constexpr const char* SESSION_PREFIX = "[WebSocketSession]";
+    constexpr const char* SERVER_PREFIX = "[WebSocketServer]";
+    constexpr const char* INITIALIZING_SERVER = "Initializing military-grade WebSocket server on port";
+    constexpr const char* INIT_FAILED_CONNECTION_MANAGER = "❌ Failed to initialize connection manager";
+    constexpr const char* INIT_FAILED_BROADCASTER = "❌ Failed to initialize message broadcaster";
+    constexpr const char* SERVER_INITIALIZED = "✅ WebSocket server initialized on port";
+    constexpr const char* INIT_FAILED_EXCEPTION = "❌ WebSocket server initialization failed";
+    constexpr const char* SERVER_ALREADY_RUNNING = "⚠️ Server already running";
+    constexpr const char* START_FAILED_CONNECTION_MANAGER = "❌ Failed to start connection manager";
+    constexpr const char* START_FAILED_BROADCASTER = "❌ Failed to start message broadcaster";
+    constexpr const char* SERVER_STARTED = "🚀 WebSocket server started - listening on port";
+    constexpr const char* START_FAILED_EXCEPTION = "❌ WebSocket server start failed";
+    constexpr const char* STOPPING_SERVER = "🛑 Stopping WebSocket server...";
+    constexpr const char* SERVER_STOPPED = "✅ WebSocket server stopped";
+    constexpr const char* NEW_CLIENT_CONNECTED = "🔌 New client connected";
+    constexpr const char* TOTAL_CLIENTS = "(total:";
+    constexpr const char* UNKNOWN_CLIENT = "unknown";
+    constexpr const char* HANDSHAKE_FAILED_ERROR = "WebSocket handshake failed";
+    constexpr const char* WRITE_ERROR = "Write error";
+}
+
+// ============================================================================
 // TEST AND DEMONSTRATION VALUES
 // ============================================================================
 
