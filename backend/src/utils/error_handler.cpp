@@ -18,7 +18,7 @@ namespace cnst = unoradar::constants;
 
 // Static member definitions
 std::mutex ErrorHandler::logging_mutex_;
-std::atomic<uint32_t> ErrorHandler::error_counter_{1000}; // Start from 1000 for military-grade error codes
+std::atomic<uint32_t> ErrorHandler::error_counter_{cnst::error_handling::ERROR_CODE_BASE}; // Start from 1000 for military-grade error codes
 
 void ErrorHandler::handleSystemError(const std::string& component,
                                       const std::string& message,

@@ -105,6 +105,9 @@ namespace serial {
 
     /// Buffer overflow threshold multiplier
     constexpr size_t BUFFER_OVERFLOW_MULTIPLIER = 2;
+
+    /// Command terminator character for Arduino communication
+    constexpr const char* COMMAND_TERMINATOR = "\n";
 }
 
 // ============================================================================
@@ -220,6 +223,12 @@ namespace error_handling {
     constexpr uint32_t NETWORK_ERROR_BASE = 2000;
     constexpr uint32_t DATA_ERROR_BASE = 3000;
     constexpr uint32_t SYSTEM_ERROR_BASE = 4000;
+
+    /// Base error code for ErrorHandler system
+    constexpr uint32_t ERROR_CODE_BASE = 1000;
+
+    /// Error recovery delay for MasterController
+    constexpr auto ERROR_RECOVERY_DELAY = std::chrono::milliseconds(100);
 }
 
 /// Logging configuration
@@ -267,7 +276,7 @@ namespace version {
 
     /// Build information
     constexpr const char* AUTHOR = "unoRadar Project";
-    constexpr const char* SERVER_NAME = "unoRadar-server";
+    constexpr const char* SERVER_NAME = "unoRadar Military-Grade Server";
     constexpr const char* USER_AGENT = "unoRadar/1.0.0 (military-grade)";
 }
 
@@ -335,6 +344,12 @@ namespace json_fields {
     constexpr const char* MEMORY_USAGE_BYTES = "memory_usage_bytes";
     constexpr const char* ACTIVE_CONNECTIONS = "active_connections";
     constexpr const char* SERIAL_STATUS = "serial_status";
+
+    /// Error handling and reporting fields
+    constexpr const char* SEVERITY = "severity";
+    constexpr const char* ERROR_CODE = "error_code";
+    constexpr const char* MESSAGE = "message";
+    constexpr const char* SOURCE = "source";
 }
 
 /// JSON message types - SSOT for message type identification

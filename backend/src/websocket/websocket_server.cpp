@@ -10,6 +10,7 @@
 
 #include "websocket/websocket_server.hpp"
 #include "utils/json_serializer.hpp"
+#include "utils/constants.hpp"
 #include <iostream>
 #include <chrono>
 
@@ -46,7 +47,7 @@ void WebSocketSession::start() {
     // Set a decorator to change the Server of the handshake
     ws_.set_option(websocket::stream_base::decorator(
         [](websocket::response_type& res) {
-            res.set(http::field::server, "unoRadar Military-Grade Server");
+            res.set(http::field::server, constants::version::SERVER_NAME);
         }));
 
     // Accept the websocket handshake

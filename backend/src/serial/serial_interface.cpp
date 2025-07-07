@@ -168,7 +168,7 @@ void SerialInterface::sendCommand(const std::string& command) {
     }
 
     try {
-        std::string cmd_with_newline = command + "\n";
+        std::string cmd_with_newline = command + constants::serial::COMMAND_TERMINATOR;
         boost::asio::write(*serial_port_, boost::asio::buffer(cmd_with_newline));
 
         {

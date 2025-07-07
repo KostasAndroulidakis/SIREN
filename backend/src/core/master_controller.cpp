@@ -147,7 +147,7 @@ void MasterController::run() {
 
             } catch (const std::exception& e) {
                 utils::ErrorHandler::handleException("MasterController", "event loop processing", e, data::ErrorSeverity::ERROR);
-                std::this_thread::sleep_for(100ms);
+                std::this_thread::sleep_for(cnst::error_handling::ERROR_RECOVERY_DELAY);
             }
         }
 

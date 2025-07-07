@@ -43,10 +43,10 @@ std::string JsonSerializer::serialize(const data::SystemError& error) {
     std::ostringstream oss;
     oss << "{"
         << formatField(constants::json_fields::TYPE, constants::json_types::ERROR_REPORT, true) << ","
-        << formatField("severity", static_cast<int>(error.severity)) << ","
-        << formatField("error_code", error.error_code) << ","
-        << formatField("message", error.message, true) << ","
-        << formatField("source", error.source, true) << ","
+        << formatField(constants::json_fields::SEVERITY, static_cast<int>(error.severity)) << ","
+        << formatField(constants::json_fields::ERROR_CODE, error.error_code) << ","
+        << formatField(constants::json_fields::MESSAGE, error.message, true) << ","
+        << formatField(constants::json_fields::SOURCE, error.source, true) << ","
         << formatTimestamp(error.timestamp)
         << "}";
     return oss.str();
