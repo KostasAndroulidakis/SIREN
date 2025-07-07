@@ -6,6 +6,8 @@
  */
 
 #include <iostream>
+#include <thread>
+#include <chrono>
 #include <boost/version.hpp>
 #include <boost/asio/version.hpp>
 #include <boost/asio.hpp>
@@ -14,6 +16,7 @@
 #include "core/config.hpp"
 #include "data/radar_types.hpp"
 #include "utils/constants.hpp"
+#include "core/master_controller.hpp"
 
 int main() {
     namespace cfg = unoradar::config;
@@ -41,11 +44,49 @@ int main() {
     std::cout << "Test data point: angle=" << test_point.angle
               << "°, distance=" << test_point.distance << "cm" << std::endl;
 
-    // Minimal test - will be expanded in Phase 2
-    boost::asio::io_context io_context;
-    std::cout << "\n✅ Event loop initialized successfully" << std::endl;
-    std::cout << "✅ All configuration headers loaded" << std::endl;
-    std::cout << "✅ Phase 1 Complete - Ready for Phase 2" << std::endl;
+    // Test military-grade master controller
+    std::cout << "\n=== Phase 2: Military-Grade Master Controller Test ===" << std::endl;
+
+    unoradar::core::MasterController controller;
+
+    std::cout << "Initializing master controller..." << std::endl;
+    if (!controller.initialize()) {
+        std::cout << "❌ Controller initialization failed" << std::endl;
+        return 1;
+    }
+
+    std::cout << "Starting controller..." << std::endl;
+    if (!controller.start()) {
+        std::cout << "❌ Controller start failed" << std::endl;
+        return 1;
+    }
+
+    std::cout << "Controller state: " << static_cast<int>(controller.getSystemState()) << std::endl;
+    std::cout << "System healthy: " << (controller.isHealthy() ? "Yes" : "No") << std::endl;
+
+    // Run for a short time to test event loop
+    std::cout << "Running controller for 2 seconds..." << std::endl;
+    auto start_time = std::chrono::steady_clock::now();
+
+    std::thread controller_thread([&controller]() {
+        controller.run();
+    });
+
+    // Let it run for 2 seconds
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    std::cout << "Stopping controller..." << std::endl;
+    controller.stop();
+
+    if (controller_thread.joinable()) {
+        controller_thread.join();
+    }
+
+    auto metrics = controller.getPerformanceMetrics();
+    std::cout << "Final metrics - Active connections: " << metrics.active_connections << std::endl;
+
+    std::cout << "\n✅ Master controller test complete" << std::endl;
+    std::cout << "✅ Phase 2 Step 1 Complete - Event loop operational" << std::endl;
 
     return 0;
 }

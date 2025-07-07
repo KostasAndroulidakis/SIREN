@@ -11,9 +11,9 @@
 #pragma once
 
 #include <chrono>
-#include <string>
 
-namespace unoradar::config {
+namespace unoradar {
+namespace config {
 
 // ============================================================================
 // SERIAL COMMUNICATION CONFIGURATION
@@ -167,6 +167,6 @@ namespace system {
     /// Server identification for WebSocket handshake
     constexpr const char* SERVER_NAME = "unoRadar-server";
     constexpr const char* USER_AGENT = "unoRadar/1.0.0 (military-grade)";
-}
-
-} // namespace unoradar::config
+} // namespace system
+} // namespace config
+} // namespace unoradar

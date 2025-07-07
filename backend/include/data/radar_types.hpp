@@ -13,7 +13,8 @@
 #include <chrono>
 #include <cstdint>
 
-namespace unoradar::data {
+namespace unoradar {
+namespace data {
 
 // ============================================================================
 // RADAR MEASUREMENT TYPES
@@ -234,4 +235,43 @@ struct SystemError {
         , timestamp(std::chrono::steady_clock::now()) {}
 };
 
-} // namespace unoradar::data
+// ============================================================================
+// SERIAL COMMUNICATION TYPES
+// ============================================================================
+
+/// Serial communication statistics
+struct SerialStatistics {
+    /// Total messages received from Arduino
+    uint64_t messages_received;
+
+    /// Total messages sent to Arduino
+    uint64_t messages_sent;
+
+    /// Messages received per second (calculated)
+    double messages_per_second;
+
+    /// Total parsing errors encountered
+    uint32_t parse_errors;
+
+    /// Total connection errors
+    uint32_t connection_errors;
+
+    /// Last successful message timestamp
+    std::chrono::steady_clock::time_point last_message_time;
+
+    /// Connection uptime in seconds
+    uint64_t uptime_seconds;
+
+    /// Average message processing time in microseconds
+    uint32_t avg_processing_time_us;
+
+    /// Default constructor
+    SerialStatistics()
+        : messages_received(0), messages_sent(0), messages_per_second(0.0)
+        , parse_errors(0), connection_errors(0)
+        , last_message_time(std::chrono::steady_clock::now())
+        , uptime_seconds(0), avg_processing_time_us(0) {}
+};
+
+} // namespace data
+} // namespace unoradar

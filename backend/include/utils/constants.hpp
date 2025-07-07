@@ -11,8 +11,9 @@
 #pragma once
 
 #include <cstdint>
+#include <cstddef>
 
-namespace unoradar::constants {
+namespace unoradar { namespace constants {
 
 // ============================================================================
 // HARDWARE SPECIFICATIONS
@@ -67,6 +68,34 @@ namespace sensor {
 
     /// Sensor measurement timeout in microseconds
     constexpr uint32_t MEASUREMENT_TIMEOUT_US = 30000;
+}
+
+// ============================================================================
+// SERIAL COMMUNICATION CONSTANTS
+// ============================================================================
+
+/// Arduino serial communication configuration
+namespace serial {
+    /// Serial baud rate (standard Arduino rate)
+    constexpr uint32_t BAUD_RATE = 9600;
+
+    /// Read buffer size in bytes
+    constexpr size_t BUFFER_SIZE = 256;
+
+    /// Maximum message length in characters
+    constexpr size_t MAX_MESSAGE_LENGTH = 128;
+
+    /// Connection timeout in seconds
+    constexpr uint32_t CONNECTION_TIMEOUT_SEC = 10;
+
+    /// Reconnection delay in seconds
+    constexpr uint32_t RECONNECT_DELAY_SEC = 5;
+
+    /// Maximum reconnection attempts
+    constexpr uint32_t MAX_RECONNECT_ATTEMPTS = 10;
+
+    /// Data timeout in seconds (no data received)
+    constexpr uint32_t DATA_TIMEOUT_SEC = 30;
 }
 
 // ============================================================================
@@ -238,4 +267,4 @@ namespace version {
     constexpr uint8_t API_VERSION = 1;
 }
 
-} // namespace unoradar::constants
+} } // namespace unoradar::constants
