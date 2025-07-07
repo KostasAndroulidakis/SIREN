@@ -214,6 +214,11 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
 
     // Initialize statistics
     statistics_ = data::WebSocketStatistics{};
+
+    // Create specialized managers
+    connection_manager_ = std::make_unique<WebSocketConnectionManager>(io_context_, port_);
+    session_manager_ = std::make_unique<WebSocketSessionManager>();
+    message_broadcaster_ = std::make_unique<WebSocketMessageBroadcaster>();
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -224,24 +229,44 @@ WebSocketServer::~WebSocketServer() {
 
 bool WebSocketServer::initialize() {
     try {
-        // Create acceptor
-        acceptor_ = std::make_unique<tcp::acceptor>(io_context_);
+        // Initialize connection manager
+        if (!connection_manager_->initialize()) {
+            std::cout << "[WebSocketServer] ❌ Failed to initialize connection manager" << std::endl;
+            return false;
+        }
 
-        // Open acceptor
-        tcp::endpoint endpoint(tcp::v4(), port_);
-        acceptor_->open(endpoint.protocol());
+        // Initialize message broadcaster
+        if (!message_broadcaster_->initialize()) {
+            std::cout << "[WebSocketServer] ❌ Failed to initialize message broadcaster" << std::endl;
+            return false;
+        }
 
-        // Set socket options
-        acceptor_->set_option(boost::asio::socket_base::reuse_address(true));
+        // Set up manager callbacks
+        connection_manager_->setAcceptCallback(
+            [this](tcp::socket socket) {
+                onConnectionAccepted(std::move(socket));
+            });
 
-        // Bind to endpoint
-        acceptor_->bind(endpoint);
+        connection_manager_->setErrorCallback(
+            [this](const std::string& error_message, beast::error_code ec) {
+                onConnectionError(error_message, ec);
+            });
+
+        session_manager_->setSessionCallback(
+            [this](const std::string& endpoint, bool connected) {
+                onSessionEvent(endpoint, connected);
+            });
+
+        message_broadcaster_->setBroadcastCallback(
+            [this](size_t sessions_reached) {
+                onBroadcastCompleted(sessions_reached);
+            });
 
         std::cout << "[WebSocketServer] ✅ WebSocket server initialized on port " << port_ << std::endl;
         return true;
 
     } catch (const std::exception& e) {
-        handleError("WebSocket server initialization failed: " + std::string(e.what()), {});
+        std::cout << "[WebSocketServer] ❌ WebSocket server initialization failed: " << e.what() << std::endl;
         return false;
     }
 }
@@ -253,21 +278,28 @@ bool WebSocketServer::start() {
     }
 
     try {
-        // Start listening
-        acceptor_->listen(boost::asio::socket_base::max_listen_connections);
+        // Start connection manager
+        if (!connection_manager_->start()) {
+            std::cout << "[WebSocketServer] ❌ Failed to start connection manager" << std::endl;
+            return false;
+        }
+
+        // Start message broadcaster
+        if (!message_broadcaster_->start()) {
+            std::cout << "[WebSocketServer] ❌ Failed to start message broadcaster" << std::endl;
+            connection_manager_->stop();
+            return false;
+        }
 
         running_.store(true);
         server_start_time_ = std::chrono::steady_clock::now();
 
         std::cout << "[WebSocketServer] 🚀 WebSocket server started - listening on port " << port_ << std::endl;
 
-        // Start accepting connections
-        startAccept();
-
         return true;
 
     } catch (const std::exception& e) {
-        handleError("WebSocket server start failed: " + std::string(e.what()), {});
+        std::cout << "[WebSocketServer] ❌ WebSocket server start failed: " << e.what() << std::endl;
         return false;
     }
 }
@@ -282,22 +314,17 @@ void WebSocketServer::stop() {
     shutdown_requested_.store(true);
     running_.store(false);
 
-    // Close acceptor
-    if (acceptor_) {
-        try {
-            acceptor_->close();
-        } catch (const std::exception& e) {
-            std::cout << "[WebSocketServer] ⚠️ Error closing acceptor: " << e.what() << std::endl;
-        }
+    // Stop specialized managers
+    if (connection_manager_) {
+        connection_manager_->stop();
     }
 
-    // Close all active sessions
-    {
-        std::lock_guard<std::mutex> lock(sessions_mutex_);
-        for (auto& session : active_sessions_) {
-            session->close();
-        }
-        active_sessions_.clear();
+    if (message_broadcaster_) {
+        message_broadcaster_->stop();
+    }
+
+    if (session_manager_) {
+        session_manager_->closeAllSessions();
     }
 
     std::cout << "[WebSocketServer] ✅ WebSocket server stopped" << std::endl;
@@ -308,13 +335,15 @@ bool WebSocketServer::isRunning() const noexcept {
 }
 
 void WebSocketServer::broadcastRadarData(const data::RadarDataPoint& data) {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-
-    for (auto& session : active_sessions_) {
-        if (session->isAlive()) {
-            session->sendRadarData(data);
-        }
+    if (!running_.load() || !message_broadcaster_) {
+        return;
     }
+
+    // Get active sessions from session manager
+    auto active_sessions = session_manager_->getActiveSessions();
+
+    // Broadcast through message broadcaster
+    message_broadcaster_->broadcastRadarData(data, active_sessions);
 
     // Update statistics
     {
@@ -324,18 +353,19 @@ void WebSocketServer::broadcastRadarData(const data::RadarDataPoint& data) {
 }
 
 void WebSocketServer::broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics) {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-
-    for (auto& session : active_sessions_) {
-        if (session->isAlive()) {
-            session->sendPerformanceMetrics(metrics);
-        }
+    if (!running_.load() || !message_broadcaster_) {
+        return;
     }
+
+    // Get active sessions from session manager
+    auto active_sessions = session_manager_->getActiveSessions();
+
+    // Broadcast through message broadcaster
+    message_broadcaster_->broadcastPerformanceMetrics(metrics, active_sessions);
 }
 
 size_t WebSocketServer::getActiveConnections() const noexcept {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-    return active_sessions_.size();
+    return session_manager_ ? session_manager_->getActiveSessionCount() : 0;
 }
 
 data::WebSocketStatistics WebSocketServer::getStatistics() const {
@@ -357,85 +387,24 @@ void WebSocketServer::setConnectionCallback(ConnectionCallback callback) {
     connection_callback_ = std::move(callback);
 }
 
-void WebSocketServer::startAccept() {
-    if (shutdown_requested_.load()) {
-        return;
-    }
+void WebSocketServer::onConnectionAccepted(tcp::socket socket) {
+    // Create new session through session manager
+    auto session = session_manager_->createSession(std::move(socket), weak_from_this());
 
-    acceptor_->async_accept(
-        [self = shared_from_this()](beast::error_code ec, tcp::socket socket) {
-            self->onAccept(ec, std::move(socket));
-        });
-}
+    // Start the session
+    session->start();
 
-void WebSocketServer::onAccept(beast::error_code ec, tcp::socket socket) {
-    if (ec) {
-        handleError("Accept error", ec);
-    } else {
-        // Create new session
-        auto session = std::make_shared<WebSocketSession>(std::move(socket), weak_from_this());
-
-        // Add to active sessions
-        addSession(session);
-
-        // Start the session
-        session->start();
-
-        std::cout << "[WebSocketServer] 🔌 New client connected: " << session->getClientEndpoint()
-                  << " (total: " << getActiveConnections() << ")" << std::endl;
-    }
-
-    // Continue accepting new connections
-    startAccept();
-}
-
-void WebSocketServer::addSession(std::shared_ptr<WebSocketSession> session) {
-    {
-        std::lock_guard<std::mutex> lock(sessions_mutex_);
-        active_sessions_.insert(session);
-    }
+    std::cout << "[WebSocketServer] 🔌 New client connected: " << session->getClientEndpoint()
+              << " (total: " << getActiveConnections() << ")" << std::endl;
 
     // Update statistics
     {
         std::lock_guard<std::mutex> stats_lock(stats_mutex_);
         statistics_.connections_accepted++;
     }
-
-    // Notify callback
-    if (connection_callback_) {
-        connection_callback_(session->getClientEndpoint(), true);
-    }
 }
 
-void WebSocketServer::removeSession(std::shared_ptr<WebSocketSession> session) {
-    {
-        std::lock_guard<std::mutex> lock(sessions_mutex_);
-        active_sessions_.erase(session);
-    }
-
-    std::cout << "[WebSocketServer] 🔌 Client disconnected: " << session->getClientEndpoint()
-              << " (remaining: " << getActiveConnections() << ")" << std::endl;
-
-    // Notify callback
-    if (connection_callback_) {
-        connection_callback_(session->getClientEndpoint(), false);
-    }
-}
-
-void WebSocketServer::cleanupClosedSessions() {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-
-    auto it = active_sessions_.begin();
-    while (it != active_sessions_.end()) {
-        if (!(*it)->isAlive()) {
-            it = active_sessions_.erase(it);
-        } else {
-            ++it;
-        }
-    }
-}
-
-void WebSocketServer::handleError(const std::string& error_message, beast::error_code ec) {
+void WebSocketServer::onConnectionError(const std::string& error_message, beast::error_code ec) {
     std::cout << "[WebSocketServer] ❌ " << error_message;
     if (ec) {
         std::cout << ": " << ec.message();
@@ -446,6 +415,31 @@ void WebSocketServer::handleError(const std::string& error_message, beast::error
     {
         std::lock_guard<std::mutex> lock(stats_mutex_);
         statistics_.connection_errors++;
+    }
+}
+
+void WebSocketServer::onSessionEvent(const std::string& endpoint, bool connected) {
+    // Notify callback
+    if (connection_callback_) {
+        connection_callback_(endpoint, connected);
+    }
+}
+
+void WebSocketServer::onBroadcastCompleted(size_t sessions_reached) {
+    // Update broadcast statistics if needed
+    // This can be extended for additional metrics tracking
+}
+
+void WebSocketServer::removeSession(std::shared_ptr<WebSocketSession> session) {
+    if (session_manager_) {
+        session_manager_->removeSession(session);
+    }
+}
+
+void WebSocketServer::updateStatistics() {
+    // Periodic cleanup of closed sessions
+    if (session_manager_) {
+        session_manager_->cleanupClosedSessions();
     }
 }
 

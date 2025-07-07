@@ -12,7 +12,6 @@
 
 #include <memory>
 #include <string>
-#include <unordered_set>
 #include <functional>
 #include <atomic>
 #include <mutex>
@@ -22,6 +21,9 @@
 #include <boost/beast/websocket.hpp>
 
 #include "data/radar_types.hpp"
+#include "websocket/websocket_connection_manager.hpp"
+#include "websocket/websocket_session_manager.hpp"
+#include "websocket/websocket_message_broadcaster.hpp"
 
 namespace unoradar::websocket {
 
@@ -218,16 +220,16 @@ public:
 private:
     // Core components
     boost::asio::io_context& io_context_;
-    std::unique_ptr<tcp::acceptor> acceptor_;
     uint16_t port_;
 
     // State management
     std::atomic<bool> running_;
     std::atomic<bool> shutdown_requested_;
 
-    // Connection management
-    std::unordered_set<std::shared_ptr<WebSocketSession>> active_sessions_;
-    mutable std::mutex sessions_mutex_;
+    // Specialized managers
+    std::unique_ptr<WebSocketConnectionManager> connection_manager_;
+    std::unique_ptr<WebSocketSessionManager> session_manager_;
+    std::unique_ptr<WebSocketMessageBroadcaster> message_broadcaster_;
 
     // Statistics and monitoring
     mutable std::mutex stats_mutex_;
@@ -238,37 +240,35 @@ private:
     ConnectionCallback connection_callback_;
 
     /**
-     * @brief Start accepting incoming connections
+     * @brief Handle accepted connection from connection manager
+     * @param socket Accepted TCP socket
      */
-    void startAccept();
+    void onConnectionAccepted(tcp::socket socket);
 
     /**
-     * @brief Handle new connection
-     * @param ec Error code from accept operation
-     * @param socket New client socket
+     * @brief Handle connection manager errors
+     * @param error_message Error description
+     * @param ec Error code
      */
-    void onAccept(beast::error_code ec, tcp::socket socket);
+    void onConnectionError(const std::string& error_message, beast::error_code ec);
 
     /**
-     * @brief Add new session to active connections
-     * @param session New WebSocket session
+     * @brief Handle session connection events
+     * @param endpoint Client endpoint
+     * @param connected true if connected, false if disconnected
      */
-    void addSession(std::shared_ptr<WebSocketSession> session);
+    void onSessionEvent(const std::string& endpoint, bool connected);
 
     /**
-     * @brief Clean up closed sessions
+     * @brief Handle broadcast completion events
+     * @param sessions_reached Number of sessions reached in broadcast
      */
-    void cleanupClosedSessions();
+    void onBroadcastCompleted(size_t sessions_reached);
 
     /**
      * @brief Update server statistics
      */
     void updateStatistics();
-
-    /**
-     * @brief Handle server errors
-     */
-    void handleError(const std::string& error_message, beast::error_code ec);
 };
 
 } // namespace unoradar::websocket
