@@ -16,12 +16,12 @@
 #include "data/radar_types.hpp"
 #include "core/system_state_manager.hpp"
 #include "core/performance_monitor.hpp"
+#include "serial/serial_interface.hpp"
+#include "websocket/server.hpp"
 
 namespace unoradar::core {
 
 // Forward declarations
-class SerialInterface;
-class WebSocketServer;
 class DataProcessor;
 class Logger;
 
@@ -113,11 +113,11 @@ private:
     std::unique_ptr<SystemStateManager> state_manager_;
     std::unique_ptr<PerformanceMonitor> performance_monitor_;
 
-    // Subsystem components (will be implemented later)
-    // std::unique_ptr<SerialInterface> serial_interface_;
-    // std::unique_ptr<WebSocketServer> websocket_server_;
-    // std::unique_ptr<DataProcessor> data_processor_;
-    // std::unique_ptr<Logger> logger_;
+    // Subsystem components
+    std::unique_ptr<serial::SerialInterface> serial_interface_;
+    std::unique_ptr<websocket::WebSocketServer> websocket_server_;
+    // std::unique_ptr<DataProcessor> data_processor_;      // Will be implemented later
+    // std::unique_ptr<Logger> logger_;                     // Will be implemented later
 
     // Shutdown coordination
     std::atomic<bool> shutdown_requested_;
@@ -159,6 +159,16 @@ private:
      * @brief Metrics update callback from PerformanceMonitor
      */
     void onMetricsUpdate(const data::PerformanceMetrics& metrics);
+
+    /**
+     * @brief Radar data callback from SerialInterface
+     */
+    void onRadarData(const data::RadarDataPoint& radar_data);
+
+    /**
+     * @brief Serial error callback from SerialInterface
+     */
+    void onSerialError(const std::string& error_message, data::ErrorSeverity severity);
 };
 
 } // namespace unoradar::core

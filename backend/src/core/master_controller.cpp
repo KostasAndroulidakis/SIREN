@@ -10,6 +10,7 @@
 #include "core/master_controller.hpp"
 #include "constants/performance.hpp"
 #include "constants/error.hpp"
+#include "constants/communication.hpp"
 #include "utils/error_handler.hpp"
 #include <iostream>
 #include <chrono>
@@ -235,9 +236,61 @@ void MasterController::initializeIOContext() {
 
 bool MasterController::initializeSubsystems() {
     try {
-        // Placeholder for future subsystem initialization
-        std::cout << "[MasterController] Serial interface: PLACEHOLDER (pending implementation)" << std::endl;
-        std::cout << "[MasterController] WebSocket server: PLACEHOLDER (pending implementation)" << std::endl;
+        // Initialize SerialInterface
+        std::cout << "[MasterController] Initializing SerialInterface..." << std::endl;
+        serial_interface_ = std::make_unique<serial::SerialInterface>(*io_context_);
+
+        // Set up callbacks for radar data and errors
+        serial_interface_->setDataCallback(
+            [this](const data::RadarDataPoint& data) { onRadarData(data); });
+
+        serial_interface_->setErrorCallback(
+            [this](const std::string& error, data::ErrorSeverity severity) {
+                onSerialError(error, severity); });
+
+        // Auto-detect Arduino port
+        const std::string detected_port = serial::SerialInterface::autoDetectArduinoPort();
+        if (detected_port.empty()) {
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "Arduino port auto-detection failed", data::ErrorSeverity::ERROR);
+            return false;
+        }
+
+        // Initialize and start serial communication
+        if (!serial_interface_->initialize(detected_port)) {
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "SerialInterface initialization failed", data::ErrorSeverity::ERROR);
+            return false;
+        }
+
+        if (!serial_interface_->start()) {
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "SerialInterface start failed", data::ErrorSeverity::ERROR);
+            return false;
+        }
+
+        std::cout << "[MasterController] ✅ SerialInterface initialized on port: " << detected_port << std::endl;
+
+        // Initialize WebSocket server
+        std::cout << "[MasterController] Initializing WebSocket server..." << std::endl;
+        websocket_server_ = std::make_unique<websocket::WebSocketServer>(*io_context_,
+            unoradar::constants::communication::websocket::DEFAULT_PORT);
+
+        // Initialize and start WebSocket server
+        if (!websocket_server_->initialize()) {
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "WebSocket server initialization failed", data::ErrorSeverity::ERROR);
+            return false;
+        }
+
+        if (!websocket_server_->start()) {
+            utils::ErrorHandler::handleSystemError("MasterController",
+                "WebSocket server start failed", data::ErrorSeverity::ERROR);
+            return false;
+        }
+
+        std::cout << "[MasterController] ✅ WebSocket server started on port "
+                  << unoradar::constants::communication::websocket::DEFAULT_PORT << std::endl;
         std::cout << "[MasterController] Data processor: PLACEHOLDER (pending implementation)" << std::endl;
         std::cout << "[MasterController] Logger: PLACEHOLDER (pending implementation)" << std::endl;
 
@@ -274,6 +327,18 @@ void MasterController::onHeartbeat(const boost::system::error_code& error) {
 void MasterController::cleanup() {
     std::cout << "[MasterController] 🧹 Cleaning up resources..." << std::endl;
 
+    // Stop serial interface
+    if (serial_interface_) {
+        serial_interface_->stop();
+        serial_interface_.reset();
+    }
+
+    // Stop WebSocket server
+    if (websocket_server_) {
+        websocket_server_->stop();
+        websocket_server_.reset();
+    }
+
     // Stop performance monitoring
     if (performance_monitor_) {
         performance_monitor_->stop();
@@ -298,6 +363,30 @@ void MasterController::onMetricsUpdate(const data::PerformanceMetrics& metrics) 
     // Coordination logic for metrics updates
     // Could trigger alerts, adjust performance, etc.
     (void)metrics; // Suppress unused parameter warning for now
+}
+
+void MasterController::onRadarData(const data::RadarDataPoint& radar_data) {
+    // Handle incoming radar data from SerialInterface
+    performance_monitor_->recordMessage();
+
+    // Log radar data (for VS-1 testing)
+    std::cout << "[MasterController] Radar data: Angle=" << radar_data.angle
+              << "°, Distance=" << radar_data.distance << "cm" << std::endl;
+
+    // Forward to WebSocket server
+    if (websocket_server_ && websocket_server_->isRunning()) {
+        websocket_server_->broadcastRadarData(radar_data);
+    }
+}
+
+void MasterController::onSerialError(const std::string& error_message, data::ErrorSeverity severity) {
+    // Handle serial communication errors
+    utils::ErrorHandler::handleSystemError("SerialInterface", error_message, severity);
+
+    // Update system state on critical errors
+    if (severity == data::ErrorSeverity::CRITICAL || severity == data::ErrorSeverity::FATAL) {
+        state_manager_->updateState(SystemStateManager::SystemState::ERROR);
+    }
 }
 
 } // namespace unoradar::core
