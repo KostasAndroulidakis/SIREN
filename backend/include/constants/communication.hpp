@@ -55,6 +55,9 @@ namespace websocket {
     /// Default server port for client connections
     constexpr uint16_t DEFAULT_PORT = 8080;
 
+    /// Default secure server port for WSS connections
+    constexpr uint16_t DEFAULT_SECURE_PORT = 8443;
+
     /// Maximum concurrent connections (military-grade limit)
     constexpr uint16_t MAX_CONNECTIONS = 50;
 

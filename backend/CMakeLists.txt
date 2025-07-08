@@ -25,6 +25,15 @@ cmake_policy(SET CMP0167 NEW)
 find_package(Boost REQUIRED COMPONENTS system thread)
 find_package(Threads REQUIRED)
 
+# OpenSSL for military-grade TLS 1.3 encryption
+find_package(OpenSSL REQUIRED)
+if(OpenSSL_FOUND)
+    message(STATUS "OpenSSL version: ${OPENSSL_VERSION}")
+    message(STATUS "OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+else()
+    message(FATAL_ERROR "OpenSSL not found - required for military-grade security")
+endif()
+
 # Placeholder for source files (will be added incrementally)
 set(ALL_SOURCES
     # Files will be added as they are created
@@ -40,6 +49,8 @@ target_link_libraries(unoRadar_lib
     Boost::system
     Boost::thread
     Threads::Threads
+    OpenSSL::SSL
+    OpenSSL::Crypto
 )
 
 # Platform-specific configurations
