@@ -119,6 +119,14 @@ void WebSocketSession::sendPerformanceMetrics(const data::PerformanceMetrics& me
     enqueueMessage(utils::JsonSerializer::serialize(metrics));
 }
 
+void WebSocketSession::sendMessage(const std::string& message) {
+    if (!is_alive_.load() || closing_.load()) {
+        return;
+    }
+
+    enqueueMessage(message);
+}
+
 void WebSocketSession::processNextMessage() {
     // Only process if no write is in progress
     if (write_in_progress_.exchange(true)) {

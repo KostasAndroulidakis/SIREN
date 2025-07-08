@@ -65,6 +65,12 @@ public:
     void sendPerformanceMetrics(const data::PerformanceMetrics& metrics);
 
     /**
+     * @brief Send generic message to client
+     * @param message Serialized message to send
+     */
+    void sendMessage(const std::string& message);
+
+    /**
      * @brief Close the connection gracefully
      */
     void close();

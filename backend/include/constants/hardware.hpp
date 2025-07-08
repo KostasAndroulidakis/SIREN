@@ -70,4 +70,33 @@ namespace sensor {
     constexpr auto MEASUREMENT_TIMEOUT = std::chrono::microseconds(30000);
 }
 
+/// Cross-platform serial port detection
+namespace platform {
+    /// Platform detection flags (MISRA C++ compliant)
+#ifdef _WIN32
+    constexpr bool IS_WINDOWS = true;
+    constexpr bool IS_MACOS = false;
+    constexpr bool IS_LINUX = false;
+#elif __APPLE__
+    constexpr bool IS_WINDOWS = false;
+    constexpr bool IS_MACOS = true;
+    constexpr bool IS_LINUX = false;
+#elif __linux__
+    constexpr bool IS_WINDOWS = false;
+    constexpr bool IS_MACOS = false;
+    constexpr bool IS_LINUX = true;
+#else
+    constexpr bool IS_WINDOWS = false;
+    constexpr bool IS_MACOS = false;
+    constexpr bool IS_LINUX = false;
+#endif
+
+    /// Cross-platform serial device paths (SSOT)
+#ifdef _WIN32
+    constexpr const char* SERIAL_DEVICE_PATH = "COM";
+#else
+    constexpr const char* SERIAL_DEVICE_PATH = "/dev";
+#endif
+}
+
 } } } // namespace unoradar::constants::hardware

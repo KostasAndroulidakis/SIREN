@@ -10,6 +10,7 @@
 #include "serial/serial_interface.hpp"
 #include "constants/communication.hpp"
 #include "constants/performance.hpp"
+#include "constants/hardware.hpp"
 #include <iostream>
 #include <chrono>
 #include <filesystem>
@@ -409,16 +410,32 @@ std::vector<std::string> SerialInterface::getAvailablePorts() {
     std::vector<std::string> ports;
 
     try {
-        // Check common macOS serial device paths
-        for (const auto& entry : std::filesystem::directory_iterator("/dev")) {
-            const std::string filename = entry.path().filename().string();
+        // MISRA C++ compliance: Cross-platform serial device detection
+        const std::string device_path = constants::hardware::platform::SERIAL_DEVICE_PATH;
 
-            // Look for USB serial devices
-            if (filename.find("tty.usb") == 0 ||
-                filename.find("cu.usb") == 0 ||
-                filename.find("tty.usbmodem") == 0 ||
-                filename.find("cu.usbmodem") == 0) {
-                ports.push_back(entry.path().string());
+        // Platform-specific port detection
+        if constexpr (constants::hardware::platform::IS_WINDOWS) {
+            // Windows COM port detection
+            for (int i = 1; i <= 256; ++i) {
+                std::string port_name = "COM" + std::to_string(i);
+                // Note: Windows port validation would require additional platform-specific code
+                // For now, we'll use a simplified approach
+                ports.push_back(port_name);
+            }
+        } else {
+            // Unix-like systems (macOS, Linux)
+            for (const auto& entry : std::filesystem::directory_iterator(device_path)) {
+                const std::string filename = entry.path().filename().string();
+
+                // Look for USB serial devices (cross-platform patterns)
+                if (filename.find("tty.usb") == 0 ||
+                    filename.find("cu.usb") == 0 ||
+                    filename.find("tty.usbmodem") == 0 ||
+                    filename.find("cu.usbmodem") == 0 ||
+                    filename.find("ttyUSB") == 0 ||
+                    filename.find("ttyACM") == 0) {
+                    ports.push_back(entry.path().string());
+                }
             }
         }
 

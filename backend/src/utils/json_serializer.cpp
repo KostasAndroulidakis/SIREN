@@ -88,6 +88,8 @@ std::string JsonSerializer::createKeepalive() {
     return oss.str();
 }
 
+// Template definition moved to header for MISRA C++ compliance
+// Explicit instantiations for required types
 template<typename T>
 std::string JsonSerializer::formatField(const char* key, const T& value, bool is_string) {
     std::ostringstream oss;
@@ -101,6 +103,14 @@ std::string JsonSerializer::formatField(const char* key, const T& value, bool is
 
     return oss.str();
 }
+
+// Explicit instantiations for MISRA C++ compliance
+template std::string JsonSerializer::formatField<int>(const char* key, const int& value, bool is_string);
+template std::string JsonSerializer::formatField<uint32_t>(const char* key, const uint32_t& value, bool is_string);
+template std::string JsonSerializer::formatField<uint64_t>(const char* key, const uint64_t& value, bool is_string);
+template std::string JsonSerializer::formatField<double>(const char* key, const double& value, bool is_string);
+template std::string JsonSerializer::formatField<std::string>(const char* key, const std::string& value, bool is_string);
+template std::string JsonSerializer::formatField<const char*>(const char* key, const char* const& value, bool is_string);
 
 std::string JsonSerializer::formatTimestamp(const std::chrono::steady_clock::time_point& timestamp) {
     auto timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(

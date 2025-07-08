@@ -215,13 +215,9 @@ void WebSocketMessageBroadcaster::processBroadcastMessage(const BroadcastMessage
 
 bool WebSocketMessageBroadcaster::sendMessageToSession(std::shared_ptr<WebSocketSession> session, const std::string& message) {
     try {
-        // The specific send method depends on the message type
-        // For now, we'll assume radar data is the most common case
-        // This could be enhanced with proper message type detection
-
-        // Note: This is a simplified implementation - in a real scenario,
-        // we would need to determine the message type and call the appropriate method
-        session->sendRadarData(data::RadarDataPoint{}); // Placeholder
+        // MISRA C++ compliance: Use correct public interface method
+        // Send the serialized message through the public interface
+        session->sendMessage(message);
         return true;
 
     } catch (const std::exception& e) {

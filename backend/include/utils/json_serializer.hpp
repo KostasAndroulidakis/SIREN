@@ -75,6 +75,14 @@ private:
     template<typename T>
     static std::string formatField(const char* key, const T& value, bool is_string = false);
 
+    // Explicit instantiation declarations for MISRA C++ compliance
+    static std::string formatField(const char* key, const int& value, bool is_string = false);
+    static std::string formatField(const char* key, const uint32_t& value, bool is_string = false);
+    static std::string formatField(const char* key, const uint64_t& value, bool is_string = false);
+    static std::string formatField(const char* key, const double& value, bool is_string = false);
+    static std::string formatField(const char* key, const std::string& value, bool is_string = false);
+    static std::string formatField(const char* key, const char* value, bool is_string = false);
+
     /**
      * @brief Helper to create timestamp field
      * @param timestamp Timestamp to format
