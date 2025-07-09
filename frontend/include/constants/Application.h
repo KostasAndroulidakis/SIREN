@@ -22,6 +22,7 @@ namespace Application {
 // Application Metadata
 constexpr char NAME[] = "unoRadar";
 constexpr char FULL_NAME[] = "unoRadar Military-Grade Radar System";
+constexpr char COMMAND_CENTER_TITLE[] = "COMMAND CENTER";
 constexpr char VERSION[] = "1.0.0";
 constexpr char BUILD_TYPE[] = "RELEASE";
 

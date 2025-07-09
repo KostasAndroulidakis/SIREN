@@ -82,8 +82,8 @@ void WindowControlBar::createControlButtons()
 
 void WindowControlBar::setupLayout()
 {
-    // Configure layout properties for macOS-style positioning
-    m_layout->setContentsMargins(Constants::WindowControls::BUTTONS_LEFT_MARGIN,
+    // Configure layout properties - 10px left margin for comfortable positioning
+    m_layout->setContentsMargins(10, // 10px left margin
                                 Constants::WindowControls::CONTROL_BAR_PADDING,
                                 Constants::WindowControls::CONTROL_BAR_PADDING,
                                 Constants::WindowControls::CONTROL_BAR_PADDING);

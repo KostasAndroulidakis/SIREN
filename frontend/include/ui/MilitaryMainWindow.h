@@ -19,7 +19,9 @@
 #include <QMainWindow>
 #include <QWidget>
 #include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QTextEdit>
+#include <QLabel>
 #include <memory>
 
 // Forward declarations
@@ -38,7 +40,7 @@ namespace UI {
 /**
  * @class MilitaryMainWindow
  * @brief Military-grade main window with custom frameless controls
- * 
+ *
  * Demonstrates complete integration of:
  * - Custom window control buttons (minimize, maximize, close)
  * - Military-standard styling and behavior
@@ -147,7 +149,8 @@ private:
     std::unique_ptr<QTextEdit> m_contentDisplay;            ///< Content display area
     std::unique_ptr<Controls::WindowControlBar> m_controlBar; ///< Window control buttons
     std::unique_ptr<Controls::WindowControlHandler> m_controlHandler; ///< Control event handler
-    
+    std::unique_ptr<QLabel> m_titleLabel;                   ///< Centered title label
+
     // Window dragging state
     bool m_isDragging;          ///< Window drag state
     QPoint m_dragStartPosition; ///< Drag start position

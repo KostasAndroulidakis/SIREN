@@ -52,6 +52,10 @@ constexpr std::int32_t MARGIN = 10;
 constexpr std::int32_t SPACING = 5;
 constexpr std::int32_t STATUS_BAR_HEIGHT = 25;
 
+// Title Bar Constants
+constexpr std::int32_t TITLE_FONT_SIZE = 14;
+constexpr std::int32_t TITLE_FONT_WEIGHT = 700;  // Bold for military styling
+
 } // namespace UI
 } // namespace Constants
 } // namespace unoRadar
