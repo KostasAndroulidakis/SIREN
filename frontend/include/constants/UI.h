@@ -29,7 +29,7 @@ constexpr std::int32_t MIN_WINDOW_HEIGHT = 480;
 
 // Military-grade color scheme (MIL-STD-1472 contrast ratios)
 namespace Colors {
-    constexpr char BACKGROUND[] = "#0A0A0A";      // Near black
+    constexpr char BACKGROUND[] = "#000000";      // True black
     constexpr char PRIMARY_TEXT[] = "#00FF41";    // Military green
     constexpr char WARNING_TEXT[] = "#FFA500";    // Amber
     constexpr char ERROR_TEXT[] = "#FF0000";      // Red

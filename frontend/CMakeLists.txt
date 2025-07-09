@@ -33,6 +33,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 # Create executable
 qt_add_executable(unoRadar_frontend
     src/main.cpp
+    src/ui/controls/WindowControlButton.cpp
+    src/ui/controls/MinimizeButton.cpp
+    src/ui/controls/MaximizeButton.cpp
+    src/ui/controls/CloseButton.cpp
+    src/ui/controls/WindowControlBar.cpp
+    src/ui/controls/WindowControlHandler.cpp
+    include/ui/controls/WindowControlButton.h
+    include/ui/controls/MinimizeButton.h
+    include/ui/controls/MaximizeButton.h
+    include/ui/controls/CloseButton.h
+    include/ui/controls/WindowControlBar.h
+    include/ui/controls/WindowControlHandler.h
+    include/constants/WindowControls.h
+    src/ui/MilitaryMainWindow.cpp
+    include/ui/MilitaryMainWindow.h
 )
 
 # Link Qt6 libraries including WebSockets
@@ -42,3 +57,4 @@ target_link_libraries(unoRadar_frontend PRIVATE
     Qt6::Core
     Qt6::WebSockets
 )
+
