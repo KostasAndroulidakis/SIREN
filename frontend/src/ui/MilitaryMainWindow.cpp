@@ -96,9 +96,8 @@ void MilitaryMainWindow::createCustomTitleBar()
 {
     // Set title bar properties
     m_titleBar->setFixedHeight(Constants::WindowControls::CONTROL_BAR_HEIGHT);
-    m_titleBar->setStyleSheet(QString("background-color: %1; border-bottom: 1px solid %2;")
-        .arg(Constants::UI::Colors::BACKGROUND)
-        .arg(Constants::UI::Colors::GRID_LINES));
+    m_titleBar->setStyleSheet(QString("background-color: %1;")
+        .arg(Constants::UI::Colors::BACKGROUND));
 
     // Create title bar layout - title takes full width for perfect centering
     auto titleLayout = std::make_unique<QHBoxLayout>(m_titleBar.get());
@@ -140,6 +139,9 @@ void MilitaryMainWindow::createMainContent()
 
     // Configure content display
     m_contentDisplay->setReadOnly(true);
+    m_contentDisplay->setStyleSheet(QString("background-color: %1; color: %2; border: none; margin: 0; padding: 10px;")
+        .arg(Constants::UI::Colors::BACKGROUND)
+        .arg(Constants::UI::Colors::PRIMARY_TEXT));
     m_contentDisplay->setText(
         "COMMAND CENTER - unoRadar Military-Grade Frontend\n"
         "Centered Title with Left-Positioned Traffic Lights\n\n"
