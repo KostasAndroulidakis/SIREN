@@ -147,7 +147,16 @@ void WindowControlButton::drawButtonSymbol(QPainter& painter, const QRect& rect)
     }
 
     painter.setPen(symbolColor);
-    painter.drawText(rect, Qt::AlignCenter, m_icon);
+    
+    // Calculate precise center position using font metrics
+    QFontMetrics fontMetrics(symbolFont);
+    QRect textRect = fontMetrics.boundingRect(m_icon);
+    
+    // Center the symbol precisely in the button
+    int x = rect.center().x() - textRect.width() / 2;
+    int y = rect.center().y() + fontMetrics.ascent() / 2 - fontMetrics.descent() / 2;
+    
+    painter.drawText(x, y, m_icon);
 
     painter.restore();
 }
