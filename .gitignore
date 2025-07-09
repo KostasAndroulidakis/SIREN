@@ -46,6 +46,9 @@ backend/_deps/
 
 # frontend build artifacts
 frontend/build/
+frontend/.cache/
+
+.cache/
 
 # Debug files
 *.dSYM/
