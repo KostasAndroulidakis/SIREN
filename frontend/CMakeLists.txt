@@ -27,15 +27,18 @@ find_package(Qt6 REQUIRED COMPONENTS Widgets Gui Core WebSockets)
 # Qt6 standard project setup
 qt_standard_project_setup()
 
+# Add include directories
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 # Create executable
 qt_add_executable(unoRadar_frontend
     src/main.cpp
 )
 
 # Link Qt6 libraries including WebSockets
-target_link_libraries(unoRadar_frontend PRIVATE 
-    Qt6::Widgets 
-    Qt6::Gui 
-    Qt6::Core 
+target_link_libraries(unoRadar_frontend PRIVATE
+    Qt6::Widgets
+    Qt6::Gui
+    Qt6::Core
     Qt6::WebSockets
 )
