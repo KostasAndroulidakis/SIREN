@@ -25,7 +25,7 @@ namespace unoRadar {
 namespace UI {
 namespace Controls {
 
-WindowControlButton::WindowControlButton(const QString& icon, 
+WindowControlButton::WindowControlButton(const QString& icon,
                                          const QString& tooltip,
                                          QWidget* parent)
     : QPushButton(parent)
@@ -42,12 +42,12 @@ WindowControlButton::WindowControlButton(const QString& icon,
 
 void WindowControlButton::initializeButton()
 {
-    // Set fixed size according to MIL-STD-1472
-    setFixedSize(Constants::WindowControls::BUTTON_WIDTH, 
+    // Set fixed size for macOS traffic lights (12px diameter)
+    setFixedSize(Constants::WindowControls::BUTTON_WIDTH,
                  Constants::WindowControls::BUTTON_HEIGHT);
 
     // Set minimum size for accessibility
-    setMinimumSize(Constants::WindowControls::BUTTON_MIN_SIZE, 
+    setMinimumSize(Constants::WindowControls::BUTTON_MIN_SIZE,
                    Constants::WindowControls::BUTTON_MIN_SIZE);
 
     // Configure text and tooltip
@@ -66,93 +66,111 @@ void WindowControlButton::initializeButton()
     m_stateAnimation->setPropertyName("opacity");
     m_stateAnimation->setDuration(Constants::WindowControls::HOVER_ANIMATION_DURATION);
 
-    // Apply military-standard styling
+    // Remove default button styling for custom circular rendering
+    setFlat(true);
+    setStyleSheet("QPushButton { border: none; background: transparent; }");
+
+    // Apply macOS traffic light styling
     applyMilitaryStyle();
 }
 
 void WindowControlButton::applyMilitaryStyle()
 {
-    // Create military-compliant font
-    QFont buttonFont(Constants::WindowControls::Fonts::FONT_FAMILY, 
-                     Constants::WindowControls::Fonts::FONT_SIZE, 
+    // Create macOS-style font for traffic light symbols
+    QFont buttonFont(Constants::WindowControls::Fonts::FONT_FAMILY,
+                     Constants::WindowControls::Fonts::FONT_SIZE,
                      Constants::WindowControls::Fonts::FONT_WEIGHT);
     setFont(buttonFont);
 
-    // Apply base styling
+    // Initialize button state
     updateButtonState("normal");
 }
 
 void WindowControlButton::updateButtonState(const QString& state)
 {
-    QString styleSheet;
-    
-    if (state == "hover") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_HOVER_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_HOVER_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_HOVER_TEXT);
-    }
-    else if (state == "pressed") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_PRESSED_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_PRESSED_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_PRESSED_TEXT);
-    }
-    else if (state == "focus") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_FOCUS_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_TEXT);
-    }
-    else if (state == "disabled") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_DISABLED_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_DISABLED_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_DISABLED_TEXT);
-    }
-    else { // normal state
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_TEXT);
+    // Store current state for custom painting
+    m_currentState = state;
+
+    // Force repaint to reflect state changes
+    update();
+}
+
+void WindowControlButton::drawCircularButton(QPainter& painter, const QRect& rect)
+{
+    painter.save();
+
+    // Choose color based on current state
+    QColor baseColor = getBaseColor();
+    QColor currentColor = baseColor;
+
+    if (m_isPressed) {
+        currentColor = currentColor.darker(110);
+    } else if (m_isHovered) {
+        currentColor = getHoverColor();
     }
 
-    setStyleSheet(styleSheet);
+    // Create radial gradient for 3D effect
+    QRadialGradient gradient(rect.center(), rect.width() / 2.0);
+    gradient.setColorAt(0.0, currentColor.lighter(115));
+    gradient.setColorAt(0.7, currentColor);
+    gradient.setColorAt(1.0, currentColor.darker(115));
+
+    // Draw circular button
+    painter.setBrush(QBrush(gradient));
+    painter.setPen(Qt::NoPen);
+    painter.drawEllipse(rect);
+
+    // Add subtle highlight for glass effect
+    QRadialGradient highlight(rect.center(), rect.width() / 3.0);
+    highlight.setColorAt(0.0, QColor(255, 255, 255, 30));
+    highlight.setColorAt(1.0, QColor(255, 255, 255, 0));
+
+    painter.setBrush(QBrush(highlight));
+    painter.drawEllipse(rect.adjusted(1, 1, -1, -1));
+
+    painter.restore();
+}
+
+void WindowControlButton::drawButtonSymbol(QPainter& painter, const QRect& rect)
+{
+    painter.save();
+
+    // Set up font for symbol
+    QFont symbolFont(Constants::WindowControls::Fonts::FONT_FAMILY,
+                     Constants::WindowControls::Fonts::FONT_SIZE,
+                     Constants::WindowControls::Fonts::FONT_WEIGHT);
+    painter.setFont(symbolFont);
+
+    // Choose symbol color
+    QColor symbolColor(Constants::WindowControls::Colors::MACOS_SYMBOL_COLOR);
+    if (m_isPressed) {
+        symbolColor = QColor(Constants::WindowControls::Colors::MACOS_SYMBOL_HOVER);
+    }
+
+    painter.setPen(symbolColor);
+    painter.drawText(rect, Qt::AlignCenter, m_icon);
+
+    painter.restore();
+}
+
+void WindowControlButton::drawFocusIndicator(QPainter& painter, const QRect& rect)
+{
+    painter.save();
+
+    // Create focus ring
+    QPen focusPen;
+    focusPen.setColor(QColor(Constants::WindowControls::Colors::BUTTON_FOCUS_BORDER));
+    focusPen.setWidth(2);
+    focusPen.setStyle(Qt::SolidLine);
+
+    painter.setPen(focusPen);
+    painter.setBrush(Qt::NoBrush);
+
+    // Draw focus ring slightly larger than button
+    QRect focusRect = rect.adjusted(-2, -2, 2, 2);
+    painter.drawEllipse(focusRect);
+
+    painter.restore();
 }
 
 void WindowControlButton::createStateTransition(double targetOpacity)
@@ -169,7 +187,7 @@ void WindowControlButton::createStateTransition(double targetOpacity)
 void WindowControlButton::setEnabled(bool enabled)
 {
     QPushButton::setEnabled(enabled);
-    
+
     if (enabled) {
         updateButtonState("normal");
     } else {
@@ -272,7 +290,7 @@ void WindowControlButton::keyReleaseEvent(QKeyEvent* event)
         m_isPressed = false;
         updateButtonState("focus");
         createStateTransition(1.0);
-        
+
         // Emit clicked signal for keyboard activation
         emit clicked();
     }
@@ -281,8 +299,27 @@ void WindowControlButton::keyReleaseEvent(QKeyEvent* event)
 
 void WindowControlButton::paintEvent(QPaintEvent* event)
 {
-    // Use default Qt painting with our custom styles
-    QPushButton::paintEvent(event);
+    Q_UNUSED(event);
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing, true);
+
+    // Get button dimensions
+    const int diameter = qMin(width(), height());
+    const QRect buttonRect((width() - diameter) / 2, (height() - diameter) / 2, diameter, diameter);
+
+    // Draw circular button background with gradient
+    drawCircularButton(painter, buttonRect);
+
+    // Draw symbol if hovered
+    if (m_isHovered || m_isPressed) {
+        drawButtonSymbol(painter, buttonRect);
+    }
+
+    // Draw focus indicator if focused
+    if (m_isFocused) {
+        drawFocusIndicator(painter, buttonRect);
+    }
 }
 
 } // namespace Controls

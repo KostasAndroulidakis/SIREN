@@ -18,6 +18,7 @@
 
 #include "ui/controls/WindowControlButton.h"
 #include <QWidget>
+#include <QColor>
 
 namespace unoRadar {
 namespace UI {
@@ -26,13 +27,13 @@ namespace Controls {
 /**
  * @class CloseButton
  * @brief Specialized window control button for close functionality
- * 
+ *
  * Single Responsibility:
  * - Provides close window functionality
  * - Implements critical action styling (red hover state)
  * - Inherits all military-standard styling and behavior from base class
  * - Implements keyboard shortcut (Ctrl+Q) for accessibility
- * 
+ *
  * MISRA C++ Compliance:
  * - Explicit constructor
  * - Virtual destructor inherited from base
@@ -82,22 +83,16 @@ signals:
 
 protected:
     /**
-     * @brief Override hover behavior for critical action styling
-     * @param event Mouse event details
+     * @brief Get the base color for the button (macOS red)
+     * @return Base color for the button
      */
-    void enterEvent(QEnterEvent* event) override;
+    QColor getBaseColor() const override;
 
     /**
-     * @brief Override leave behavior for critical action styling
-     * @param event Mouse event details
+     * @brief Get the hover color for the button (macOS red hover)
+     * @return Hover color for the button
      */
-    void leaveEvent(QEvent* event) override;
-
-    /**
-     * @brief Override press behavior for critical action styling
-     * @param event Mouse event details
-     */
-    void mousePressEvent(QMouseEvent* event) override;
+    QColor getHoverColor() const override;
 
 private slots:
     /**
@@ -116,11 +111,6 @@ private:
      */
     void setupKeyboardShortcuts();
 
-    /**
-     * @brief Apply critical action styling for close button
-     * @param state Visual state ("hover", "pressed", "normal")
-     */
-    void applyCriticalActionStyle(const QString& state);
 };
 
 } // namespace Controls

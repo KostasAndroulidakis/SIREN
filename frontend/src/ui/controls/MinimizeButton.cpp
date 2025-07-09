@@ -16,14 +16,15 @@
 #include "constants/WindowControls.h"
 #include <QShortcut>
 #include <QKeySequence>
+#include <QColor>
 
 namespace unoRadar {
 namespace UI {
 namespace Controls {
 
 MinimizeButton::MinimizeButton(QWidget* parent)
-    : WindowControlButton(Constants::WindowControls::Icons::MINIMIZE, 
-                         "Minimize Window (Ctrl+M)", 
+    : WindowControlButton(Constants::WindowControls::Icons::MINIMIZE,
+                         "Minimize Window (Ctrl+M)",
                          parent)
 {
     initializeMinimizeButton();
@@ -33,10 +34,10 @@ void MinimizeButton::initializeMinimizeButton()
 {
     // Set tab order for keyboard navigation
     setTabOrder(this, this);
-    
+
     // Connect button click to minimize action
     connect(this, &QPushButton::clicked, this, &MinimizeButton::onButtonClicked);
-    
+
     // Set up keyboard shortcuts for accessibility
     setupKeyboardShortcuts();
 }
@@ -45,9 +46,19 @@ void MinimizeButton::setupKeyboardShortcuts()
 {
     // Create keyboard shortcut for minimize (Ctrl+M)
     QShortcut* minimizeShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_M), this);
-    
+
     // Connect shortcut to minimize action
     connect(minimizeShortcut, &QShortcut::activated, this, &MinimizeButton::onButtonClicked);
+}
+
+QColor MinimizeButton::getBaseColor() const
+{
+    return QColor(Constants::WindowControls::Colors::MACOS_YELLOW);
+}
+
+QColor MinimizeButton::getHoverColor() const
+{
+    return QColor(Constants::WindowControls::Colors::MACOS_YELLOW_HOVER);
 }
 
 void MinimizeButton::onButtonClicked()

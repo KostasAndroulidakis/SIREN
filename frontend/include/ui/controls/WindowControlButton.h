@@ -24,6 +24,9 @@
 #include <QPaintEvent>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
+#include <QPainter>
+#include <QRadialGradient>
+#include <QLinearGradient>
 #include <memory>
 
 namespace unoRadar {
@@ -33,13 +36,13 @@ namespace Controls {
 /**
  * @class WindowControlButton
  * @brief Base class providing common functionality for window control buttons
- * 
+ *
  * Responsibilities:
  * - Provides military-standard visual states (normal, hover, pressed, focus)
  * - Implements MIL-STD-1472 compliant sizing and accessibility
  * - Handles keyboard navigation and focus management
  * - Provides smooth animations for state transitions
- * 
+ *
  * MISRA C++ Compliance:
  * - Virtual destructor for proper inheritance
  * - Protected inheritance interface
@@ -57,7 +60,7 @@ public:
      * @param tooltip The accessibility tooltip text
      * @param parent Parent widget (may be nullptr)
      */
-    explicit WindowControlButton(const QString& icon, 
+    explicit WindowControlButton(const QString& icon,
                                 const QString& tooltip,
                                 QWidget* parent = nullptr);
 
@@ -176,9 +179,43 @@ private:
      */
     void createStateTransition(double targetOpacity);
 
+    /**
+     * @brief Get the base color for the button (implemented by subclasses)
+     * @return Base color for the button
+     */
+    virtual QColor getBaseColor() const = 0;
+
+    /**
+     * @brief Get the hover color for the button (implemented by subclasses)
+     * @return Hover color for the button
+     */
+    virtual QColor getHoverColor() const = 0;
+
+    /**
+     * @brief Draw circular button background with gradient
+     * @param painter QPainter instance
+     * @param rect Button rectangle
+     */
+    void drawCircularButton(QPainter& painter, const QRect& rect);
+
+    /**
+     * @brief Draw button symbol when hovered
+     * @param painter QPainter instance
+     * @param rect Button rectangle
+     */
+    void drawButtonSymbol(QPainter& painter, const QRect& rect);
+
+    /**
+     * @brief Draw focus indicator for keyboard navigation
+     * @param painter QPainter instance
+     * @param rect Button rectangle
+     */
+    void drawFocusIndicator(QPainter& painter, const QRect& rect);
+
     // Member variables
     QString m_icon;                                           ///< Button icon text
     QString m_tooltip;                                        ///< Accessibility tooltip
+    QString m_currentState;                                   ///< Current visual state
     bool m_isHovered;                                         ///< Hover state flag
     bool m_isPressed;                                         ///< Pressed state flag
     bool m_isFocused;                                         ///< Focus state flag

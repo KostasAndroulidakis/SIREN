@@ -18,6 +18,7 @@
 
 #include "ui/controls/WindowControlButton.h"
 #include <QWidget>
+#include <QColor>
 
 namespace unoRadar {
 namespace UI {
@@ -26,12 +27,12 @@ namespace Controls {
 /**
  * @class MinimizeButton
  * @brief Specialized window control button for minimize functionality
- * 
+ *
  * Single Responsibility:
  * - Provides minimize window functionality
  * - Inherits all military-standard styling and behavior from base class
  * - Implements keyboard shortcut (Ctrl+M) for accessibility
- * 
+ *
  * MISRA C++ Compliance:
  * - Explicit constructor
  * - Virtual destructor inherited from base
@@ -78,6 +79,19 @@ signals:
      * @brief Signal emitted when minimize action is requested
      */
     void minimizeRequested();
+
+protected:
+    /**
+     * @brief Get the base color for the button (macOS yellow)
+     * @return Base color for the button
+     */
+    QColor getBaseColor() const override;
+
+    /**
+     * @brief Get the hover color for the button (macOS yellow hover)
+     * @return Hover color for the button
+     */
+    QColor getHoverColor() const override;
 
 private slots:
     /**

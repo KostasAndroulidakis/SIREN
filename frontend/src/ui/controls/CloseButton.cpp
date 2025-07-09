@@ -17,14 +17,15 @@
 #include <QShortcut>
 #include <QKeySequence>
 #include <QMouseEvent>
+#include <QColor>
 
 namespace unoRadar {
 namespace UI {
 namespace Controls {
 
 CloseButton::CloseButton(QWidget* parent)
-    : WindowControlButton(Constants::WindowControls::Icons::CLOSE, 
-                         "Close Window (Ctrl+Q)", 
+    : WindowControlButton(Constants::WindowControls::Icons::CLOSE,
+                         "Close Window (Ctrl+Q)",
                          parent)
 {
     initializeCloseButton();
@@ -34,10 +35,10 @@ void CloseButton::initializeCloseButton()
 {
     // Set tab order for keyboard navigation (close button is last)
     setTabOrder(this, this);
-    
+
     // Connect button click to close action
     connect(this, &QPushButton::clicked, this, &CloseButton::onButtonClicked);
-    
+
     // Set up keyboard shortcuts for accessibility
     setupKeyboardShortcuts();
 }
@@ -46,85 +47,21 @@ void CloseButton::setupKeyboardShortcuts()
 {
     // Create keyboard shortcut for close (Ctrl+Q)
     QShortcut* closeShortcut = new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_Q), this);
-    
+
     // Connect shortcut to close action
     connect(closeShortcut, &QShortcut::activated, this, &CloseButton::onButtonClicked);
 }
 
-void CloseButton::applyCriticalActionStyle(const QString& state)
+QColor CloseButton::getBaseColor() const
 {
-    QString styleSheet;
-    
-    if (state == "hover") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %1;"
-            "    color: %3;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::CLOSE_BUTTON_HOVER)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_HOVER_TEXT);
-    }
-    else if (state == "pressed") {
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %1;"
-            "    color: %3;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::CLOSE_BUTTON_PRESSED)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_PRESSED_TEXT);
-    }
-    else { // normal state - use base class styling
-        styleSheet = QString(
-            "QPushButton {"
-            "    background-color: %1;"
-            "    border: %2px solid %3;"
-            "    color: %4;"
-            "    border-radius: 2px;"
-            "}"
-        ).arg(Constants::WindowControls::Colors::BUTTON_BACKGROUND)
-         .arg(Constants::WindowControls::BORDER_WIDTH)
-         .arg(Constants::WindowControls::Colors::BUTTON_BORDER)
-         .arg(Constants::WindowControls::Colors::BUTTON_TEXT);
-    }
-
-    setStyleSheet(styleSheet);
+    return QColor(Constants::WindowControls::Colors::MACOS_RED);
 }
 
-void CloseButton::enterEvent(QEnterEvent* event)
+QColor CloseButton::getHoverColor() const
 {
-    if (isEnabled()) {
-        applyCriticalActionStyle("hover");
-    }
-    
-    // Call base class implementation for state management
-    WindowControlButton::enterEvent(event);
+    return QColor(Constants::WindowControls::Colors::MACOS_RED_HOVER);
 }
 
-void CloseButton::leaveEvent(QEvent* event)
-{
-    if (isEnabled()) {
-        applyCriticalActionStyle("normal");
-    }
-    
-    // Call base class implementation for state management
-    WindowControlButton::leaveEvent(event);
-}
-
-void CloseButton::mousePressEvent(QMouseEvent* event)
-{
-    if (isEnabled() && event->button() == Qt::LeftButton) {
-        applyCriticalActionStyle("pressed");
-    }
-    
-    // Call base class implementation for state management
-    WindowControlButton::mousePressEvent(event);
-}
 
 void CloseButton::onButtonClicked()
 {

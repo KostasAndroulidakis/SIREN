@@ -18,6 +18,7 @@
 
 #include "ui/controls/WindowControlButton.h"
 #include <QWidget>
+#include <QColor>
 
 namespace unoRadar {
 namespace UI {
@@ -90,6 +91,19 @@ signals:
      * @brief Signal emitted when restore action is requested
      */
     void restoreRequested();
+
+protected:
+    /**
+     * @brief Get the base color for the button (macOS green)
+     * @return Base color for the button
+     */
+    QColor getBaseColor() const override;
+
+    /**
+     * @brief Get the hover color for the button (macOS green hover)
+     * @return Hover color for the button
+     */
+    QColor getHoverColor() const override;
 
 private slots:
     /**
