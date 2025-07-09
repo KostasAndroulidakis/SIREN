@@ -10,6 +10,12 @@ Military-grade aspirations within consumer hardware constraints.
 
 Simple components, precise measurements, real-time visualization.
 
+## Data Flow
+
+```text
+Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
+```
+
 ## Hardware
 
 ### Development board
