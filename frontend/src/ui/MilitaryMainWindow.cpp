@@ -22,8 +22,12 @@
 #include <QLabel>
 #include <QCloseEvent>
 #include <QMouseEvent>
+#include <QResizeEvent>
 #include <QApplication>
 #include <QScreen>
+#include <QPainterPath>
+#include <QBitmap>
+#include <QPainter>
 
 namespace unoRadar {
 namespace UI {
@@ -175,21 +179,30 @@ void MilitaryMainWindow::createMainContent()
     // Add content to main layout
     m_mainLayout->addWidget(m_contentDisplay.get(), 1); // Stretch factor 1
 
-    // Set central widget
+    // Set central widget with object name for styling
+    m_centralWidget->setObjectName("centralWidget");
     setCentralWidget(m_centralWidget.get());
+
+    // Apply rounded corners after window is set up
+    applyRoundedCorners();
 }
 
 void MilitaryMainWindow::applyMilitaryTheme()
 {
-    // Apply military-grade black theme
+    // Apply military-grade black theme with macOS-style rounded corners
     QString globalStyle = QString(
         "QMainWindow { "
         "    background-color: %1; "
         "    color: %2; "
+        "    border-radius: 10px; "
         "} "
         "QWidget { "
         "    background-color: %1; "
         "    color: %2; "
+        "} "
+        "QWidget#centralWidget { "
+        "    background-color: %1; "
+        "    border-radius: 10px; "
         "} "
         "QTextEdit { "
         "    background-color: %1; "
@@ -282,7 +295,7 @@ bool MilitaryMainWindow::eventFilter(QObject* object, QEvent* event)
             return true; // Event handled
         }
     }
-    
+
     // Pass event to parent class
     return QMainWindow::eventFilter(object, event);
 }
@@ -299,13 +312,39 @@ void MilitaryMainWindow::toggleFullSize()
     } else {
         // Save current geometry and go full size
         m_normalGeometry = geometry();
-        
+
         // Get screen geometry and set window to fill it (but not full-screen mode)
         QRect screenRect = QApplication::primaryScreen()->availableGeometry();
         setGeometry(screenRect);
         m_isFullSize = true;
         m_contentDisplay->append("\n[SYSTEM] Window expanded to full size");
     }
+}
+
+void MilitaryMainWindow::applyRoundedCorners()
+{
+    // Create rounded rectangle mask for macOS-style corners
+    const int radius = 10;
+    QSize windowSize = size();
+    
+    QPainterPath path;
+    path.addRoundedRect(0, 0, windowSize.width(), windowSize.height(), radius, radius);
+    
+    QBitmap mask(windowSize);
+    mask.fill(Qt::color0);
+    
+    QPainter painter(&mask);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.fillPath(path, Qt::color1);
+    
+    setMask(mask);
+}
+
+void MilitaryMainWindow::resizeEvent(QResizeEvent* event)
+{
+    QMainWindow::resizeEvent(event);
+    // Reapply rounded corners after resize
+    applyRoundedCorners();
 }
 
 } // namespace UI

@@ -111,6 +111,12 @@ protected:
      * @return True if event handled, false otherwise
      */
     bool eventFilter(QObject* object, QEvent* event) override;
+    
+    /**
+     * @brief Handle window resize events to update rounded corners
+     * @param event Resize event details
+     */
+    void resizeEvent(QResizeEvent* event) override;
 
 private slots:
     /**
@@ -154,6 +160,11 @@ private:
      * @brief Toggle full size window state
      */
     void toggleFullSize();
+    
+    /**
+     * @brief Apply rounded corners to window
+     */
+    void applyRoundedCorners();
 
     // Member variables
     std::unique_ptr<QWidget> m_titleBar;                    ///< Custom title bar widget
