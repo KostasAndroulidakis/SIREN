@@ -104,6 +104,14 @@ protected:
      */
     void mouseMoveEvent(QMouseEvent* event) override;
 
+    /**
+     * @brief Event filter for title bar double-click detection
+     * @param object Target object
+     * @param event Event details
+     * @return True if event handled, false otherwise
+     */
+    bool eventFilter(QObject* object, QEvent* event) override;
+
 private slots:
     /**
      * @brief Handle window closing signal from controls
@@ -142,6 +150,11 @@ private:
      */
     void setupWindowFlags();
 
+    /**
+     * @brief Toggle full size window state
+     */
+    void toggleFullSize();
+
     // Member variables
     std::unique_ptr<QWidget> m_titleBar;                    ///< Custom title bar widget
     std::unique_ptr<QWidget> m_centralWidget;               ///< Main content widget
@@ -154,6 +167,10 @@ private:
     // Window dragging state
     bool m_isDragging;          ///< Window drag state
     QPoint m_dragStartPosition; ///< Drag start position
+
+    // Window state management
+    bool m_isFullSize;          ///< Full size window state
+    QRect m_normalGeometry;     ///< Normal window geometry for restoration
 };
 
 } // namespace UI

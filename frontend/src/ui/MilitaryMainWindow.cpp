@@ -23,6 +23,7 @@
 #include <QCloseEvent>
 #include <QMouseEvent>
 #include <QApplication>
+#include <QScreen>
 
 namespace unoRadar {
 namespace UI {
@@ -38,6 +39,8 @@ MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
     , m_titleLabel(std::make_unique<QLabel>(Constants::Application::COMMAND_CENTER_TITLE, m_titleBar.get()))
     , m_isDragging(false)
     , m_dragStartPosition()
+    , m_isFullSize(false)
+    , m_normalGeometry()
 {
     initializeMilitaryWindow();
 }
@@ -110,9 +113,12 @@ void MilitaryMainWindow::createCustomTitleBar()
         .arg(Constants::UI::Fonts::MONOSPACE));
     m_titleLabel->setAlignment(Qt::AlignCenter);
 
+    // Enable mouse tracking for double-click detection
+    m_titleLabel->installEventFilter(this);
+
     // Title takes full width for perfect center alignment
     titleLayout->addWidget(m_titleLabel.get());
-    
+
     // Position traffic lights absolutely on top-left (not affecting layout)
     m_controlBar->setParent(m_titleBar.get());
     m_controlBar->resize(100, Constants::WindowControls::CONTROL_BAR_HEIGHT); // Give it proper size
@@ -261,6 +267,42 @@ void MilitaryMainWindow::onWindowStateChanged(bool isMaximized)
     if (isMaximized) {
         // Disable dragging when maximized
         m_isDragging = false;
+    }
+}
+
+bool MilitaryMainWindow::eventFilter(QObject* object, QEvent* event)
+{
+    // Check if this is a double-click on the title label
+    if (object == m_titleLabel.get() && event->type() == QEvent::MouseButtonDblClick) {
+        QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
+        if (mouseEvent->button() == Qt::LeftButton) {
+            toggleFullSize();
+            return true; // Event handled
+        }
+    }
+    
+    // Pass event to parent class
+    return QMainWindow::eventFilter(object, event);
+}
+
+void MilitaryMainWindow::toggleFullSize()
+{
+    if (m_isFullSize) {
+        // Restore to normal size
+        if (!m_normalGeometry.isNull()) {
+            setGeometry(m_normalGeometry);
+            m_isFullSize = false;
+            m_contentDisplay->append("\n[SYSTEM] Window restored to normal size");
+        }
+    } else {
+        // Save current geometry and go full size
+        m_normalGeometry = geometry();
+        
+        // Get screen geometry and set window to fill it (but not full-screen mode)
+        QRect screenRect = QApplication::primaryScreen()->availableGeometry();
+        setGeometry(screenRect);
+        m_isFullSize = true;
+        m_contentDisplay->append("\n[SYSTEM] Window expanded to full size");
     }
 }
 
