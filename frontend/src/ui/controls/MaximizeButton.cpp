@@ -68,11 +68,9 @@ void MaximizeButton::updateButtonAppearance()
     if (m_isMaximized) {
         // Window is maximized, show restore icon
         setText(Constants::WindowControls::Icons::RESTORE);
-        setToolTip("Restore Window (Ctrl+Shift+M)");
     } else {
         // Window is normal, show maximize icon
         setText(Constants::WindowControls::Icons::MAXIMIZE);
-        setToolTip("Maximize Window (Ctrl+Shift+M)");
     }
 }
 

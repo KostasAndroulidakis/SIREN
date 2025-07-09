@@ -50,9 +50,8 @@ void WindowControlButton::initializeButton()
     setMinimumSize(Constants::WindowControls::BUTTON_MIN_SIZE,
                    Constants::WindowControls::BUTTON_MIN_SIZE);
 
-    // Configure text and tooltip
+    // Configure text (no tooltip for clean military UI)
     setText(m_icon);
-    setToolTip(m_tooltip);
 
     // Enable focus for keyboard navigation
     setFocusPolicy(Qt::StrongFocus);
