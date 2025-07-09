@@ -32,18 +32,53 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 
 ## Software
 
-### Firmware
+### System Launcher
 
 - Language: C++
+- File: `main.cpp`
+- Purpose: MISRA-compliant process orchestrator for backend and frontend
+
+### Firmware
+
+- Language: C++ (Arduino)
+- Location: `firmware/`
+- Purpose: Sensor data collection and servo control
 
 ### Backend
 
 - Language: C++
+- Framework: Boost.Asio + Boost.Beast
+- Location: `backend/`
+- Purpose: WebSocket server, serial communication, real-time data processing
 
 ### Frontend
 
-- Language: TypeScript, CSS
-- Frameworks: Remix, Tailwind CSS
+- Language: C++
+- Framework: Qt6 LTS
+- Location: `frontend/`
+- Purpose: Military-grade GUI with WebSocket client and radar visualization
+
+### Architecture
+
+```text
+main.cpp → launches → backend (WebSocket server) ← connects ← frontend (Qt6 GUI)
+                          ↕
+                    firmware (Arduino)
+```
+
+### Build & Run
+
+```bash
+# Build components
+cd backend/build && make
+cd frontend/build && make
+
+# Compile launcher
+g++ -std=c++17 main.cpp -o unoRadar
+
+# Run system
+./unoRadar
+```
 
 ## PIN Connections
 
