@@ -63,6 +63,7 @@ frontend/.cache/
 
 # Ignore Claude files
 .claude/
+.context/
 AGENTS.md
 CLAUDE.md
 CLAUDE/
