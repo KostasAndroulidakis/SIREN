@@ -64,11 +64,7 @@ frontend/.cache/
 # Ignore Claude files
 .claude/
 .context/
-AGENTS.md
 CLAUDE.md
-CLAUDE/
-REQUIREMENTS.md
-VSA.md
 
 # referrer files
 frontend_referrence/
