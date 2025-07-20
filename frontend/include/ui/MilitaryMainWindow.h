@@ -13,6 +13,7 @@ namespace ui {
 // Forward declarations
 class MainLayout;
 class ConnectionStatusWidget;
+class SonarDataWidget;
 
 } // namespace ui
 
@@ -85,6 +86,7 @@ private:
     // UI Components (managed by Qt parent-child hierarchy)
     MainLayout* m_mainLayout{nullptr};
     ConnectionStatusWidget* m_connectionStatus{nullptr};
+    SonarDataWidget* m_sonarDataWidget{nullptr};
     
     // Network components
     Network::IWebSocketClient* m_webSocketClient{nullptr};

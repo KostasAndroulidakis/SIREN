@@ -7,6 +7,7 @@
 #include "ui/PanelFactory.h"
 #include "ui/MilitaryTheme.h"
 #include "ui/ConnectionStatusWidget.h"
+#include "ui/SonarDataWidget.h"
 #include "network/WebSocketClient.h"
 #include "data/SonarDataParser.h"
 #include "constants/LayoutConstants.h"
@@ -23,6 +24,7 @@ MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
     : QMainWindow(parent)
     , m_mainLayout(nullptr)
     , m_connectionStatus(nullptr)
+    , m_sonarDataWidget(nullptr)
     , m_webSocketClient(nullptr)
 {
     initializeUI();
@@ -62,11 +64,14 @@ void MilitaryMainWindow::createPanels()
     // Create connection status widget (SRP: only displays connection state)
     m_connectionStatus = new ConnectionStatusWidget(this);
     
+    // Create sonar data widget (SRP: only displays sonar readings)
+    m_sonarDataWidget = new SonarDataWidget(this);
+    
     // Create placeholder panels for other components
     QFrame* statusPanel = PanelFactory::createPanel(PanelFactory::PanelType::STATUS, this);
     QFrame* controlPanel = PanelFactory::createPlaceholder("CONTROL PANEL", this);
-    QFrame* radarPanel = PanelFactory::createPlaceholder("RADAR DISPLAY", this);
-    QFrame* dataPanel = PanelFactory::createPlaceholder("DATA PANEL", this);
+    QFrame* radarPanel = PanelFactory::createPlaceholder("SONAR DISPLAY", this);
+    QFrame* dataPanel = PanelFactory::createPanel(PanelFactory::PanelType::DATA, this);
     QFrame* performancePanel = PanelFactory::createPlaceholder("PERFORMANCE METRICS", this);
     
     // Apply military theme styling to panels
@@ -86,6 +91,17 @@ void MilitaryMainWindow::createPanels()
     );
     statusLayout->addWidget(m_connectionStatus);
     statusLayout->addStretch(); // Push connection status to the left
+    
+    // Add sonar data widget to data panel
+    QVBoxLayout* dataLayout = new QVBoxLayout(dataPanel);
+    dataLayout->setContentsMargins(
+        constants::layout::PANEL_MARGIN,
+        constants::layout::PANEL_MARGIN,
+        constants::layout::PANEL_MARGIN,
+        constants::layout::PANEL_MARGIN
+    );
+    dataLayout->addWidget(m_sonarDataWidget);
+    dataLayout->addStretch(); // Push sonar data to the top
     
     // Set widgets in main layout (SRP: MainLayout only arranges)
     m_mainLayout->setStatusWidget(statusPanel);
@@ -139,8 +155,8 @@ void MilitaryMainWindow::initializeWebSocketClient()
                     // Successfully parsed sonar data
                     qDebug() << "Sonar data received:" << sonarData.toString();
                     
-                    // TODO: Send to sonar display widget
-                    // TODO: Update data panel with latest readings
+                    // Update sonar data widget (SRP: only displays data)
+                    m_sonarDataWidget->updateSonarData(sonarData);
                 } else {
                     // Log parsing errors for debugging
                     const QString errorDesc = data::SonarDataParser::getErrorDescription(parseResult);

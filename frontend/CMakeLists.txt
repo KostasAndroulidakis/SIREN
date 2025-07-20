@@ -48,6 +48,7 @@ qt_add_executable(SIREN
     src/ui/PanelFactory.cpp
     src/ui/MilitaryTheme.cpp
     src/ui/ConnectionStatusWidget.cpp
+    src/ui/SonarDataWidget.cpp
     src/network/WebSocketClient.cpp
     src/data/SonarDataParser.cpp
     include/ui/controls/WindowControlButton.h
@@ -62,6 +63,7 @@ qt_add_executable(SIREN
     include/ui/PanelFactory.h
     include/ui/MilitaryTheme.h
     include/ui/ConnectionStatusWidget.h
+    include/ui/SonarDataWidget.h
     include/network/IWebSocketClient.h
     include/network/WebSocketClient.h
     include/data/SonarDataParser.h
