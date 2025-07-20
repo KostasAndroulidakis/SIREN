@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     siren::ui::SplashScreen splash;
     
     // Create main window but don't show it yet
-    siren::UI::MilitaryMainWindow window;
+    siren::ui::MilitaryMainWindow window;
     
     // Connect splash screen completion to main window display
     QObject::connect(&splash, &siren::ui::SplashScreen::loadingComplete, [&window]() {

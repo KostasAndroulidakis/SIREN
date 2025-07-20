@@ -43,6 +43,11 @@ qt_add_executable(SIREN
     src/ui/controls/WindowControlBar.cpp
     src/ui/controls/WindowControlHandler.cpp
     src/ui/SplashScreen.cpp
+    src/ui/MilitaryMainWindow.cpp
+    src/ui/MainLayout.cpp
+    src/ui/PanelFactory.cpp
+    src/ui/MilitaryTheme.cpp
+    src/ui/ConnectionStatusWidget.cpp
     include/ui/controls/WindowControlButton.h
     include/ui/controls/MinimizeButton.h
     include/ui/controls/MaximizeButton.h
@@ -50,9 +55,13 @@ qt_add_executable(SIREN
     include/ui/controls/WindowControlBar.h
     include/ui/controls/WindowControlHandler.h
     include/ui/SplashScreen.h
-    include/constants/WindowControls.h
-    src/ui/MilitaryMainWindow.cpp
     include/ui/MilitaryMainWindow.h
+    include/ui/MainLayout.h
+    include/ui/PanelFactory.h
+    include/ui/MilitaryTheme.h
+    include/ui/ConnectionStatusWidget.h
+    include/constants/WindowControls.h
+    include/constants/LayoutConstants.h
     ${RESOURCES}
 )
 

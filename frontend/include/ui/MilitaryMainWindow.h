@@ -1,52 +1,35 @@
-/**
- * CLASSIFICATION: UNCLASSIFIED
- * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: SIREN-2025
- *
- * @file MilitaryMainWindow.h
- * @brief Military-grade main window with custom controls (MIL-STD-1472 compliant)
- * @author SIREN Defense Systems
- * @date 2025
- *
- * MISRA C++ 2008 Compliant
- * DO-178C Level A Certifiable
- * Integration demonstration of custom window controls
- */
+#ifndef SIREN_MILITARY_MAIN_WINDOW_H
+#define SIREN_MILITARY_MAIN_WINDOW_H
 
-#ifndef SIREN_UI_MILITARYMAINWINDOW_H
-#define SIREN_UI_MILITARYMAINWINDOW_H
+// SIREN Military-Grade Radar System
+// Main Window - Single Responsibility: Application Window Management
+// Compliant with MISRA C++ 2023, SRP, SSOT
 
 #include <QMainWindow>
-#include <QWidget>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QTextEdit>
-#include <QLabel>
-#include <memory>
+
+namespace siren {
+namespace ui {
 
 // Forward declarations
-namespace siren {
-namespace UI {
-namespace Controls {
-    class WindowControlBar;
-    class WindowControlHandler;
-}
-}
-}
-
-namespace siren {
-namespace UI {
+class MainLayout;
+class ConnectionStatusWidget;
 
 /**
- * @class MilitaryMainWindow
- * @brief Military-grade main window with custom frameless controls
- *
- * Demonstrates complete integration of:
- * - Custom window control buttons (minimize, maximize, close)
- * - Military-standard styling and behavior
- * - Frameless window with custom title bar
- * - Keyboard navigation and accessibility
- * - Event handling and state management
+ * @brief Military-grade main window - Single Responsibility: Window Management
+ * 
+ * This window has ONE job: Manage the main application window lifecycle.
+ * It does NOT create UI components, handle networking, or process data.
+ * 
+ * Features:
+ * - MainLayout integration for panel arrangement
+ * - ConnectionStatusWidget integration
+ * - Military theme application
+ * - Window state management
+ * 
+ * MISRA C++ Compliance:
+ * - Rule 12.4.1: No dynamic allocation after initialization
+ * - Rule 21.2.1: RAII for all resources
+ * - Rule 5.0.1: No magic numbers (uses constants)
  */
 class MilitaryMainWindow final : public QMainWindow
 {
@@ -54,137 +37,44 @@ class MilitaryMainWindow final : public QMainWindow
 
 public:
     /**
-     * @brief Explicit constructor
-     * @param parent Parent widget (may be nullptr)
+     * @brief Construct military main window
+     * @param parent Parent widget (Qt memory management)
      */
     explicit MilitaryMainWindow(QWidget* parent = nullptr);
 
     /**
-     * @brief Virtual destructor for proper cleanup
-     * @note Defined in .cpp file to handle unique_ptr with incomplete types
+     * @brief Destructor - RAII cleanup
      */
-    virtual ~MilitaryMainWindow();
+    ~MilitaryMainWindow() override = default;
 
-    /**
-     * @brief Copy constructor - deleted for MISRA compliance
-     */
+    // MISRA C++ Rule 12.1.1: Disable copy/move for Qt widgets
     MilitaryMainWindow(const MilitaryMainWindow&) = delete;
-
-    /**
-     * @brief Copy assignment operator - deleted for MISRA compliance
-     */
     MilitaryMainWindow& operator=(const MilitaryMainWindow&) = delete;
-
-    /**
-     * @brief Move constructor - deleted for MISRA compliance
-     */
     MilitaryMainWindow(MilitaryMainWindow&&) = delete;
-
-    /**
-     * @brief Move assignment operator - deleted for MISRA compliance
-     */
     MilitaryMainWindow& operator=(MilitaryMainWindow&&) = delete;
-
-protected:
-    /**
-     * @brief Handle close events for cleanup
-     * @param event Close event details
-     */
-    void closeEvent(QCloseEvent* event) override;
-
-    /**
-     * @brief Handle mouse press events for window dragging
-     * @param event Mouse event details
-     */
-    void mousePressEvent(QMouseEvent* event) override;
-
-    /**
-     * @brief Handle mouse move events for window dragging
-     * @param event Mouse event details
-     */
-    void mouseMoveEvent(QMouseEvent* event) override;
-
-    /**
-     * @brief Event filter for title bar double-click detection
-     * @param object Target object
-     * @param event Event details
-     * @return True if event handled, false otherwise
-     */
-    bool eventFilter(QObject* object, QEvent* event) override;
-    
-    /**
-     * @brief Handle window resize events to update rounded corners
-     * @param event Resize event details
-     */
-    void resizeEvent(QResizeEvent* event) override;
-
-private slots:
-    /**
-     * @brief Handle window closing signal from controls
-     */
-    void onWindowClosing();
-
-    /**
-     * @brief Handle window state changes
-     * @param isMaximized New maximized state
-     */
-    void onWindowStateChanged(bool isMaximized);
 
 private:
     /**
-     * @brief Initialize the military-grade window
+     * @brief Initialize the main window UI
      */
-    void initializeMilitaryWindow();
+    void initializeUI();
 
     /**
-     * @brief Create the custom title bar with controls
-     */
-    void createCustomTitleBar();
-
-    /**
-     * @brief Create the main content area
-     */
-    void createMainContent();
-
-    /**
-     * @brief Apply military-standard styling
+     * @brief Apply military theme styling
      */
     void applyMilitaryTheme();
 
     /**
-     * @brief Set up window flags for frameless operation
+     * @brief Create all UI panels and widgets
      */
-    void setupWindowFlags();
+    void createPanels();
 
-    /**
-     * @brief Toggle full size window state
-     */
-    void toggleFullSize();
-    
-    /**
-     * @brief Apply rounded corners to window
-     */
-    void applyRoundedCorners();
-
-    // Member variables
-    std::unique_ptr<QWidget> m_titleBar;                    ///< Custom title bar widget
-    std::unique_ptr<QWidget> m_centralWidget;               ///< Main content widget
-    std::unique_ptr<QVBoxLayout> m_mainLayout;              ///< Main window layout
-    std::unique_ptr<QTextEdit> m_contentDisplay;            ///< Content display area
-    std::unique_ptr<Controls::WindowControlBar> m_controlBar; ///< Window control buttons
-    std::unique_ptr<Controls::WindowControlHandler> m_controlHandler; ///< Control event handler
-    std::unique_ptr<QLabel> m_titleLabel;                   ///< Centered title label
-
-    // Window dragging state
-    bool m_isDragging;          ///< Window drag state
-    QPoint m_dragStartPosition; ///< Drag start position
-
-    // Window state management
-    bool m_isFullSize;          ///< Full size window state
-    QRect m_normalGeometry;     ///< Normal window geometry for restoration
+    // UI Components (managed by Qt parent-child hierarchy)
+    MainLayout* m_mainLayout{nullptr};
+    ConnectionStatusWidget* m_connectionStatus{nullptr};
 };
 
-} // namespace UI
+} // namespace ui
 } // namespace siren
 
-#endif // SIREN_UI_MILITARYMAINWINDOW_H
+#endif // SIREN_MILITARY_MAIN_WINDOW_H

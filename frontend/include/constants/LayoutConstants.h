@@ -26,6 +26,12 @@ namespace layout {
 constexpr std::uint16_t SCREEN_WIDTH = 1920;
 constexpr std::uint16_t SCREEN_HEIGHT = 1080;
 
+// Window Dimensions
+constexpr std::uint16_t WINDOW_WIDTH = 1400;            // Default window width
+constexpr std::uint16_t WINDOW_HEIGHT = 900;            // Default window height
+constexpr std::uint16_t MIN_WINDOW_WIDTH = 1200;        // Minimum window width
+constexpr std::uint16_t MIN_WINDOW_HEIGHT = 800;        // Minimum window height
+
 // Panel Dimensions (optimized for 1920x1080)
 constexpr std::uint16_t STATUS_PANEL_HEIGHT = 60;       // Top status bar
 constexpr std::uint16_t CONTROL_PANEL_WIDTH = 320;      // Left control panel (16.7% of width)
