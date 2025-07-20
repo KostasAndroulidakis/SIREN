@@ -14,6 +14,14 @@ namespace ui {
 class MainLayout;
 class ConnectionStatusWidget;
 
+} // namespace ui
+
+namespace Network {
+class IWebSocketClient;
+} // namespace Network
+
+namespace ui {
+
 /**
  * @brief Military-grade main window - Single Responsibility: Window Management
  * 
@@ -69,9 +77,17 @@ private:
      */
     void createPanels();
 
+    /**
+     * @brief Initialize WebSocket client and connect to backend
+     */
+    void initializeWebSocketClient();
+
     // UI Components (managed by Qt parent-child hierarchy)
     MainLayout* m_mainLayout{nullptr};
     ConnectionStatusWidget* m_connectionStatus{nullptr};
+    
+    // Network components
+    Network::IWebSocketClient* m_webSocketClient{nullptr};
 };
 
 } // namespace ui

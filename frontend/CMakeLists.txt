@@ -48,6 +48,7 @@ qt_add_executable(SIREN
     src/ui/PanelFactory.cpp
     src/ui/MilitaryTheme.cpp
     src/ui/ConnectionStatusWidget.cpp
+    src/network/WebSocketClient.cpp
     include/ui/controls/WindowControlButton.h
     include/ui/controls/MinimizeButton.h
     include/ui/controls/MaximizeButton.h
@@ -60,6 +61,8 @@ qt_add_executable(SIREN
     include/ui/PanelFactory.h
     include/ui/MilitaryTheme.h
     include/ui/ConnectionStatusWidget.h
+    include/network/IWebSocketClient.h
+    include/network/WebSocketClient.h
     include/constants/WindowControls.h
     include/constants/LayoutConstants.h
     ${RESOURCES}

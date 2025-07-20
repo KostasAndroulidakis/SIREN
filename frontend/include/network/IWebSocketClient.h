@@ -32,6 +32,12 @@ class IWebSocketClient : public QObject {
     Q_OBJECT
 
 public:
+    /**
+     * @brief Explicit constructor
+     * @param parent Parent QObject (Qt memory management)
+     */
+    explicit IWebSocketClient(QObject* parent = nullptr) : QObject(parent) {}
+
     // MISRA C++ 2008: 10-3-2 - Virtual destructor
     virtual ~IWebSocketClient() = default;
 

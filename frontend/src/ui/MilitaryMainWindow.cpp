@@ -7,8 +7,10 @@
 #include "ui/PanelFactory.h"
 #include "ui/MilitaryTheme.h"
 #include "ui/ConnectionStatusWidget.h"
+#include "network/WebSocketClient.h"
 #include "constants/LayoutConstants.h"
 #include <QWidget>
+#include <QUrl>
 
 namespace siren {
 namespace ui {
@@ -17,10 +19,12 @@ MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
     : QMainWindow(parent)
     , m_mainLayout(nullptr)
     , m_connectionStatus(nullptr)
+    , m_webSocketClient(nullptr)
 {
     initializeUI();
     applyMilitaryTheme();
     createPanels();
+    initializeWebSocketClient();
 }
 
 void MilitaryMainWindow::initializeUI()
@@ -89,6 +93,40 @@ void MilitaryMainWindow::createPanels()
     // Initialize connection status (start as disconnected)
     m_connectionStatus->updateConnectionState(ConnectionStatusWidget::ConnectionState::DISCONNECTED);
     m_connectionStatus->updateServerAddress("localhost:8080");
+}
+
+void MilitaryMainWindow::initializeWebSocketClient()
+{
+    // Create WebSocket client (SRP: only handles backend communication)
+    m_webSocketClient = new Network::WebSocketClient(this);
+    
+    // Connect WebSocket state changes to connection status widget
+    connect(m_webSocketClient, &Network::IWebSocketClient::stateChanged,
+            this, [this](Network::IWebSocketClient::State state) {
+                ConnectionStatusWidget::ConnectionState widgetState;
+                
+                // Map WebSocket state to widget state
+                switch (state) {
+                    case Network::IWebSocketClient::State::Disconnected:
+                        widgetState = ConnectionStatusWidget::ConnectionState::DISCONNECTED;
+                        break;
+                    case Network::IWebSocketClient::State::Connecting:
+                        widgetState = ConnectionStatusWidget::ConnectionState::CONNECTING;
+                        break;
+                    case Network::IWebSocketClient::State::Connected:
+                        widgetState = ConnectionStatusWidget::ConnectionState::CONNECTED;
+                        break;
+                    case Network::IWebSocketClient::State::Closing:
+                        widgetState = ConnectionStatusWidget::ConnectionState::DISCONNECTED;
+                        break;
+                }
+                
+                m_connectionStatus->updateConnectionState(widgetState);
+            });
+    
+    // Connect to backend server automatically
+    const QUrl serverUrl("ws://localhost:8080");
+    m_webSocketClient->connectToServer(serverUrl);
 }
 
 } // namespace ui
