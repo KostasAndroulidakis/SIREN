@@ -68,3 +68,25 @@ CLAUDE.md
 
 # referrer files
 frontend_referrence/
+
+# Compiled executables
+SIREN_launcher
+
+# Build directories
+build/
+*/build/
+
+# Object files and libraries
+*.o
+*.a
+*.so
+*.dylib
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store

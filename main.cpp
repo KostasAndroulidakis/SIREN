@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file main.cpp
- * @brief Main entry point for unoRadar military-grade radar system
- * @author unoRadar Defense Systems
+ * @brief Main entry point for SIREN military-grade radar system
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     static_cast<void>(argv);
 
     std::cout << "==================================================" << std::endl;
-    std::cout << " unoRadar Military-Grade Radar System v1.0.0" << std::endl;
+    std::cout << " SIREN Military-Grade Radar System v1.0.0" << std::endl;
     std::cout << " CLASSIFICATION: UNCLASSIFIED" << std::endl;
     std::cout << "==================================================" << std::endl;
 
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]) {
         backendPid = fork();
 
         if (backendPid == 0) {
-            execl("./backend/build/unoRadar_server", "unoRadar_server", nullptr);
+            execl("./backend/build/SIREN_server", "SIREN_server", nullptr);
             std::cerr << "[ERROR] Failed to start backend!" << std::endl;
             std::exit(EXIT_FAILURE);
         } else if (backendPid < 0) {
@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
         frontendPid = fork();
 
         if (frontendPid == 0) {
-            execl("./frontend/build/unoRadar_frontend", "unoRadar_frontend", nullptr);
+            execl("./frontend/build/SIREN_frontend", "SIREN_frontend", nullptr);
             std::cerr << "[ERROR] Failed to start frontend!" << std::endl;
             std::exit(EXIT_FAILURE);
         } else if (frontendPid < 0) {
@@ -112,7 +112,7 @@ int main(int argc, char* argv[]) {
             return EXIT_FAILURE;
         }
 
-        std::cout << "[SYSTEM] unoRadar operational (Ctrl+C to shutdown)" << std::endl;
+        std::cout << "[SYSTEM] SIREN operational (Ctrl+C to shutdown)" << std::endl;
 
         // Monitor processes
         while (shutdownRequested == 0) {

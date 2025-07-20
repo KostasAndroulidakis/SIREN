@@ -70,23 +70,11 @@ int main() {
     std::cout << "Controller state: " << static_cast<int>(controller.getSystemState()) << std::endl;
     std::cout << "System healthy: " << (controller.isHealthy() ? "Yes" : "No") << std::endl;
 
-    // Run for a short time to test event loop
-    std::cout << "Running controller for " << msg::test::TEST_RUN_DURATION.count() << " seconds..." << std::endl;
-    auto start_time = std::chrono::steady_clock::now();
-
-    std::thread controller_thread([&controller]() {
-        controller.run();
-    });
-
-    // Let it run for the specified test duration
-    std::this_thread::sleep_for(msg::test::TEST_RUN_DURATION);
-
-    std::cout << "Stopping controller..." << std::endl;
-    controller.stop();
-
-    if (controller_thread.joinable()) {
-        controller_thread.join();
-    }
+    // Run controller continuously (military-grade production mode)
+    std::cout << "Running controller in production mode - Ctrl+C to stop..." << std::endl;
+    
+    // Run the controller (this blocks until stop() is called)
+    controller.run();
 
     auto metrics = controller.getPerformanceMetrics();
     std::cout << "Final metrics - Active connections: " << metrics.active_connections << std::endl;

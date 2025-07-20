@@ -251,25 +251,24 @@ bool MasterController::initializeSubsystems() {
         // Auto-detect Arduino port
         const std::string detected_port = serial::SerialInterface::autoDetectArduinoPort();
         if (detected_port.empty()) {
+            std::cout << "[MasterController] ⚠️ No Arduino detected - running in demo mode" << std::endl;
             utils::ErrorHandler::handleSystemError("MasterController",
-                "Arduino port auto-detection failed", data::ErrorSeverity::ERROR);
-            return false;
+                "Arduino port auto-detection failed - continuing without hardware", data::ErrorSeverity::WARNING);
+            // Don't return false - continue without Arduino
+        } else {
+            // Initialize and start serial communication
+            if (!serial_interface_->initialize(detected_port)) {
+                std::cout << "[MasterController] ⚠️ Arduino initialization failed - running in demo mode" << std::endl;
+                utils::ErrorHandler::handleSystemError("MasterController",
+                    "SerialInterface initialization failed - continuing without hardware", data::ErrorSeverity::WARNING);
+            } else if (!serial_interface_->start()) {
+                std::cout << "[MasterController] ⚠️ Arduino start failed - running in demo mode" << std::endl;
+                utils::ErrorHandler::handleSystemError("MasterController",
+                    "SerialInterface start failed - continuing without hardware", data::ErrorSeverity::WARNING);
+            } else {
+                std::cout << "[MasterController] ✅ SerialInterface initialized on port: " << detected_port << std::endl;
+            }
         }
-
-        // Initialize and start serial communication
-        if (!serial_interface_->initialize(detected_port)) {
-            utils::ErrorHandler::handleSystemError("MasterController",
-                "SerialInterface initialization failed", data::ErrorSeverity::ERROR);
-            return false;
-        }
-
-        if (!serial_interface_->start()) {
-            utils::ErrorHandler::handleSystemError("MasterController",
-                "SerialInterface start failed", data::ErrorSeverity::ERROR);
-            return false;
-        }
-
-        std::cout << "[MasterController] ✅ SerialInterface initialized on port: " << detected_port << std::endl;
 
         // Initialize WebSocket server
         std::cout << "[MasterController] Initializing WebSocket server..." << std::endl;
