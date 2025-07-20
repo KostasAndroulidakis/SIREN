@@ -1,4 +1,6 @@
-# unoRadar
+# SIREN
+
+![SIREN Logo](siren-logo.png)
 
 A minimal radar system built from first principles.
 
