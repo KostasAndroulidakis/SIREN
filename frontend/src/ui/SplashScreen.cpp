@@ -17,7 +17,7 @@ namespace ui {
 SplashScreen::SplashScreen(QWidget* parent)
     : QSplashScreen(QPixmap(), Qt::WindowStaysOnTopHint)
     , m_progressBar(nullptr)
-    , m_titleLabel(nullptr)
+    , m_logoLabel(nullptr)
     , m_versionLabel(nullptr)
     , m_statusLabel(nullptr)
     , m_layout(nullptr)
@@ -57,10 +57,7 @@ bool SplashScreen::initializeUI()
         m_layout->setContentsMargins(40, 40, 40, 40);
         m_layout->setSpacing(20);
         
-        // Create title label
-        m_titleLabel = new QLabel(APPLICATION_NAME, m_centralWidget);
-        m_titleLabel->setAlignment(Qt::AlignCenter);
-        m_titleLabel->setObjectName("titleLabel");
+        // Title label removed - logo speaks for itself
         
         // Create version label
         m_versionLabel = new QLabel(APPLICATION_VERSION, m_centralWidget);
@@ -79,10 +76,16 @@ bool SplashScreen::initializeUI()
         m_progressBar->setTextVisible(true);
         m_progressBar->setObjectName("progressBar");
         
+        // Create logo label (will be populated in loadLogo)
+        m_logoLabel = new QLabel(m_centralWidget);
+        m_logoLabel->setAlignment(Qt::AlignCenter);
+        m_logoLabel->setObjectName("logoLabel");
+        
         // Add widgets to layout with proper spacing
         m_layout->addStretch(2);  // Top spacing
-        m_layout->addWidget(m_titleLabel);
-        m_layout->addWidget(m_versionLabel);
+        m_layout->addWidget(m_logoLabel);  // Logo centered
+        m_layout->addStretch(1);  // Spacing after logo
+        m_layout->addWidget(m_versionLabel);  // Keep version info
         m_layout->addStretch(1);  // Middle spacing
         m_layout->addWidget(m_statusLabel);
         m_layout->addWidget(m_progressBar);
@@ -121,11 +124,14 @@ bool SplashScreen::loadLogo()
     }
     
     // Scale logo to appropriate size while maintaining aspect ratio
-    constexpr int LOGO_MAX_HEIGHT = 150;
+    constexpr int LOGO_MAX_HEIGHT = 120;
     const QPixmap scaledLogo = logoPixmap.scaledToHeight(LOGO_MAX_HEIGHT, Qt::SmoothTransformation);
     
-    // Set as splash screen pixmap
-    setPixmap(scaledLogo);
+    // Set logo in the label widget (centered in layout)
+    if (m_logoLabel != nullptr) {
+        m_logoLabel->setPixmap(scaledLogo);
+        m_logoLabel->setAlignment(Qt::AlignCenter);
+    }
     
     qDebug() << "SplashScreen: Logo loaded successfully";
     return true;
@@ -140,15 +146,8 @@ void SplashScreen::applyMilitaryTheme()
             border: 2px solid #00ff00;
         }
         
-        #titleLabel {
-            color: #00ff00;
-            font-family: 'Courier New', monospace;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        
         #versionLabel {
-            color: #ffff00;
+            color: #FF4500;
             font-family: 'Courier New', monospace;
             font-size: 14px;
         }
@@ -170,7 +169,7 @@ void SplashScreen::applyMilitaryTheme()
         }
         
         #progressBar::chunk {
-            background-color: #00ff00;
+            background-color: #00FFFF;
             border-radius: 2px;
         }
     )";
@@ -180,29 +179,24 @@ void SplashScreen::applyMilitaryTheme()
 
 void SplashScreen::createFallbackDisplay()
 {
-    // Create fallback text-based display if logo fails
-    QPixmap fallbackPixmap(SPLASH_WIDTH, SPLASH_HEIGHT);
-    fallbackPixmap.fill(QColor(26, 26, 26));  // Dark military background
-    
-    QPainter painter(&fallbackPixmap);
-    painter.setRenderHint(QPainter::Antialiasing);
-    
-    // Draw border
-    painter.setPen(QPen(QColor(0, 255, 0), 2));
-    painter.drawRect(1, 1, SPLASH_WIDTH - 2, SPLASH_HEIGHT - 2);
-    
-    // Draw title
-    painter.setPen(QColor(0, 255, 0));
-    painter.setFont(QFont("Courier New", 28, QFont::Bold));
-    painter.drawText(QRect(0, 100, SPLASH_WIDTH, 50), Qt::AlignCenter, APPLICATION_NAME);
-    
-    // Draw subtitle
-    painter.setPen(QColor(255, 255, 0));
-    painter.setFont(QFont("Courier New", 16));
-    painter.drawText(QRect(0, 160, SPLASH_WIDTH, 30), Qt::AlignCenter, "MILITARY-GRADE RADAR SYSTEM");
-    
-    setPixmap(fallbackPixmap);
-    qDebug() << "SplashScreen: Using fallback display";
+    // Create fallback text-based logo if image fails to load
+    if (m_logoLabel != nullptr) {
+        m_logoLabel->setText("SIREN\nLOGO");
+        m_logoLabel->setAlignment(Qt::AlignCenter);
+        m_logoLabel->setStyleSheet(R"(
+            QLabel {
+                color: #00ff00;
+                font-family: 'Courier New', monospace;
+                font-size: 18px;
+                font-weight: bold;
+                border: 2px solid #00ff00;
+                border-radius: 5px;
+                padding: 10px;
+                background-color: rgba(0, 0, 0, 0.8);
+            }
+        )");
+    }
+    qDebug() << "SplashScreen: Using fallback text logo";
 }
 
 bool SplashScreen::showSplash()

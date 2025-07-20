@@ -117,7 +117,7 @@ private:
 
     // UI Components (managed by Qt parent-child hierarchy)
     QProgressBar* m_progressBar{nullptr};
-    QLabel* m_titleLabel{nullptr};
+    QLabel* m_logoLabel{nullptr};
     QLabel* m_versionLabel{nullptr};
     QLabel* m_statusLabel{nullptr};
     QVBoxLayout* m_layout{nullptr};
