@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
     
     // Connect splash screen completion to main window display
     QObject::connect(&splash, &siren::ui::SplashScreen::loadingComplete, [&window]() {
-        window.show();
+        window.showMaximized();  // Open in full-size window
         window.raise();
         window.activateWindow();
     });
@@ -78,14 +78,14 @@ int main(int argc, char *argv[])
     QObject::connect(&splash, &siren::ui::SplashScreen::errorOccurred, [&window](const QString& error) {
         qDebug() << "Splash screen error:" << error;
         // Show main window anyway if splash fails
-        window.show();
+        window.showMaximized();  // Open in full-size window
     });
     
     // Show splash screen and start application
     if (!splash.showSplash()) {
         // If splash fails, show main window directly
         qDebug() << "Failed to show splash screen, showing main window directly";
-        window.show();
+        window.showMaximized();  // Open in full-size window
     }
 
     return app.exec();

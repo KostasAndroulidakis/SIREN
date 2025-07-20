@@ -40,7 +40,7 @@ MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
     , m_contentDisplay(std::make_unique<QTextEdit>(m_centralWidget.get()))
     , m_controlBar(std::make_unique<Controls::WindowControlBar>(m_titleBar.get()))
     , m_controlHandler(std::make_unique<Controls::WindowControlHandler>(m_controlBar.get(), static_cast<QWidget*>(this), this))
-    , m_titleLabel(std::make_unique<QLabel>(Constants::Application::COMMAND_CENTER_TITLE, m_titleBar.get()))
+    , m_titleLabel(std::make_unique<QLabel>("", m_titleBar.get()))
     , m_isDragging(false)
     , m_dragStartPosition()
     , m_isFullSize(false)
@@ -61,7 +61,7 @@ void MilitaryMainWindow::initializeMilitaryWindow()
     setupWindowFlags();
 
     // Set window properties
-    setWindowTitle(Constants::Application::COMMAND_CENTER_TITLE);
+    setWindowTitle("");
 
     resize(Constants::UI::WINDOW_WIDTH, Constants::UI::WINDOW_HEIGHT);
     setMinimumSize(Constants::UI::MIN_WINDOW_WIDTH, Constants::UI::MIN_WINDOW_HEIGHT);
