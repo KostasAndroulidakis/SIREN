@@ -16,7 +16,7 @@
 
 #include "data/radar_types.hpp"
 
-namespace unoradar::serial {
+namespace siren::serial {
 
 /**
  * @brief Arduino protocol parser for radar data messages
@@ -103,4 +103,4 @@ private:
     void updateStatistics(uint32_t parsing_time_us, bool parse_successful, bool validation_passed) const;
 };
 
-} // namespace unoradar::serial
+} // namespace siren::serial

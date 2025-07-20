@@ -11,7 +11,7 @@
 #include "utils/statistics_calculator.hpp"
 #include <limits>
 
-namespace unoradar {
+namespace siren {
 namespace utils {
 
 // ============================================================================
@@ -172,4 +172,4 @@ Int32StatsCalculator createRadarMeasurementCalculator() {
 } // namespace performance_stats
 
 } // namespace utils
-} // namespace unoradar
+} // namespace siren

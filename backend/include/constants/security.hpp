@@ -18,7 +18,7 @@
 #include <cstdint>
 #include <chrono>
 
-namespace unoradar { namespace constants { namespace security {
+namespace siren { namespace constants { namespace security {
 
 /// TLS/SSL protocol configuration
 namespace tls {
@@ -93,4 +93,4 @@ namespace validation {
     constexpr auto AUDIT_RETENTION = std::chrono::hours(90 * 24);
 }
 
-} } } // namespace unoradar::constants::security
+} } } // namespace siren::constants::security

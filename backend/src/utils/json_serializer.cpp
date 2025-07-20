@@ -9,9 +9,9 @@
 #include "constants/message.hpp"
 #include <sstream>
 
-namespace unoradar::utils {
+namespace siren::utils {
 
-namespace constants = unoradar::constants;
+namespace constants = siren::constants;
 
 std::string JsonSerializer::serialize(const data::RadarDataPoint& data) {
     std::ostringstream oss;
@@ -112,6 +112,31 @@ template std::string JsonSerializer::formatField<double>(const char* key, const 
 template std::string JsonSerializer::formatField<std::string>(const char* key, const std::string& value, bool is_string);
 template std::string JsonSerializer::formatField<const char*>(const char* key, const char* const& value, bool is_string);
 
+// Non-template overloads to match header declarations
+std::string JsonSerializer::formatField(const char* key, const int& value, bool is_string) {
+    return formatField<int>(key, value, is_string);
+}
+
+std::string JsonSerializer::formatField(const char* key, const uint32_t& value, bool is_string) {
+    return formatField<uint32_t>(key, value, is_string);
+}
+
+std::string JsonSerializer::formatField(const char* key, const uint64_t& value, bool is_string) {
+    return formatField<uint64_t>(key, value, is_string);
+}
+
+std::string JsonSerializer::formatField(const char* key, const double& value, bool is_string) {
+    return formatField<double>(key, value, is_string);
+}
+
+std::string JsonSerializer::formatField(const char* key, const std::string& value, bool is_string) {
+    return formatField<std::string>(key, value, is_string);
+}
+
+std::string JsonSerializer::formatField(const char* key, const char* value, bool is_string) {
+    return formatField<const char*>(key, value, is_string);
+}
+
 std::string JsonSerializer::formatTimestamp(const std::chrono::steady_clock::time_point& timestamp) {
     auto timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
         timestamp.time_since_epoch()).count();
@@ -122,4 +147,4 @@ std::string JsonSerializer::formatTimestamp(uint64_t timestamp_us) {
     return formatField(constants::message::json_fields::TIMESTAMP, timestamp_us);
 }
 
-} // namespace unoradar::utils
+} // namespace siren::utils

@@ -19,7 +19,7 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 using tcp = boost::asio::ip::tcp;
 
@@ -150,4 +150,4 @@ private:
     void notifySessionCallback(const std::string& endpoint, bool connected);
 };
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

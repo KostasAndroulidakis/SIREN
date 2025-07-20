@@ -8,7 +8,7 @@
 #include "core/system_state_manager.hpp"
 #include <iostream>
 
-namespace unoradar::core {
+namespace siren::core {
 
 SystemStateManager::SystemStateManager(SystemState initial_state)
     : current_state_(initial_state)
@@ -100,4 +100,4 @@ bool SystemStateManager::isValidTransition(SystemState from, SystemState to) con
     }
 }
 
-} // namespace unoradar::core
+} // namespace siren::core

@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <chrono>
 
-namespace unoradar { namespace constants { namespace hardware {
+namespace siren { namespace constants { namespace hardware {
 
 /// Arduino UNO R3 specifications from ATmega328P datasheet
 namespace arduino {
@@ -99,4 +99,4 @@ namespace platform {
 #endif
 }
 
-} } } // namespace unoradar::constants::hardware
+} } } // namespace siren::constants::hardware

@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <cstddef>
 
-namespace unoradar { namespace constants { namespace performance {
+namespace siren { namespace constants { namespace performance {
 
 /// Real-time performance requirements
 namespace timing {
@@ -85,4 +85,4 @@ namespace optimization {
     constexpr uint32_t BOOST_VERSION_PATCH_MODULO = 100;
 }
 
-} } } // namespace unoradar::constants::performance
+} } } // namespace siren::constants::performance

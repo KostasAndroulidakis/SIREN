@@ -15,10 +15,10 @@
 #include <iostream>
 #include <chrono>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 namespace http = beast::http;  // Local alias for HTTP functionality
-namespace cnst = unoradar::constants;  // Local alias for constants
+namespace cnst = siren::constants;  // Local alias for constants
 
 // WebSocketSession Implementation
 
@@ -474,4 +474,4 @@ void WebSocketServer::updateStatistics() {
     }
 }
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

@@ -21,7 +21,7 @@
 #include <mutex>
 #include "constants/performance.hpp"
 
-namespace unoradar {
+namespace siren {
 namespace utils {
 
 /**
@@ -359,4 +359,4 @@ Int32StatsCalculator createRadarMeasurementCalculator();
 } // namespace performance_stats
 
 } // namespace utils
-} // namespace unoradar
+} // namespace siren

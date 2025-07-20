@@ -12,9 +12,9 @@
 #include <iomanip>
 #include <sstream>
 
-namespace unoradar::utils {
+namespace siren::utils {
 
-namespace cnst = unoradar::constants;
+namespace cnst = siren::constants;
 
 // Static member definitions
 std::mutex ErrorHandler::logging_mutex_;
@@ -131,4 +131,4 @@ void ErrorHandler::logError(const std::string& formatted_message,
     }
 }
 
-} // namespace unoradar::utils
+} // namespace siren::utils

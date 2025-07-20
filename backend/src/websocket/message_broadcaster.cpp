@@ -15,7 +15,7 @@
 #include <iostream>
 #include <chrono>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 WebSocketMessageBroadcaster::WebSocketMessageBroadcaster()
     : active_(false)
@@ -254,4 +254,4 @@ void WebSocketMessageBroadcaster::updateBroadcastStats(size_t sessions_reached, 
     average_broadcast_time_us_.store(new_avg);
 }
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

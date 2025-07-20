@@ -13,7 +13,7 @@
 #include <string>
 #include "data/radar_types.hpp"
 
-namespace unoradar::utils {
+namespace siren::utils {
 
 /**
  * @brief JSON serializer with single responsibility
@@ -98,4 +98,4 @@ private:
     static std::string formatTimestamp(uint64_t timestamp_us);
 };
 
-} // namespace unoradar::utils
+} // namespace siren::utils

@@ -22,10 +22,10 @@
 #include <boost/system/error_code.hpp>
 #include "constants/security.hpp"
 
-namespace unoradar::security {
+namespace siren::security {
 
 namespace ssl = boost::asio::ssl;
-namespace cnst = unoradar::constants::security;
+namespace cnst = siren::constants::security;
 
 /**
  * @brief Military-grade SSL context configuration and management
@@ -153,4 +153,4 @@ private:
     bool loadCACertificate(const std::string& ca_file);
 };
 
-} // namespace unoradar::security
+} // namespace siren::security

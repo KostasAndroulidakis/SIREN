@@ -13,7 +13,7 @@
 #include "websocket/server.hpp"
 #include <iostream>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 WebSocketSessionManager::WebSocketSessionManager()
     : total_sessions_created_(0)
@@ -147,4 +147,4 @@ void WebSocketSessionManager::notifySessionCallback(const std::string& endpoint,
     }
 }
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

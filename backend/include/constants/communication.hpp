@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <chrono>
 
-namespace unoradar { namespace constants { namespace communication {
+namespace siren { namespace constants { namespace communication {
 
 /// Serial communication configuration
 namespace serial {
@@ -90,4 +90,4 @@ namespace json {
     constexpr const char* FIELD_PAYLOAD = "payload";
 }
 
-} } } // namespace unoradar::constants::communication
+} } } // namespace siren::constants::communication

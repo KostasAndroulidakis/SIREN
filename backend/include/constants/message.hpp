@@ -17,7 +17,7 @@
 #include <cstdint>
 #include <chrono>
 
-namespace unoradar { namespace constants { namespace message {
+namespace siren { namespace constants { namespace message {
 
 /// JSON field names - Single Source of Truth for all JSON operations
 namespace json_fields {
@@ -113,4 +113,4 @@ namespace test {
     constexpr auto TEST_RUN_DURATION = std::chrono::seconds(2);
 }
 
-} } } // namespace unoradar::constants::message
+} } } // namespace siren::constants::message

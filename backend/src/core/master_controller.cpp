@@ -17,10 +17,10 @@
 #include <exception>
 #include <thread>
 
-namespace unoradar::core {
+namespace siren::core {
 
 using namespace std::chrono_literals;
-namespace cnst = unoradar::constants;
+namespace cnst = siren::constants;
 
 MasterController::MasterController()
     : io_context_(nullptr)
@@ -274,7 +274,7 @@ bool MasterController::initializeSubsystems() {
         // Initialize WebSocket server
         std::cout << "[MasterController] Initializing WebSocket server..." << std::endl;
         websocket_server_ = std::make_unique<websocket::WebSocketServer>(*io_context_,
-            unoradar::constants::communication::websocket::DEFAULT_PORT);
+            siren::constants::communication::websocket::DEFAULT_PORT);
 
         // Initialize and start WebSocket server
         if (!websocket_server_->initialize()) {
@@ -290,7 +290,7 @@ bool MasterController::initializeSubsystems() {
         }
 
         std::cout << "[MasterController] ✅ WebSocket server started on port "
-                  << unoradar::constants::communication::websocket::DEFAULT_PORT << std::endl;
+                  << siren::constants::communication::websocket::DEFAULT_PORT << std::endl;
         std::cout << "[MasterController] Data processor: PLACEHOLDER (pending implementation)" << std::endl;
         std::cout << "[MasterController] Logger: PLACEHOLDER (pending implementation)" << std::endl;
 
@@ -389,4 +389,4 @@ void MasterController::onSerialError(const std::string& error_message, data::Err
     }
 }
 
-} // namespace unoradar::core
+} // namespace siren::core

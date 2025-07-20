@@ -19,7 +19,7 @@
 #include <numbers>
 #endif
 
-namespace unoradar { namespace constants { namespace math {
+namespace siren { namespace constants { namespace math {
 
 /// Fundamental mathematical constants
 namespace fundamental {
@@ -54,4 +54,4 @@ namespace test {
     constexpr int16_t TEST_DISTANCE_CM = 150;
 }
 
-} } } // namespace unoradar::constants::math
+} } } // namespace siren::constants::math

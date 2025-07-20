@@ -19,7 +19,7 @@
 #include "serial/serial_interface.hpp"
 #include "websocket/server.hpp"
 
-namespace unoradar::core {
+namespace siren::core {
 
 // Forward declarations
 class DataProcessor;
@@ -171,4 +171,4 @@ private:
     void onSerialError(const std::string& error_message, data::ErrorSeverity severity);
 };
 
-} // namespace unoradar::core
+} // namespace siren::core

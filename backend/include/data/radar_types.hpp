@@ -13,7 +13,7 @@
 #include <chrono>
 #include <cstdint>
 
-namespace unoradar {
+namespace siren {
 namespace data {
 
 // ============================================================================
@@ -309,4 +309,4 @@ struct SerialStatistics {
 };
 
 } // namespace data
-} // namespace unoradar
+} // namespace siren

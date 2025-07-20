@@ -22,7 +22,7 @@
 #include "core/master_controller.hpp"
 
 int main() {
-    namespace cnst = unoradar::constants;
+    namespace cnst = siren::constants;
     namespace msg = cnst::message;
     namespace perf = cnst::performance;
     namespace comm = cnst::communication;
@@ -46,14 +46,14 @@ int main() {
     std::cout << "Target latency: " << perf::timing::TARGET_LOOP_TIME_US << "μs" << std::endl;
 
     // Test data types
-    unoradar::data::RadarDataPoint test_point(cnst::math::test::TEST_ANGLE_DEGREES, cnst::math::test::TEST_DISTANCE_CM);
+    siren::data::RadarDataPoint test_point(cnst::math::test::TEST_ANGLE_DEGREES, cnst::math::test::TEST_DISTANCE_CM);
     std::cout << "Test data point: angle=" << test_point.angle
               << "°, distance=" << test_point.distance << "cm" << std::endl;
 
     // Test military-grade master controller
     std::cout << "\n=== Phase 2: Military-Grade Master Controller Test ===" << std::endl;
 
-    unoradar::core::MasterController controller;
+    siren::core::MasterController controller;
 
     std::cout << "Initializing master controller..." << std::endl;
     if (!controller.initialize()) {

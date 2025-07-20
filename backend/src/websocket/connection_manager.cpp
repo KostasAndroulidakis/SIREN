@@ -11,7 +11,7 @@
 #include "websocket/connection_manager.hpp"
 #include <iostream>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 WebSocketConnectionManager::WebSocketConnectionManager(boost::asio::io_context& io_context, uint16_t port)
     : io_context_(io_context)
@@ -150,4 +150,4 @@ void WebSocketConnectionManager::handleError(const std::string& error_message, b
     }
 }
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

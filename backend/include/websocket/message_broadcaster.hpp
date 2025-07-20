@@ -21,7 +21,7 @@
 #include <condition_variable>
 #include "data/radar_types.hpp"
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 // Forward declarations
 class WebSocketSession;
@@ -208,4 +208,4 @@ private:
     void updateBroadcastStats(size_t sessions_reached, uint32_t broadcast_time_us);
 };
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

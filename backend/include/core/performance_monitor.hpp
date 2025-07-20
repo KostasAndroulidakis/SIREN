@@ -15,7 +15,7 @@
 #include "data/radar_types.hpp"
 #include "utils/statistics_calculator.hpp"
 
-namespace unoradar::core {
+namespace siren::core {
 
 /**
  * @brief Performance monitor with single responsibility
@@ -127,4 +127,4 @@ private:
     void updateMemoryUsage();
 };
 
-} // namespace unoradar::core
+} // namespace siren::core

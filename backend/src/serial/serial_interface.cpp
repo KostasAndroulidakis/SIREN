@@ -16,9 +16,9 @@
 #include <filesystem>
 #include <algorithm>
 
-namespace unoradar::serial {
+namespace siren::serial {
 
-namespace constants = unoradar::constants;
+namespace constants = siren::constants;
 
 SerialInterface::SerialInterface(boost::asio::io_context& io_context)
     : io_context_(io_context)
@@ -457,4 +457,4 @@ bool SerialInterface::isArduinoPort(const std::string& port_name) {
             port_name.find("tty") != std::string::npos);
 }
 
-} // namespace unoradar::serial
+} // namespace siren::serial

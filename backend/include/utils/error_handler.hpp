@@ -16,7 +16,7 @@
 #include <mutex>
 #include <atomic>
 
-namespace unoradar::utils {
+namespace siren::utils {
 
 /**
  * @brief Centralized error handling utility class
@@ -131,4 +131,4 @@ private:
                          data::ErrorSeverity severity);
 };
 
-} // namespace unoradar::utils
+} // namespace siren::utils

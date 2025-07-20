@@ -25,7 +25,7 @@
 #include "websocket/session_manager.hpp"
 #include "websocket/message_broadcaster.hpp"
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 namespace beast = boost::beast;
 namespace websocket = beast::websocket;
@@ -273,4 +273,4 @@ private:
     void updateStatistics();
 };
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

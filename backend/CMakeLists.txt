@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(unoRadar_backend VERSION 1.0.0 LANGUAGES CXX)
+project(SIREN_backend VERSION 1.0.0 LANGUAGES CXX)
 
 # C++ Standard Configuration
 set(CMAKE_CXX_STANDARD 17)
@@ -40,11 +40,11 @@ set(ALL_SOURCES
 )
 
 # Create library target first (will build incrementally)
-add_library(unoRadar_lib INTERFACE)
-target_include_directories(unoRadar_lib INTERFACE include)
+add_library(SIREN_lib INTERFACE)
+target_include_directories(SIREN_lib INTERFACE include)
 
 # Link libraries to interface library
-target_link_libraries(unoRadar_lib
+target_link_libraries(SIREN_lib
     INTERFACE
     Boost::system
     Boost::thread
@@ -56,9 +56,9 @@ target_link_libraries(unoRadar_lib
 # Platform-specific configurations
 if(APPLE)
     # macOS specific optimizations for M1
-    target_compile_definitions(unoRadar_lib INTERFACE BOOST_ASIO_HAS_KQUEUE)
+    target_compile_definitions(SIREN_lib INTERFACE BOOST_ASIO_HAS_KQUEUE)
     if(CMAKE_SYSTEM_PROCESSOR MATCHES "arm64")
-        target_compile_options(unoRadar_lib INTERFACE -mcpu=apple-m1)
+        target_compile_options(SIREN_lib INTERFACE -mcpu=apple-m1)
     endif()
 endif()
 
@@ -83,9 +83,9 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
     endif()
 
     if(EXISTING_SOURCES)
-        add_executable(unoRadar_server ${EXISTING_SOURCES})
-        target_link_libraries(unoRadar_server PRIVATE unoRadar_lib)
-        install(TARGETS unoRadar_server RUNTIME DESTINATION bin)
+        add_executable(SIREN_server ${EXISTING_SOURCES})
+        target_link_libraries(SIREN_server PRIVATE SIREN_lib)
+        install(TARGETS SIREN_server RUNTIME DESTINATION bin)
         message(STATUS "Created executable with sources: ${EXISTING_SOURCES}")
     endif()
 else()

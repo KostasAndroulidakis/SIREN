@@ -18,7 +18,7 @@
 #include <cstddef>
 #include <chrono>
 
-namespace unoradar { namespace constants { namespace error {
+namespace siren { namespace constants { namespace error {
 
 /// Error handling configuration
 namespace handling {
@@ -71,4 +71,4 @@ namespace logging {
     constexpr uint16_t MAX_LOG_LINE_LENGTH = 2048;
 }
 
-} } } // namespace unoradar::constants::error
+} } } // namespace siren::constants::error

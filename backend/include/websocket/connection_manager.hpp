@@ -17,7 +17,7 @@
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 
-namespace unoradar::websocket {
+namespace siren::websocket {
 
 namespace beast = boost::beast;
 using tcp = boost::asio::ip::tcp;
@@ -138,4 +138,4 @@ private:
     void handleError(const std::string& error_message, beast::error_code ec);
 };
 
-} // namespace unoradar::websocket
+} // namespace siren::websocket

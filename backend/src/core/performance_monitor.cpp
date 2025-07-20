@@ -10,9 +10,9 @@
 #include "utils/statistics_calculator.hpp"
 #include <iostream>
 
-namespace unoradar::core {
+namespace siren::core {
 
-namespace constants = unoradar::constants;
+namespace constants = siren::constants;
 
 PerformanceMonitor::PerformanceMonitor()
     : current_metrics_{}
@@ -20,9 +20,9 @@ PerformanceMonitor::PerformanceMonitor()
     , last_update_(std::chrono::steady_clock::now())
     , total_messages_(0)
     , messages_since_last_update_(0)
-    , latency_calculator_(unoradar::utils::performance_stats::createLatencyCalculator())
-    , throughput_calculator_(unoradar::utils::performance_stats::createThroughputCalculator())
-    , memory_calculator_(unoradar::utils::performance_stats::createMemoryUsageCalculator())
+    , latency_calculator_(siren::utils::performance_stats::createLatencyCalculator())
+    , throughput_calculator_(siren::utils::performance_stats::createThroughputCalculator())
+    , memory_calculator_(siren::utils::performance_stats::createMemoryUsageCalculator())
     , monitoring_(false)
 {
     std::cout << "[PerformanceMonitor] Initializing military-grade performance monitoring with StatisticsCalculator..." << std::endl;
@@ -173,4 +173,4 @@ utils::UInt32StatsCalculator::Statistics PerformanceMonitor::getLatencyStatistic
     return latency_calculator_.getStatistics();
 }
 
-} // namespace unoradar::core
+} // namespace siren::core

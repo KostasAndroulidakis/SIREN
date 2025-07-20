@@ -20,7 +20,7 @@
 #include "data/radar_types.hpp"
 #include "serial/arduino_protocol_parser.hpp"
 
-namespace unoradar::serial {
+namespace siren::serial {
 
 /**
  * @brief Serial communication interface for Arduino radar system
@@ -217,4 +217,4 @@ private:
     static bool isArduinoPort(const std::string& port_name);
 };
 
-} // namespace unoradar::serial
+} // namespace siren::serial

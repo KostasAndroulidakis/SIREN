@@ -13,7 +13,7 @@
 #include <functional>
 #include <string>
 
-namespace unoradar::core {
+namespace siren::core {
 
 /**
  * @brief System state manager with single responsibility
@@ -89,4 +89,4 @@ private:
     bool isValidTransition(SystemState from, SystemState to) const;
 };
 
-} // namespace unoradar::core
+} // namespace siren::core

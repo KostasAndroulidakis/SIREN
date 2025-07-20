@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(unoRadar_frontend VERSION 1.0.0 LANGUAGES CXX)
+project(SIREN_frontend VERSION 1.0.0 LANGUAGES CXX)
 
 # C++ Standard Configuration
 set(CMAKE_CXX_STANDARD 17)
@@ -31,7 +31,7 @@ qt_standard_project_setup()
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Create executable
-qt_add_executable(unoRadar_frontend
+qt_add_executable(SIREN_frontend
     src/main.cpp
     src/ui/controls/WindowControlButton.cpp
     src/ui/controls/MinimizeButton.cpp
@@ -51,7 +51,7 @@ qt_add_executable(unoRadar_frontend
 )
 
 # Link Qt6 libraries including WebSockets
-target_link_libraries(unoRadar_frontend PRIVATE
+target_link_libraries(SIREN_frontend PRIVATE
     Qt6::Widgets
     Qt6::Gui
     Qt6::Core

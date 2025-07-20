@@ -13,9 +13,9 @@
 #include <iostream>
 #include <chrono>
 
-namespace unoradar::serial {
+namespace siren::serial {
 
-namespace constants = unoradar::constants;
+namespace constants = siren::constants;
 
 ArduinoProtocolParser::ArduinoProtocolParser()
     : pattern_(constants::hardware::arduino::DATA_FORMAT_REGEX)
@@ -120,4 +120,4 @@ void ArduinoProtocolParser::updateStatistics(uint32_t parsing_time_us, bool pars
     }
 }
 
-} // namespace unoradar::serial
+} // namespace siren::serial
