@@ -1,0 +1,19 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+    <!-- SIREN Military-Grade Radar System Resources -->
+    <!-- Embeds assets in binary for deterministic access (MISRA C++ Rule 21.2.1) -->
+    
+    <qresource prefix="/images">
+        <!-- Main application logo for splash screen -->
+        <file>images/siren-logo.png</file>
+    </qresource>
+    
+    <!-- Future resource groups for military-grade UI -->
+    <qresource prefix="/icons">
+        <!-- Military standard icons will go here -->
+    </qresource>
+    
+    <qresource prefix="/styles">
+        <!-- MIL-STD-1472 compliant stylesheets will go here -->
+    </qresource>
+</RCC>

@@ -30,6 +30,9 @@ qt_standard_project_setup()
 # Add include directories
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+# Qt Resource file for embedded assets (MISRA C++ Rule 21.2.1)
+qt_add_resources(RESOURCES resources/resources.qrc)
+
 # Create executable
 qt_add_executable(SIREN
     src/main.cpp
@@ -39,15 +42,18 @@ qt_add_executable(SIREN
     src/ui/controls/CloseButton.cpp
     src/ui/controls/WindowControlBar.cpp
     src/ui/controls/WindowControlHandler.cpp
+    src/ui/SplashScreen.cpp
     include/ui/controls/WindowControlButton.h
     include/ui/controls/MinimizeButton.h
     include/ui/controls/MaximizeButton.h
     include/ui/controls/CloseButton.h
     include/ui/controls/WindowControlBar.h
     include/ui/controls/WindowControlHandler.h
+    include/ui/SplashScreen.h
     include/constants/WindowControls.h
     src/ui/MilitaryMainWindow.cpp
     include/ui/MilitaryMainWindow.h
+    ${RESOURCES}
 )
 
 # Link Qt6 libraries including WebSockets

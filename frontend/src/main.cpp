@@ -15,12 +15,17 @@
 #include <QtWidgets/QApplication>
 #include <QtCore/QString>
 #include <QtGui/QPalette>
+#include <QtCore/QTimer>
+#include <QtCore/QEventLoop>
 
 // Include our constants
 #include "constants/Application.h"
 
 // Include military main window
 #include "ui/MilitaryMainWindow.h"
+
+// Include splash screen
+#include "ui/SplashScreen.h"
 
 #ifdef Q_OS_MACOS
 #include <QWindow>
@@ -56,10 +61,32 @@ int main(int argc, char *argv[])
     app.setApplicationDisplayName(siren::Constants::Application::FULL_NAME);
     app.setApplicationVersion(siren::Constants::Application::VERSION);
 
-    // Create military main window with custom controls
+    // Create splash screen for military-grade startup sequence
+    siren::ui::SplashScreen splash;
+    
+    // Create main window but don't show it yet
     siren::UI::MilitaryMainWindow window;
     
-    window.show();
+    // Connect splash screen completion to main window display
+    QObject::connect(&splash, &siren::ui::SplashScreen::loadingComplete, [&window]() {
+        window.show();
+        window.raise();
+        window.activateWindow();
+    });
+    
+    // Handle splash screen errors gracefully
+    QObject::connect(&splash, &siren::ui::SplashScreen::errorOccurred, [&window](const QString& error) {
+        qDebug() << "Splash screen error:" << error;
+        // Show main window anyway if splash fails
+        window.show();
+    });
+    
+    // Show splash screen and start application
+    if (!splash.showSplash()) {
+        // If splash fails, show main window directly
+        qDebug() << "Failed to show splash screen, showing main window directly";
+        window.show();
+    }
 
     return app.exec();
 }
