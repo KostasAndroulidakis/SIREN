@@ -103,7 +103,7 @@ int main(int argc, char* argv[]) {
         frontendPid = fork();
 
         if (frontendPid == 0) {
-            execl("./frontend/build/SIREN_frontend", "SIREN_frontend", nullptr);
+            execl("./frontend/build/SIREN", "SIREN", nullptr);
             std::cerr << "[ERROR] Failed to start frontend!" << std::endl;
             std::exit(EXIT_FAILURE);
         } else if (frontendPid < 0) {
