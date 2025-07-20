@@ -1,7 +1,7 @@
 /**
  * @file radar_types.hpp
- * @brief Core data types for unoRadar military-grade server
- * @author unoRadar Project
+ * @brief Core data types for SIREN military-grade server
+ * @author SIREN Project
  * @date 2025
  *
  * Defines all data structures used throughout the radar system.

@@ -1,26 +1,26 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file RadarDataParser.h
  * @brief Parser for radar data JSON messages
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_DATA_RADAR_DATA_PARSER_H
-#define UNORADAR_DATA_RADAR_DATA_PARSER_H
+#ifndef SIREN_DATA_RADAR_DATA_PARSER_H
+#define SIREN_DATA_RADAR_DATA_PARSER_H
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QJsonObject>
 #include <optional>
 
-namespace unoRadar {
+namespace siren {
 namespace Data {
 
 /**
@@ -75,6 +75,6 @@ private:
 };
 
 } // namespace Data
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_DATA_RADAR_DATA_PARSER_H
+#endif // SIREN_DATA_RADAR_DATA_PARSER_H

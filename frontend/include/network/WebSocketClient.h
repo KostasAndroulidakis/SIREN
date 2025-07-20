@@ -1,26 +1,26 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WebSocketClient.h
  * @brief Concrete WebSocket client implementation with automatic reconnection
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_NETWORK_WEBSOCKET_CLIENT_H
-#define UNORADAR_NETWORK_WEBSOCKET_CLIENT_H
+#ifndef SIREN_NETWORK_WEBSOCKET_CLIENT_H
+#define SIREN_NETWORK_WEBSOCKET_CLIENT_H
 
 #include "IWebSocketClient.h"
 #include <QtCore/QScopedPointer>
 #include <QtCore/QTimer>
 #include <QtWebSockets/QWebSocket>
 
-namespace unoRadar {
+namespace siren {
 namespace Network {
 
 /**
@@ -67,6 +67,6 @@ private:
 };
 
 } // namespace Network
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_NETWORK_WEBSOCKET_CLIENT_H
+#endif // SIREN_NETWORK_WEBSOCKET_CLIENT_H

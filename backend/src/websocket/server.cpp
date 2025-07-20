@@ -1,7 +1,7 @@
 /**
  * @file server.cpp
  * @brief Implementation of military-grade WebSocket server
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * High-performance WebSocket server for real-time radar data streaming

@@ -1,7 +1,7 @@
 /**
  * @file session_manager.cpp
  * @brief Implementation of military-grade WebSocket session manager
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized manager for WebSocket session lifecycle management.

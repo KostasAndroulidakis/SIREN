@@ -1,7 +1,7 @@
 /**
  * @file server.hpp
  * @brief Military-grade WebSocket server for real-time radar data streaming
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * High-performance WebSocket server using Boost.Beast for real-time

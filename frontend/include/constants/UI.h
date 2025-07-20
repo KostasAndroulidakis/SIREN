@@ -1,23 +1,23 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file UI.h
  * @brief User Interface constants (MIL-STD-1472 compliant)
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_CONSTANTS_UI_H
-#define UNORADAR_CONSTANTS_UI_H
+#ifndef SIREN_CONSTANTS_UI_H
+#define SIREN_CONSTANTS_UI_H
 
 #include <cstdint>
 
-namespace unoRadar {
+namespace siren {
 namespace Constants {
 namespace UI {
 
@@ -58,6 +58,6 @@ constexpr std::int32_t TITLE_FONT_WEIGHT = 700;  // Bold for military styling
 
 } // namespace UI
 } // namespace Constants
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_CONSTANTS_UI_H
+#endif // SIREN_CONSTANTS_UI_H

@@ -1,10 +1,10 @@
 /**
- * @file unoRadar.ino
- * @brief Main Arduino sketch for unoRadar system
- * @author unoRadar Project
+ * @file SIREN.ino
+ * @brief Main Arduino sketch for SIREN system
+ * @author SIREN Project
  * @date 2025
  * 
- * This is the main orchestration file for the unoRadar system that combines
+ * This is the main orchestration file for the SIREN system that combines
  * ultrasonic sensor readings with servo motor control to create a 180-degree
  * radar sweep system with web visualization capabilities.
  */

@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WindowControlBar.h
  * @brief Window control bar container widget (MIL-STD-1472 compliant)
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -13,15 +13,15 @@
  * Single Responsibility: Container and layout management for window controls
  */
 
-#ifndef UNORADAR_UI_CONTROLS_WINDOWCONTROLBAR_H
-#define UNORADAR_UI_CONTROLS_WINDOWCONTROLBAR_H
+#ifndef SIREN_UI_CONTROLS_WINDOWCONTROLBAR_H
+#define SIREN_UI_CONTROLS_WINDOWCONTROLBAR_H
 
 #include <QWidget>
 #include <QHBoxLayout>
 #include <memory>
 
 // Forward declarations
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
     class MinimizeButton;
@@ -31,7 +31,7 @@ namespace Controls {
 }
 }
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -181,6 +181,6 @@ private:
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_UI_CONTROLS_WINDOWCONTROLBAR_H
+#endif // SIREN_UI_CONTROLS_WINDOWCONTROLBAR_H

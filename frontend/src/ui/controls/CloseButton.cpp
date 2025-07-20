@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file CloseButton.cpp
  * @brief Implementation of close window control button
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -19,7 +19,7 @@
 #include <QMouseEvent>
 #include <QColor>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -71,4 +71,4 @@ void CloseButton::onButtonClicked()
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

@@ -1,7 +1,7 @@
 /**
  * @file error_handler.cpp
  * @brief Implementation of centralized error handling utility
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  */
 

@@ -1,19 +1,19 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file RadarMainWindow.h
- * @brief Main application window for unoRadar system
- * @author unoRadar Defense Systems
+ * @brief Main application window for SIREN system
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_UI_RADAR_MAIN_WINDOW_H
-#define UNORADAR_UI_RADAR_MAIN_WINDOW_H
+#ifndef SIREN_UI_RADAR_MAIN_WINDOW_H
+#define SIREN_UI_RADAR_MAIN_WINDOW_H
 
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QScopedPointer>
@@ -25,7 +25,7 @@ class QTextEdit;
 class QStatusBar;
 QT_END_NAMESPACE
 
-namespace unoRadar {
+namespace siren {
 
 // Forward declarations
 namespace Network { class IWebSocketClient; }
@@ -90,6 +90,6 @@ private:
 };
 
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_UI_RADAR_MAIN_WINDOW_H
+#endif // SIREN_UI_RADAR_MAIN_WINDOW_H

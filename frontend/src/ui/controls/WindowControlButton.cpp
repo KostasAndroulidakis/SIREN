@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WindowControlButton.cpp
  * @brief Implementation of base window control button class
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -21,7 +21,7 @@
 #include <QApplication>
 #include <QKeySequence>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -332,4 +332,4 @@ void WindowControlButton::paintEvent(QPaintEvent* event)
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

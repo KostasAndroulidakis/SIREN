@@ -1,24 +1,24 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file Network.h
  * @brief Network-related constants for WebSocket communication
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_CONSTANTS_NETWORK_H
-#define UNORADAR_CONSTANTS_NETWORK_H
+#ifndef SIREN_CONSTANTS_NETWORK_H
+#define SIREN_CONSTANTS_NETWORK_H
 
 #include <cstdint>
 #include <cstddef>
 
-namespace unoRadar {
+namespace siren {
 namespace Constants {
 namespace Network {
 
@@ -39,6 +39,6 @@ constexpr std::size_t RECEIVE_BUFFER_SIZE = 8192;  // 8KB
 
 } // namespace Network
 } // namespace Constants
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_CONSTANTS_NETWORK_H
+#endif // SIREN_CONSTANTS_NETWORK_H

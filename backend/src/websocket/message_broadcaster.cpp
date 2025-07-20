@@ -1,7 +1,7 @@
 /**
  * @file message_broadcaster.cpp
  * @brief Implementation of military-grade WebSocket message broadcaster
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized broadcaster for WebSocket message distribution.

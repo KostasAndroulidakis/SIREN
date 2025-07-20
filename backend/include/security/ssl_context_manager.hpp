@@ -1,7 +1,7 @@
 /**
  * @file ssl_context_manager.hpp
  * @brief Military-grade SSL/TLS context manager for secure WebSocket communications
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
  *

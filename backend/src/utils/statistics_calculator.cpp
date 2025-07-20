@@ -1,11 +1,11 @@
 /**
  * @file statistics_calculator.cpp
  * @brief Implementation of military-grade statistical calculation utility
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Template specializations and explicit instantiations for commonly used
- * statistical calculator types in the unoRadar system.
+ * statistical calculator types in the SIREN system.
  */
 
 #include "utils/statistics_calculator.hpp"

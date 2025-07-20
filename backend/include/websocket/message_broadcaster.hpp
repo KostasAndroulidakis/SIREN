@@ -1,7 +1,7 @@
 /**
  * @file message_broadcaster.hpp
  * @brief Military-grade WebSocket message broadcaster for data distribution
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized broadcaster class responsible for distributing messages to

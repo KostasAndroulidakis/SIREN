@@ -1,7 +1,7 @@
 /**
  * @file json_serializer.hpp
  * @brief Single responsibility JSON serialization utility
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * SSOT for all JSON serialization operations.

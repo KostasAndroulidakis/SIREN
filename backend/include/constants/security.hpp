@@ -1,7 +1,7 @@
 /**
  * @file security.hpp
  * @brief Security and cryptographic constants for military-grade radar system
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
  *

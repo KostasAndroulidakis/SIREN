@@ -1,23 +1,23 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file Data.h
  * @brief Data processing and validation constants
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_CONSTANTS_DATA_H
-#define UNORADAR_CONSTANTS_DATA_H
+#ifndef SIREN_CONSTANTS_DATA_H
+#define SIREN_CONSTANTS_DATA_H
 
 #include <cstdint>
 
-namespace unoRadar {
+namespace siren {
 namespace Constants {
 namespace Data {
 
@@ -49,6 +49,6 @@ namespace Fields {
 
 } // namespace Data
 } // namespace Constants
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_CONSTANTS_DATA_H
+#endif // SIREN_CONSTANTS_DATA_H

@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WindowControls.h
  * @brief Window control constants (MIL-STD-1472 compliant)
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -13,12 +13,12 @@
  * Single Source of Truth (SSOT) for window control specifications
  */
 
-#ifndef UNORADAR_CONSTANTS_WINDOWCONTROLS_H
-#define UNORADAR_CONSTANTS_WINDOWCONTROLS_H
+#ifndef SIREN_CONSTANTS_WINDOWCONTROLS_H
+#define SIREN_CONSTANTS_WINDOWCONTROLS_H
 
 #include <cstdint>
 
-namespace unoRadar {
+namespace siren {
 namespace Constants {
 namespace WindowControls {
 
@@ -95,6 +95,6 @@ constexpr std::int32_t TOP_MARGIN = 4;
 
 } // namespace WindowControls
 } // namespace Constants
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_CONSTANTS_WINDOWCONTROLS_H
+#endif // SIREN_CONSTANTS_WINDOWCONTROLS_H

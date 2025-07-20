@@ -76,10 +76,10 @@ cd backend/build && make
 cd frontend/build && make
 
 # Compile launcher
-g++ -std=c++17 main.cpp -o unoRadar
+g++ -std=c++17 main.cpp -o SIREN
 
 # Run system
-./unoRadar
+./SIREN
 ```
 
 ## PIN Connections

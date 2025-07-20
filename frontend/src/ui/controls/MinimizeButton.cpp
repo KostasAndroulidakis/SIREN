@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file MinimizeButton.cpp
  * @brief Implementation of minimize window control button
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -18,7 +18,7 @@
 #include <QKeySequence>
 #include <QColor>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -69,4 +69,4 @@ void MinimizeButton::onButtonClicked()
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

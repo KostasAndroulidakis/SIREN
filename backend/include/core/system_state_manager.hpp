@@ -1,7 +1,7 @@
 /**
  * @file system_state_manager.hpp
- * @brief System state management component for unoRadar
- * @author unoRadar Project
+ * @brief System state management component for SIREN
+ * @author SIREN Project
  * @date 2025
  *
  * Single responsibility: Manage system operational states with thread-safe transitions.

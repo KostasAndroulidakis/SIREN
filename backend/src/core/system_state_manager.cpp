@@ -1,7 +1,7 @@
 /**
  * @file system_state_manager.cpp
  * @brief Implementation of system state manager
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  */
 

@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WindowControlHandler.cpp
  * @brief Implementation of window control event handler
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -19,7 +19,7 @@
 #include <QCloseEvent>
 #include <QApplication>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -200,4 +200,4 @@ void WindowControlHandler::handleWindowStateChange(QEvent* event)
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file MilitaryMainWindow.cpp
  * @brief Implementation of military-grade main window with custom controls
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -29,7 +29,7 @@
 #include <QBitmap>
 #include <QPainter>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 
 MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
@@ -147,7 +147,7 @@ void MilitaryMainWindow::createMainContent()
         .arg(Constants::UI::Colors::BACKGROUND)
         .arg(Constants::UI::Colors::PRIMARY_TEXT));
     m_contentDisplay->setText(
-        "COMMAND CENTER - unoRadar Military-Grade Frontend\n"
+        "COMMAND CENTER - SIREN Military-Grade Frontend\n"
         "Centered Title with Left-Positioned Traffic Lights\n\n"
         "Features:\n"
         "• Frameless window with custom controls\n"
@@ -348,4 +348,4 @@ void MilitaryMainWindow::resizeEvent(QResizeEvent* event)
 }
 
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

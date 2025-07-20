@@ -1,7 +1,7 @@
 /**
  * @file message.hpp
  * @brief Message formats, JSON fields, and communication protocols for military-grade radar
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
  *
@@ -73,9 +73,9 @@ namespace version {
     constexpr const char* VERSION_STRING = "1.0.0";
 
     /// Build information
-    constexpr const char* AUTHOR = "unoRadar Defense Systems";
-    constexpr const char* SERVER_NAME = "unoRadar Military-Grade Server";
-    constexpr const char* USER_AGENT = "unoRadar/1.0.0 (military-grade)";
+    constexpr const char* AUTHOR = "SIREN Defense Systems";
+    constexpr const char* SERVER_NAME = "SIREN Military-Grade Server";
+    constexpr const char* USER_AGENT = "SIREN/1.0.0 (military-grade)";
 }
 
 /// WebSocket session status messages - Military-appropriate logging

@@ -1,7 +1,7 @@
 /**
  * @file radar.ino
- * @brief Radar sweep control module for unoRadar system
- * @author unoRadar Project
+ * @brief Radar sweep control module for SIREN system
+ * @author SIREN Project
  * @date 2025
  * 
  * Orchestrates the complete radar sweep operation by coordinating

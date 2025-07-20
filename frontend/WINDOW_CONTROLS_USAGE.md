@@ -2,7 +2,7 @@
 
 ## Overview
 
-This implementation provides a complete military-grade window control system for unoRadar that follows all specified standards:
+This implementation provides a complete military-grade window control system for SIREN that follows all specified standards:
 
 - **SRP compliant**: Each class has a single responsibility
 - **SSOT compliant**: All constants defined in dedicated files
@@ -144,9 +144,9 @@ include/constants/WindowControls.h
 Build and run the demonstration:
 
 ```bash
-cd /Users/kanon/projects/unoRadar/frontend/build
+cd /Users/kanon/projects/SIREN/frontend/build
 make
-./unoRadar_frontend
+./SIREN_frontend
 ```
 
 ## Compliance Verification

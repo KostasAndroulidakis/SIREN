@@ -1,7 +1,7 @@
 /**
  * @file json_serializer.cpp
  * @brief Implementation of JSON serialization utility
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  */
 

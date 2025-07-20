@@ -1,7 +1,7 @@
 /**
  * @file performance_monitor.cpp
  * @brief Implementation of performance monitor
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  */
 

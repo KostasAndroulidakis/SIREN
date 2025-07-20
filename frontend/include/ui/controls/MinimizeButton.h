@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file MinimizeButton.h
  * @brief Minimize window control button (MIL-STD-1472 compliant)
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -13,14 +13,14 @@
  * Single Responsibility: Window minimize functionality
  */
 
-#ifndef UNORADAR_UI_CONTROLS_MINIMIZEBUTTON_H
-#define UNORADAR_UI_CONTROLS_MINIMIZEBUTTON_H
+#ifndef SIREN_UI_CONTROLS_MINIMIZEBUTTON_H
+#define SIREN_UI_CONTROLS_MINIMIZEBUTTON_H
 
 #include "ui/controls/WindowControlButton.h"
 #include <QWidget>
 #include <QColor>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -113,6 +113,6 @@ private:
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_UI_CONTROLS_MINIMIZEBUTTON_H
+#endif // SIREN_UI_CONTROLS_MINIMIZEBUTTON_H

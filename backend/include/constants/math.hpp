@@ -1,7 +1,7 @@
 /**
  * @file math.hpp
  * @brief Mathematical constants and formulas for military-grade radar calculations
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
  *

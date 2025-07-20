@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file main.cpp
- * @brief Main entry point for unoRadar frontend
- * @author unoRadar Defense Systems
+ * @brief Main entry point for SIREN frontend
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -52,12 +52,12 @@ int main(int argc, char *argv[])
     app.setPalette(palette);
 
     // Set application metadata
-    app.setApplicationName(unoRadar::Constants::Application::NAME);
-    app.setApplicationDisplayName(unoRadar::Constants::Application::FULL_NAME);
-    app.setApplicationVersion(unoRadar::Constants::Application::VERSION);
+    app.setApplicationName(siren::Constants::Application::NAME);
+    app.setApplicationDisplayName(siren::Constants::Application::FULL_NAME);
+    app.setApplicationVersion(siren::Constants::Application::VERSION);
 
     // Create military main window with custom controls
-    unoRadar::UI::MilitaryMainWindow window;
+    siren::UI::MilitaryMainWindow window;
     
     window.show();
 

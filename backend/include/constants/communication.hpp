@@ -1,7 +1,7 @@
 /**
  * @file communication.hpp
  * @brief Communication protocols and network configuration for military-grade radar
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
  *

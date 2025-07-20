@@ -1,7 +1,7 @@
 /**
  * @file communication.ino
- * @brief Serial communication module for unoRadar system
- * @author unoRadar Project
+ * @brief Serial communication module for SIREN system
+ * @author SIREN Project
  * @date 2025
  * 
  * Handles all serial communication protocols for transmitting radar data

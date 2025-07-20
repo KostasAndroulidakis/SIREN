@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
- * @brief Main entry point for unoRadar military-grade C++ server
- * @author unoRadar Project
+ * @brief Main entry point for SIREN military-grade C++ server
+ * @author SIREN Project
  * @date 2025
  */
 
@@ -28,7 +28,7 @@ int main() {
     namespace comm = cnst::communication;
     namespace hw = cnst::hardware;
 
-    std::cout << "unoRadar Military-Grade Server v" << msg::version::VERSION_STRING << std::endl;
+    std::cout << "SIREN Military-Grade Server v" << msg::version::VERSION_STRING << std::endl;
     std::cout << "Boost version: " << BOOST_VERSION / perf::optimization::BOOST_VERSION_MAJOR_DIVISOR << "."
               << BOOST_VERSION / perf::optimization::BOOST_VERSION_MINOR_DIVISOR % perf::optimization::BOOST_VERSION_MINOR_MODULO << "."
               << BOOST_VERSION % perf::optimization::BOOST_VERSION_PATCH_MODULO << std::endl;

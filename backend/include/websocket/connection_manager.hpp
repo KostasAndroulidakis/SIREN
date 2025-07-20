@@ -1,7 +1,7 @@
 /**
  * @file connection_manager.hpp
  * @brief Military-grade WebSocket connection manager for TCP connection acceptance
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized manager class responsible for handling TCP connection acceptance

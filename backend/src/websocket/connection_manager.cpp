@@ -1,7 +1,7 @@
 /**
  * @file connection_manager.cpp
  * @brief Implementation of military-grade WebSocket connection manager
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized manager for TCP connection acceptance and initial handshake

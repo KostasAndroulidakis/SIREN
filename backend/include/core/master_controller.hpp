@@ -1,7 +1,7 @@
 /**
  * @file master_controller.hpp
  * @brief Refactored master controller with single responsibility
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Single responsibility: Coordinate and orchestrate system components.

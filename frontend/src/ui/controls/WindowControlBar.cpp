@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file WindowControlBar.cpp
  * @brief Implementation of window control bar container widget
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -21,7 +21,7 @@
 #include <QResizeEvent>
 #include <QSpacerItem>
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
 
@@ -180,4 +180,4 @@ void WindowControlBar::resizeEvent(QResizeEvent* event)
 
 } // namespace Controls
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren

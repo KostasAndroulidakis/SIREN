@@ -1,25 +1,25 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file IWebSocketClient.h
  * @brief WebSocket client interface for dependency injection and testability
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
  * DO-178C Level A Certifiable
  */
 
-#ifndef UNORADAR_NETWORK_IWEBSOCKET_CLIENT_H
-#define UNORADAR_NETWORK_IWEBSOCKET_CLIENT_H
+#ifndef SIREN_NETWORK_IWEBSOCKET_CLIENT_H
+#define SIREN_NETWORK_IWEBSOCKET_CLIENT_H
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QUrl>
 
-namespace unoRadar {
+namespace siren {
 namespace Network {
 
 /**
@@ -70,6 +70,6 @@ signals:
 };
 
 } // namespace Network
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_NETWORK_IWEBSOCKET_CLIENT_H
+#endif // SIREN_NETWORK_IWEBSOCKET_CLIENT_H

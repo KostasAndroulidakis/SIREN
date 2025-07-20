@@ -1,11 +1,11 @@
 /**
  * CLASSIFICATION: UNCLASSIFIED
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
- * CONTRACT: UNORADAR-2025
+ * CONTRACT: SIREN-2025
  *
  * @file MilitaryMainWindow.h
  * @brief Military-grade main window with custom controls (MIL-STD-1472 compliant)
- * @author unoRadar Defense Systems
+ * @author SIREN Defense Systems
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -13,8 +13,8 @@
  * Integration demonstration of custom window controls
  */
 
-#ifndef UNORADAR_UI_MILITARYMAINWINDOW_H
-#define UNORADAR_UI_MILITARYMAINWINDOW_H
+#ifndef SIREN_UI_MILITARYMAINWINDOW_H
+#define SIREN_UI_MILITARYMAINWINDOW_H
 
 #include <QMainWindow>
 #include <QWidget>
@@ -25,7 +25,7 @@
 #include <memory>
 
 // Forward declarations
-namespace unoRadar {
+namespace siren {
 namespace UI {
 namespace Controls {
     class WindowControlBar;
@@ -34,7 +34,7 @@ namespace Controls {
 }
 }
 
-namespace unoRadar {
+namespace siren {
 namespace UI {
 
 /**
@@ -185,6 +185,6 @@ private:
 };
 
 } // namespace UI
-} // namespace unoRadar
+} // namespace siren
 
-#endif // UNORADAR_UI_MILITARYMAINWINDOW_H
+#endif // SIREN_UI_MILITARYMAINWINDOW_H

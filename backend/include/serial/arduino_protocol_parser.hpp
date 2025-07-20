@@ -1,7 +1,7 @@
 /**
  * @file arduino_protocol_parser.hpp
  * @brief Military-grade Arduino protocol parser for radar data
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Handles parsing and validation of Arduino serial protocol messages.

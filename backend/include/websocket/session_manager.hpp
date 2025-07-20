@@ -1,7 +1,7 @@
 /**
  * @file session_manager.hpp
  * @brief Military-grade WebSocket session manager for active session lifecycle
- * @author unoRadar Project
+ * @author SIREN Project
  * @date 2025
  *
  * Specialized manager class responsible for managing active WebSocket sessions.

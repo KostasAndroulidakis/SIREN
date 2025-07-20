@@ -1,7 +1,7 @@
 /**
  * @file sensor.ino
- * @brief Ultrasonic sensor module for unoRadar system
- * @author unoRadar Project
+ * @brief Ultrasonic sensor module for SIREN system
+ * @author SIREN Project
  * @date 2025
  * 
  * Manages the HC-SR04 ultrasonic sensor for distance measurements.
