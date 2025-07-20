@@ -160,7 +160,7 @@ void SplashScreen::applyMilitaryTheme()
         
         #progressBar {
             background-color: #333333;
-            border: 1px solid #00ff00;
+            border: 1px solid #00FFFF;
             border-radius: 3px;
             text-align: center;
             color: #ffffff;
