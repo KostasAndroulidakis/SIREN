@@ -8,9 +8,13 @@
 #include "ui/MilitaryTheme.h"
 #include "ui/ConnectionStatusWidget.h"
 #include "network/WebSocketClient.h"
+#include "data/SonarDataParser.h"
 #include "constants/LayoutConstants.h"
 #include <QWidget>
 #include <QUrl>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QDebug>
 
 namespace siren {
 namespace ui {
@@ -122,6 +126,26 @@ void MilitaryMainWindow::initializeWebSocketClient()
                 }
                 
                 m_connectionStatus->updateConnectionState(widgetState);
+            });
+    
+    // Connect to sonar data messages
+    connect(m_webSocketClient, &Network::IWebSocketClient::textMessageReceived,
+            this, [this](const QString& message) {
+                // Parse incoming sonar data
+                data::SonarDataPoint sonarData;
+                const auto parseResult = data::SonarDataParser::parseJsonText(message, sonarData);
+                
+                if (parseResult == data::SonarDataParser::ParseResult::SUCCESS) {
+                    // Successfully parsed sonar data
+                    qDebug() << "Sonar data received:" << sonarData.toString();
+                    
+                    // TODO: Send to sonar display widget
+                    // TODO: Update data panel with latest readings
+                } else {
+                    // Log parsing errors for debugging
+                    const QString errorDesc = data::SonarDataParser::getErrorDescription(parseResult);
+                    qDebug() << "Failed to parse sonar data:" << errorDesc << "Message:" << message;
+                }
             });
     
     // Connect to backend server automatically
