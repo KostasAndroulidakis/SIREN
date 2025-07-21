@@ -116,6 +116,16 @@ private:
 
     // Server configuration
     uint16_t port_;
+
+    /**
+     * @brief Rollback started components on failure (SSOT for rollback logic)
+     * @param connection_acceptor_started true if connection acceptor was started
+     * @param message_broadcaster_started true if message broadcaster was started
+     * @param statistics_collector_started true if statistics collector was started
+     */
+    void rollbackStartedComponents(bool connection_acceptor_started,
+                                  bool message_broadcaster_started,
+                                  bool statistics_collector_started) noexcept;
 };
 
 } // namespace siren::websocket

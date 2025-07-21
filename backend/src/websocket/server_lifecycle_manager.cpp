@@ -111,6 +111,11 @@ bool ServerLifecycleManager::start(std::atomic<bool>& running) {
         return true;
     }
 
+    // Component start state tracking for comprehensive rollback
+    bool connection_acceptor_started = false;
+    bool message_broadcaster_started = false;
+    bool statistics_collector_started = false;
+
     try {
         // Start connection acceptor
         if (!connection_acceptor_->start()) {
@@ -119,25 +124,27 @@ bool ServerLifecycleManager::start(std::atomic<bool>& running) {
                                                     data::ErrorSeverity::ERROR);
             return false;
         }
+        connection_acceptor_started = true;
 
         // Start message broadcaster
         if (!message_broadcaster_->start()) {
             utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
                                                     "Message broadcaster start failed",
                                                     data::ErrorSeverity::ERROR);
-            connection_acceptor_->stop();
+            rollbackStartedComponents(connection_acceptor_started, message_broadcaster_started, statistics_collector_started);
             return false;
         }
+        message_broadcaster_started = true;
 
         // Start statistics collector
         if (!statistics_collector_->start()) {
             utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
                                                     "Statistics collector start failed",
                                                     data::ErrorSeverity::ERROR);
-            connection_acceptor_->stop();
-            message_broadcaster_->stop();
+            rollbackStartedComponents(connection_acceptor_started, message_broadcaster_started, statistics_collector_started);
             return false;
         }
+        statistics_collector_started = true;
 
         running.store(true);
 
@@ -150,6 +157,8 @@ bool ServerLifecycleManager::start(std::atomic<bool>& running) {
         utils::ErrorHandler::handleException(cnst::message::websocket_status::SERVER_PREFIX,
                                               cnst::message::websocket_status::START_FAILED_EXCEPTION,
                                               e, data::ErrorSeverity::FATAL);
+        // CRITICAL FIX: Comprehensive rollback on exception
+        rollbackStartedComponents(connection_acceptor_started, message_broadcaster_started, statistics_collector_started);
         return false;
     }
 }
@@ -184,6 +193,34 @@ void ServerLifecycleManager::stop(std::atomic<bool>& running, std::atomic<bool>&
 
     std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
               << cnst::message::websocket_status::SERVER_STOPPED << std::endl;
+}
+
+void ServerLifecycleManager::rollbackStartedComponents(bool connection_acceptor_started,
+                                                       bool message_broadcaster_started,
+                                                       bool statistics_collector_started) noexcept {
+    try {
+        // Stop components in reverse order of startup (MISRA C++ Rule 21.2.1 - RAII cleanup)
+        if (statistics_collector_started && statistics_collector_) {
+            statistics_collector_->stop();
+            std::cout << "[" << COMPONENT_NAME << "] Rolled back statistics collector" << std::endl;
+        }
+
+        if (message_broadcaster_started && message_broadcaster_) {
+            message_broadcaster_->stop();
+            std::cout << "[" << COMPONENT_NAME << "] Rolled back message broadcaster" << std::endl;
+        }
+
+        if (connection_acceptor_started && connection_acceptor_) {
+            connection_acceptor_->stop();
+            std::cout << "[" << COMPONENT_NAME << "] Rolled back connection acceptor" << std::endl;
+        }
+
+        std::cout << "[" << COMPONENT_NAME << "] Component rollback completed successfully" << std::endl;
+
+    } catch (...) {
+        // noexcept function - cannot throw, log critical error
+        std::cout << "[" << COMPONENT_NAME << "] CRITICAL: Rollback failed - components may be in inconsistent state" << std::endl;
+    }
 }
 
 } // namespace siren::websocket
