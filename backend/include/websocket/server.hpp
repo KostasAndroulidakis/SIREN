@@ -26,6 +26,7 @@
 #include "websocket/message_broadcaster.hpp"
 #include "websocket/statistics_collector.hpp"
 #include "websocket/session.hpp"
+#include "websocket/server_event_handler.hpp"
 
 namespace siren::websocket {
 
@@ -137,35 +138,12 @@ private:
     std::unique_ptr<SessionManager> session_manager_;
     std::unique_ptr<MessageBroadcaster> message_broadcaster_;
     std::unique_ptr<StatisticsCollector> statistics_collector_;
+    std::unique_ptr<ServerEventHandler> event_handler_;
 
     // Callbacks
     ConnectionCallback connection_callback_;
 
-    /**
-     * @brief Handle accepted connection from connection acceptor
-     * @param socket Accepted TCP socket
-     */
-    void onConnectionAccepted(tcp::socket socket);
-
-    /**
-     * @brief Handle connection acceptor errors
-     * @param error_message Error description
-     * @param ec Error code
-     */
-    void onConnectionError(const std::string& error_message, beast::error_code ec);
-
-    /**
-     * @brief Handle session connection events
-     * @param endpoint Client endpoint
-     * @param connected true if connected, false if disconnected
-     */
-    void onSessionEvent(const std::string& endpoint, bool connected);
-
-    /**
-     * @brief Handle broadcast completion events
-     * @param sessions_reached Number of sessions reached in broadcast
-     */
-    void onBroadcastCompleted(size_t sessions_reached);
+    // Event handling methods extracted to ServerEventHandler
 
 };
 

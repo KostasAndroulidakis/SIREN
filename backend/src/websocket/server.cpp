@@ -38,6 +38,7 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
     session_manager_ = std::make_unique<SessionManager>();
     message_broadcaster_ = std::make_unique<MessageBroadcaster>();
     statistics_collector_ = std::make_unique<StatisticsCollector>();
+    event_handler_ = std::make_unique<ServerEventHandler>(session_manager_, statistics_collector_);
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -72,25 +73,25 @@ bool WebSocketServer::initialize() {
             return false;
         }
 
-        // Set up component callbacks
+        // Set up component callbacks - delegate to event handler
         connection_acceptor_->setAcceptCallback(
             [this](tcp::socket socket) {
-                onConnectionAccepted(std::move(socket));
+                event_handler_->onConnectionAccepted(std::move(socket), weak_from_this());
             });
 
         connection_acceptor_->setErrorCallback(
             [this](const std::string& error_message, beast::error_code ec) {
-                onConnectionError(error_message, ec);
+                event_handler_->onConnectionError(error_message, ec);
             });
 
         session_manager_->setSessionCallback(
             [this](const std::string& endpoint, bool connected) {
-                onSessionEvent(endpoint, connected);
+                event_handler_->onSessionEvent(endpoint, connected);
             });
 
         message_broadcaster_->setBroadcastCallback(
             [this](size_t sessions_reached) {
-                onBroadcastCompleted(sessions_reached);
+                event_handler_->onBroadcastCompleted(sessions_reached);
             });
 
         std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
@@ -229,50 +230,13 @@ data::WebSocketStatistics WebSocketServer::getStatistics() const {
 }
 
 void WebSocketServer::setConnectionCallback(ConnectionCallback callback) {
-    connection_callback_ = std::move(callback);
-}
-
-void WebSocketServer::onConnectionAccepted(tcp::socket socket) {
-    // Create new session through session manager
-    auto session = session_manager_->createSession(std::move(socket), weak_from_this());
-
-    // Start the session
-    session->start();
-
-    std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
-              << cnst::message::websocket_status::NEW_CLIENT_CONNECTED << ": " << session->getClientEndpoint()
-              << " " << cnst::message::websocket_status::TOTAL_CLIENTS << " " << getActiveConnections() << ")" << std::endl;
-
-    // Update statistics
-    if (statistics_collector_) {
-        statistics_collector_->recordConnectionAccepted();
+    // Delegate to event handler - maintain SRP
+    if (event_handler_) {
+        event_handler_->setConnectionCallback(std::move(callback));
     }
 }
 
-void WebSocketServer::onConnectionError(const std::string& error_message, beast::error_code ec) {
-    if (ec) {
-        utils::ErrorHandler::handleBoostError(cnst::message::websocket_status::SERVER_PREFIX,
-                                               error_message, ec,
-                                               data::ErrorSeverity::ERROR);
-    } else {
-        utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
-                                                error_message,
-                                                data::ErrorSeverity::ERROR);
-    }
-
-}
-
-void WebSocketServer::onSessionEvent(const std::string& endpoint, bool connected) {
-    // Notify callback
-    if (connection_callback_) {
-        connection_callback_(endpoint, connected);
-    }
-}
-
-void WebSocketServer::onBroadcastCompleted(size_t sessions_reached) {
-    // Update broadcast statistics if needed
-    // This can be extended for additional metrics tracking
-}
+// Event handling methods extracted to ServerEventHandler class
 
 void WebSocketServer::removeSession(std::shared_ptr<WebSocketSession> session) {
     if (session_manager_) {
