@@ -3,7 +3,7 @@
 // Single Responsibility: Display Sonar Readings ONLY
 
 #include "ui/SonarDataWidget.h"
-#include "ui/MilitaryTheme.h"
+#include "ui/Theme.h"
 #include <QDateTime>
 #include <QFont>
 

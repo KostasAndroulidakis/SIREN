@@ -4,7 +4,7 @@
 #include "ui/MainWindow.h"
 #include "ui/MainLayout.h"
 #include "ui/PanelFactory.h"
-#include "ui/MilitaryTheme.h"
+#include "ui/Theme.h"
 #include "ui/ConnectionStatusWidget.h"
 #include "ui/SonarDataWidget.h"
 #include "ui/SonarVisualizationWidget.h"
@@ -57,7 +57,7 @@ void MainWindow::initializeUI()
 void MainWindow::applyTheme()
 {
     // Apply theme to application (SRP: only styling)
-    MilitaryTheme::applyToApplication(this);
+    Theme::applyToApplication(this);
 }
 
 void MainWindow::createPanels()
@@ -79,11 +79,11 @@ void MainWindow::createPanels()
     QFrame* performancePanel = PanelFactory::createPlaceholder("PERFORMANCE METRICS", this);
 
     // Apply theme styling to panels
-    MilitaryTheme::applyStatusPanelStyle(statusPanel);
-    MilitaryTheme::applyControlPanelStyle(controlPanel);
-    MilitaryTheme::applyRadarPanelStyle(radarPanel);
-    MilitaryTheme::applyDataPanelStyle(dataPanel);
-    MilitaryTheme::applyPerformancePanelStyle(performancePanel);
+    Theme::applyStatusPanelStyle(statusPanel);
+    Theme::applyControlPanelStyle(controlPanel);
+    Theme::applyRadarPanelStyle(radarPanel);
+    Theme::applyDataPanelStyle(dataPanel);
+    Theme::applyPerformancePanelStyle(performancePanel);
 
     // Add connection status to status panel
     QHBoxLayout* statusLayout = new QHBoxLayout(statusPanel);

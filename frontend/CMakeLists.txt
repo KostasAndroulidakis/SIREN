@@ -46,7 +46,7 @@ qt_add_executable(SIREN
     src/ui/MainWindow.cpp
     src/ui/MainLayout.cpp
     src/ui/PanelFactory.cpp
-    src/ui/MilitaryTheme.cpp
+    src/ui/Theme.cpp
     src/ui/ConnectionStatusWidget.cpp
     src/ui/SonarDataWidget.cpp
     src/ui/SonarVisualizationWidget.cpp
@@ -65,7 +65,7 @@ qt_add_executable(SIREN
     include/ui/MainWindow.h
     include/ui/MainLayout.h
     include/ui/PanelFactory.h
-    include/ui/MilitaryTheme.h
+    include/ui/Theme.h
     include/ui/ConnectionStatusWidget.h
     include/ui/SonarDataWidget.h
     include/ui/SonarVisualizationWidget.h

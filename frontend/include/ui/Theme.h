@@ -1,8 +1,8 @@
-#ifndef SIREN_MILITARY_THEME_H
-#define SIREN_MILITARY_THEME_H
+#ifndef SIREN_THEME_H
+#define SIREN_THEME_H
 
-// SIREN Military-Grade Radar System
-// Military Theme Manager - Single Responsibility: Apply Styling
+// SIREN Theme Manager
+// Single Responsibility: Apply Styling
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
 #include <QWidget>
@@ -12,9 +12,9 @@ namespace siren {
 namespace ui {
 
 /**
- * @brief Military theme manager - Single Responsibility: Apply Military Styling
+ * @brief Theme manager - Single Responsibility: Apply Styling
  * 
- * This class has ONE job: Apply consistent military-grade styling to widgets.
+ * This class has ONE job: Apply consistent styling to widgets.
  * It does NOT create widgets, manage layouts, or handle widget behavior.
  * 
  * Color Scheme:
@@ -28,11 +28,11 @@ namespace ui {
  * - Rule 5.0.1: No magic numbers (all colors defined as constants)
  * - Rule 2.10.1: All constants shall be used
  */
-class MilitaryTheme final
+class Theme final
 {
 public:
     /**
-     * @brief Apply military theme to main application
+     * @brief Apply theme to main application
      * @param app Application instance to style
      */
     static void applyToApplication(QWidget* app);
@@ -92,17 +92,17 @@ public:
     static void applyDangerButtonStyle(QWidget* button);
 
     /**
-     * @brief Get complete military stylesheet
+     * @brief Get complete stylesheet
      * @return Complete CSS stylesheet string
      */
-    [[nodiscard]] static QString getMilitaryStyleSheet();
+    [[nodiscard]] static QString getStyleSheet();
 
 private:
     // Static class - no instantiation
-    MilitaryTheme() = delete;
-    ~MilitaryTheme() = delete;
-    MilitaryTheme(const MilitaryTheme&) = delete;
-    MilitaryTheme& operator=(const MilitaryTheme&) = delete;
+    Theme() = delete;
+    ~Theme() = delete;
+    Theme(const Theme&) = delete;
+    Theme& operator=(const Theme&) = delete;
 
     // Color constants (SSOT for all colors)
     static constexpr const char* PRIMARY_BACKGROUND = "#000000";    // Black
@@ -123,10 +123,10 @@ private:
     static constexpr const char* BORDER_INACTIVE = "#333333";       // Dark gray border
     static constexpr const char* BORDER_HOVER = "#00DDDD";          // Lighter cyan (hover)
 
-    static constexpr const char* MILITARY_FONT = "'Courier New', monospace";
+    static constexpr const char* MONOSPACE_FONT = "'Courier New', monospace";
 };
 
 } // namespace ui
 } // namespace siren
 
-#endif // SIREN_MILITARY_THEME_H
+#endif // SIREN_THEME_H

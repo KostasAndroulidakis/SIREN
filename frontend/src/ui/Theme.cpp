@@ -1,20 +1,19 @@
-// SIREN Military-Grade Radar System
-// Military Theme Implementation
-// Single Responsibility: Apply Military Styling ONLY
+// SIREN Theme Implementation
+// Single Responsibility: Apply Styling ONLY
 
-#include "ui/MilitaryTheme.h"
+#include "ui/Theme.h"
 
 namespace siren {
 namespace ui {
 
-void MilitaryTheme::applyToApplication(QWidget* app)
+void Theme::applyToApplication(QWidget* app)
 {
     if (app != nullptr) {
-        app->setStyleSheet(getMilitaryStyleSheet());
+        app->setStyleSheet(getStyleSheet());
     }
 }
 
-void MilitaryTheme::applyStatusPanelStyle(QWidget* panel)
+void Theme::applyStatusPanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
@@ -24,13 +23,13 @@ void MilitaryTheme::applyStatusPanelStyle(QWidget* panel)
                 color: %3;
                 font-family: %4;
             }
-        )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MILITARY_FONT);
+        )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
         
         panel->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyControlPanelStyle(QWidget* panel)
+void Theme::applyControlPanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
@@ -40,13 +39,13 @@ void MilitaryTheme::applyControlPanelStyle(QWidget* panel)
                 color: %3;
                 font-family: %4;
             }
-        )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MILITARY_FONT);
+        )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
         
         panel->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyRadarPanelStyle(QWidget* panel)
+void Theme::applyRadarPanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
@@ -61,7 +60,7 @@ void MilitaryTheme::applyRadarPanelStyle(QWidget* panel)
     }
 }
 
-void MilitaryTheme::applyDataPanelStyle(QWidget* panel)
+void Theme::applyDataPanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
@@ -71,13 +70,13 @@ void MilitaryTheme::applyDataPanelStyle(QWidget* panel)
                 color: %3;
                 font-family: %4;
             }
-        )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MILITARY_FONT);
+        )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
         
         panel->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyPerformancePanelStyle(QWidget* panel)
+void Theme::applyPerformancePanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
@@ -87,13 +86,13 @@ void MilitaryTheme::applyPerformancePanelStyle(QWidget* panel)
                 color: %3;
                 font-family: %4;
             }
-        )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MILITARY_FONT);
+        )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
         
         panel->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyConnectionIndicatorStyle(QWidget* widget)
+void Theme::applyConnectionIndicatorStyle(QWidget* widget)
 {
     if (widget != nullptr) {
         const QString style = QString(R"(
@@ -116,14 +115,14 @@ void MilitaryTheme::applyConnectionIndicatorStyle(QWidget* widget)
                 border-color: %6;
                 color: %3;
             }
-        )").arg(SECONDARY_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MILITARY_FONT, 
+        )").arg(SECONDARY_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT, 
                 SUCCESS_COLOR, DANGER_COLOR);
         
         widget->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyPrimaryButtonStyle(QWidget* button)
+void Theme::applyPrimaryButtonStyle(QWidget* button)
 {
     if (button != nullptr) {
         const QString style = QString(R"(
@@ -149,14 +148,14 @@ void MilitaryTheme::applyPrimaryButtonStyle(QWidget* button)
                 border-color: %6;
                 color: %6;
             }
-        )").arg(PRIMARY_BACKGROUND, PRIMARY_ACCENT, BORDER_HOVER, MILITARY_FONT,
+        )").arg(PRIMARY_BACKGROUND, PRIMARY_ACCENT, BORDER_HOVER, MONOSPACE_FONT,
                 SECONDARY_BACKGROUND, DISABLED_TEXT);
         
         button->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applySecondaryButtonStyle(QWidget* button)
+void Theme::applySecondaryButtonStyle(QWidget* button)
 {
     if (button != nullptr) {
         const QString style = QString(R"(
@@ -177,13 +176,13 @@ void MilitaryTheme::applySecondaryButtonStyle(QWidget* button)
             QPushButton:pressed {
                 background-color: %3;
             }
-        )").arg(PRIMARY_BACKGROUND, SECONDARY_ACCENT, "#CC3300", MILITARY_FONT);
+        )").arg(PRIMARY_BACKGROUND, SECONDARY_ACCENT, "#CC3300", MONOSPACE_FONT);
         
         button->setStyleSheet(style);
     }
 }
 
-void MilitaryTheme::applyDangerButtonStyle(QWidget* button)
+void Theme::applyDangerButtonStyle(QWidget* button)
 {
     if (button != nullptr) {
         const QString style = QString(R"(
@@ -204,13 +203,13 @@ void MilitaryTheme::applyDangerButtonStyle(QWidget* button)
             QPushButton:pressed {
                 background-color: %3;
             }
-        )").arg(PRIMARY_BACKGROUND, DANGER_COLOR, "#CC0000", MILITARY_FONT);
+        )").arg(PRIMARY_BACKGROUND, DANGER_COLOR, "#CC0000", MONOSPACE_FONT);
         
         button->setStyleSheet(style);
     }
 }
 
-QString MilitaryTheme::getMilitaryStyleSheet()
+QString Theme::getStyleSheet()
 {
     return QString(R"(
         /* Global Application Style */
@@ -309,7 +308,7 @@ QString MilitaryTheme::getMilitaryStyleSheet()
 
     )").arg(PRIMARY_BACKGROUND,     // %1 - Main background
             PRIMARY_TEXT,           // %2 - Main text
-            MILITARY_FONT,          // %3 - Font family
+            MONOSPACE_FONT,          // %3 - Font family
             PRIMARY_ACCENT,         // %4 - Cyan accent
             BORDER_INACTIVE,        // %5 - Dark borders
             SECONDARY_BACKGROUND,   // %6 - Panel background

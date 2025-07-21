@@ -3,7 +3,7 @@
 // Single Responsibility: Display Connection State ONLY
 
 #include "ui/ConnectionStatusWidget.h"
-#include "ui/MilitaryTheme.h"
+#include "ui/Theme.h"
 #include <QHBoxLayout>
 #include <QLabel>
 
@@ -95,7 +95,7 @@ void ConnectionStatusWidget::initializeUI()
 void ConnectionStatusWidget::applyMilitaryTheme()
 {
     // Apply military theme styling
-    MilitaryTheme::applyConnectionIndicatorStyle(this);
+    Theme::applyConnectionIndicatorStyle(this);
     
     // Additional widget-specific styling
     const QString widgetStyle = QString(
