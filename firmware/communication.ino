@@ -10,11 +10,7 @@
  */
 
 // Communication configuration constants
-const int SERIAL_BAUD_RATE = 9600;   ///< Reliable serial communication (Arduino standard)
-
-// Communication protocol constants
-const char DATA_SEPARATOR = ',';  ///< Character separating angle and distance values
-const char DATA_TERMINATOR = '.'; ///< Character marking end of data transmission
+constexpr int SERIAL_BAUD_RATE = 9600;   ///< Reliable serial communication (Arduino standard)
 
 /**
  * @brief Initialize serial communication
