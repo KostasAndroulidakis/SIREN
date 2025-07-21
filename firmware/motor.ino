@@ -17,6 +17,10 @@ constexpr int SERVO_PIN = 9;             ///< PWM pin connected to servo control
 constexpr int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
 constexpr int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
 
+// SG90 pulse width specifications (from datasheet)
+constexpr int SG90_MIN_PULSE_WIDTH = 1000;  ///< SG90 minimum pulse width (1ms = 0°)
+constexpr int SG90_MAX_PULSE_WIDTH = 2000;  ///< SG90 maximum pulse width (2ms = 180°)
+
 // Hardware-compliant timing (SG90 + HC-SR04 specifications)
 constexpr int SERVO_SETTLE_TIME = 20;    ///< SG90 minimum settle time (15-20ms recommended)
 constexpr int SENSOR_TIME = 40;          ///< HC-SR04 measurement time including safety margin
@@ -25,11 +29,12 @@ constexpr int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliabl
 /**
  * @brief Initialize the servo motor
  *
- * Attaches the servo motor to its control pin and prepares it for operation.
+ * Attaches the servo motor to its control pin with SG90-specific pulse width calibration.
+ * Uses datasheet-compliant 1000-2000µs range instead of Arduino library defaults.
  * Must be called before any servo movement commands.
  */
 void initMotor() {
-  sonarServo.attach(SERVO_PIN);
+  sonarServo.attach(SERVO_PIN, SG90_MIN_PULSE_WIDTH, SG90_MAX_PULSE_WIDTH);
 }
 
 /**
