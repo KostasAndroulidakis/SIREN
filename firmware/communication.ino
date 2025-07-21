@@ -40,3 +40,39 @@ void sendSonarData(int angle, int distance) {
   Serial.print(" - Distance: ");
   Serial.println(distance);
 }
+
+/**
+ * @brief Send enhanced sonar data with environmental information
+ * @param angle The servo angle in degrees (0-180)
+ * @param distance The measured distance in centimeters
+ * @param temperature Temperature in Celsius
+ * @param humidity Humidity percentage
+ *
+ * Transmits comprehensive sensor data including environmental conditions.
+ * Example output: "Angle: 90 - Distance: 150 - Temp: 23.5 - Humidity: 65.2"
+ */
+void sendEnhancedSonarData(int angle, int distance, float temperature, float humidity) {
+  Serial.print("Angle: ");
+  Serial.print(angle);
+  Serial.print(" - Distance: ");
+  Serial.print(distance);
+  Serial.print(" - Temp: ");
+  Serial.print(temperature, 1);  // 1 decimal place precision
+  Serial.print(" - Humidity: ");
+  Serial.println(humidity, 1);   // 1 decimal place precision
+}
+
+/**
+ * @brief Send environmental data only
+ * @param temperature Temperature in Celsius  
+ * @param humidity Humidity percentage
+ *
+ * Transmits environmental sensor data for system monitoring.
+ * Example output: "Temp: 23.5 - Humidity: 65.2"
+ */
+void sendEnvironmentalData(float temperature, float humidity) {
+  Serial.print("Temp: ");
+  Serial.print(temperature, 1);
+  Serial.print(" - Humidity: ");
+  Serial.println(humidity, 1);
+}

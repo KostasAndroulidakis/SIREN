@@ -45,6 +45,51 @@ void performSonarSweep() {
 }
 
 /**
+ * @brief Execute enhanced bidirectional sonar sweep with environmental data
+ *
+ * Performs military-grade sonar sweep with integrated environmental monitoring.
+ * Includes temperature and humidity readings for atmospheric compensation
+ * and comprehensive system monitoring.
+ *
+ * Environmental readings are taken periodically during sweep to minimize
+ * impact on sonar performance while providing atmospheric data.
+ */
+void performEnhancedSonarSweep() {
+  int stepSize = getDegreeStep();
+  int sensorTime = getSensorTime();
+  
+  // Get environmental data at start of sweep (DHT11 timing constraint)
+  float temperature, humidity;
+  bool hasEnvironmentalData = getEnvironmentalData(temperature, humidity);
+
+  // Forward sweep with environmental data
+  for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
+    moveServoToAngle(angle);      // Includes 20ms servo settling delay
+    delay(sensorTime);            // Additional time for HC-SR04 measurement
+    int distance = getDistance();
+    
+    if (hasEnvironmentalData) {
+      sendEnhancedSonarData(angle, distance, temperature, humidity);
+    } else {
+      sendSonarData(angle, distance);  // Fallback to basic data
+    }
+  }
+
+  // Backward sweep - reuse environmental data (DHT11 2-second constraint)
+  for(int angle = getMaxAngle(); angle >= getMinAngle(); angle -= stepSize) {
+    moveServoToAngle(angle);      // Includes 20ms servo settling delay  
+    delay(sensorTime);            // Additional time for HC-SR04 measurement
+    int distance = getDistance();
+    
+    if (hasEnvironmentalData) {
+      sendEnhancedSonarData(angle, distance, temperature, humidity);
+    } else {
+      sendSonarData(angle, distance);  // Fallback to basic data
+    }
+  }
+}
+
+/**
  * @brief Execute single-direction high-speed sweep (surveillance mode)
  *
  * Optimized for maximum coverage speed, typically used in
