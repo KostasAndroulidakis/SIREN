@@ -27,6 +27,7 @@
 #include "websocket/statistics_collector.hpp"
 #include "websocket/session.hpp"
 #include "websocket/server_event_handler.hpp"
+#include "websocket/server_lifecycle_manager.hpp"
 
 namespace siren::websocket {
 
@@ -139,6 +140,7 @@ private:
     std::unique_ptr<MessageBroadcaster> message_broadcaster_;
     std::unique_ptr<StatisticsCollector> statistics_collector_;
     std::unique_ptr<ServerEventHandler> event_handler_;
+    std::unique_ptr<ServerLifecycleManager> lifecycle_manager_;
 
     // Callbacks
     ConnectionCallback connection_callback_;
