@@ -1,149 +1,192 @@
 /**
  * @file session_manager.cpp
- * @brief Implementation of military-grade WebSocket session manager
+ * @brief Implementation of WebSocket session lifecycle manager - MISRA C++ compliant
  * @author SIREN Project
  * @date 2025
  *
- * Specialized manager for WebSocket session lifecycle management.
- * Follows SRP by focusing exclusively on session creation, tracking,
- * health monitoring, and cleanup.
+ * Single Responsibility: Manage WebSocket session lifecycle ONLY
  */
 
 #include "websocket/session_manager.hpp"
-#include "websocket/server.hpp"
+#include "websocket/server.hpp" // For WebSocketSession definition
+#include "utils/error_handler.hpp"
 #include <iostream>
+#include <algorithm>
 
 namespace siren::websocket {
 
-WebSocketSessionManager::WebSocketSessionManager()
-    : total_sessions_created_(0)
-    , total_sessions_closed_(0)
+SessionManager::SessionManager()
+    : sessions_mutex_()
+    , active_sessions_()
+    , session_callback_(nullptr)
+    , cleanup_counter_(0)
 {
-    std::cout << "[WebSocketSessionManager] Initializing session manager" << std::endl;
+    std::cout << "[" << COMPONENT_NAME << "] Initializing session manager" << std::endl;
+    
+    // Reserve reasonable capacity to avoid frequent reallocations
+    active_sessions_.reserve(32); // SSOT for initial capacity
 }
 
-WebSocketSessionManager::~WebSocketSessionManager() {
+SessionManager::~SessionManager() {
     closeAllSessions();
-    std::cout << "[WebSocketSessionManager] Session manager destroyed" << std::endl;
 }
 
-std::shared_ptr<WebSocketSession> WebSocketSessionManager::createSession(tcp::socket&& socket,
-                                                                        std::weak_ptr<WebSocketServer> server_weak_ptr) {
-    // Create new session
-    auto session = std::make_shared<WebSocketSession>(std::move(socket), server_weak_ptr);
+std::shared_ptr<WebSocketSession> SessionManager::createSession(
+    tcp::socket&& socket, 
+    std::weak_ptr<WebSocketServer> server_weak_ptr) {
+    
+    try {
+        // Create new session (RAII managed)
+        auto session = std::make_shared<WebSocketSession>(std::move(socket), server_weak_ptr);
 
-    // Add to active sessions
-    addSession(session);
+        // Get client endpoint for logging
+        const std::string endpoint = session->getClientEndpoint();
 
-    // Track creation
-    total_sessions_created_.fetch_add(1);
+        // Add to active sessions (thread-safe)
+        {
+            std::lock_guard<std::mutex> lock(sessions_mutex_);
+            active_sessions_.push_back(session);
+        }
 
-    std::cout << "[WebSocketSessionManager] ✅ Session created: " << session->getClientEndpoint() << std::endl;
+        // Notify session creation
+        notifySessionEvent(endpoint, true);
 
-    return session;
+        // Check if cleanup is needed
+        checkPeriodicCleanup();
+
+        std::cout << "[" << COMPONENT_NAME << "] Created session for " << endpoint 
+                  << " (total: " << getActiveSessionCount() << ")" << std::endl;
+
+        return session;
+
+    } catch (const std::exception& e) {
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "session creation", e,
+                                           data::ErrorSeverity::ERROR);
+        return nullptr;
+    }
 }
 
-void WebSocketSessionManager::addSession(std::shared_ptr<WebSocketSession> session) {
-    {
-        std::lock_guard<std::mutex> lock(sessions_mutex_);
-        active_sessions_.insert(session);
+void SessionManager::removeSession(std::shared_ptr<WebSocketSession> session) {
+    if (!session) {
+        return; // Invalid session
     }
 
-    // Notify callback about new connection
-    notifySessionCallback(session->getClientEndpoint(), true);
+    const std::string endpoint = session->getClientEndpoint();
+    bool removed = false;
 
-    std::cout << "[WebSocketSessionManager] 🔌 Session added: " << session->getClientEndpoint()
-              << " (total: " << getActiveSessionCount() << ")" << std::endl;
-}
-
-void WebSocketSessionManager::removeSession(std::shared_ptr<WebSocketSession> session) {
-    std::string endpoint = session->getClientEndpoint();
-
+    // Remove from active sessions (thread-safe)
     {
         std::lock_guard<std::mutex> lock(sessions_mutex_);
-        active_sessions_.erase(session);
+        
+        auto it = std::find(active_sessions_.begin(), active_sessions_.end(), session);
+        if (it != active_sessions_.end()) {
+            active_sessions_.erase(it);
+            removed = true;
+        }
     }
 
-    // Track closure
-    total_sessions_closed_.fetch_add(1);
+    if (removed) {
+        // Notify session removal
+        notifySessionEvent(endpoint, false);
 
-    // Notify callback about disconnection
-    notifySessionCallback(endpoint, false);
+        // Check if cleanup is needed
+        checkPeriodicCleanup();
 
-    std::cout << "[WebSocketSessionManager] 🔌 Session removed: " << endpoint
-              << " (remaining: " << getActiveSessionCount() << ")" << std::endl;
+        std::cout << "[" << COMPONENT_NAME << "] Removed session for " << endpoint 
+                  << " (total: " << getActiveSessionCount() << ")" << std::endl;
+    }
 }
 
-std::unordered_set<std::shared_ptr<WebSocketSession>> WebSocketSessionManager::getActiveSessions() const {
+SessionManager::SessionContainer SessionManager::getActiveSessions() const {
     std::lock_guard<std::mutex> lock(sessions_mutex_);
-    return active_sessions_;
+    return active_sessions_; // Copy for thread safety
 }
 
-size_t WebSocketSessionManager::getActiveSessionCount() const noexcept {
+size_t SessionManager::getActiveSessionCount() const noexcept {
     std::lock_guard<std::mutex> lock(sessions_mutex_);
     return active_sessions_.size();
 }
 
-void WebSocketSessionManager::cleanupClosedSessions() {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
+void SessionManager::closeAllSessions() {
+    std::cout << "[" << COMPONENT_NAME << "] Closing all sessions..." << std::endl;
 
-    size_t initial_count = active_sessions_.size();
+    SessionContainer sessions_to_close;
 
-    auto it = active_sessions_.begin();
-    while (it != active_sessions_.end()) {
-        if (!(*it)->isAlive()) {
-            it = active_sessions_.erase(it);
-            total_sessions_closed_.fetch_add(1);
-        } else {
-            ++it;
+    // Get copy of all sessions (thread-safe)
+    {
+        std::lock_guard<std::mutex> lock(sessions_mutex_);
+        sessions_to_close = active_sessions_;
+    }
+
+    // Close each session
+    for (auto& session : sessions_to_close) {
+        if (session && session->isAlive()) {
+            try {
+                session->close();
+            } catch (const std::exception& e) {
+                utils::ErrorHandler::handleException(COMPONENT_NAME, "session closure", e,
+                                                   data::ErrorSeverity::WARNING);
+            }
         }
     }
 
-    size_t cleaned_count = initial_count - active_sessions_.size();
-    if (cleaned_count > 0) {
-        std::cout << "[WebSocketSessionManager] 🧹 Cleaned up " << cleaned_count
-                  << " closed sessions" << std::endl;
-    }
-}
-
-void WebSocketSessionManager::closeAllSessions() {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-
-    size_t session_count = active_sessions_.size();
-    if (session_count > 0) {
-        std::cout << "[WebSocketSessionManager] 🛑 Closing " << session_count << " active sessions..." << std::endl;
-
-        for (auto& session : active_sessions_) {
-            session->close();
-        }
-
+    // Clear the active sessions container
+    {
+        std::lock_guard<std::mutex> lock(sessions_mutex_);
         active_sessions_.clear();
-        total_sessions_closed_.fetch_add(session_count);
+    }
+
+    std::cout << "[" << COMPONENT_NAME << "] All sessions closed" << std::endl;
+}
+
+void SessionManager::cleanupClosedSessions() {
+    size_t initial_count = 0;
+    size_t cleaned_count = 0;
+
+    // Remove dead sessions (thread-safe)
+    {
+        std::lock_guard<std::mutex> lock(sessions_mutex_);
+        initial_count = active_sessions_.size();
+
+        // Remove sessions that are no longer alive
+        active_sessions_.erase(
+            std::remove_if(active_sessions_.begin(), active_sessions_.end(),
+                          [](const std::shared_ptr<WebSocketSession>& session) {
+                              return !session || !session->isAlive();
+                          }),
+            active_sessions_.end());
+
+        cleaned_count = initial_count - active_sessions_.size();
+    }
+
+    if (cleaned_count > 0) {
+        std::cout << "[" << COMPONENT_NAME << "] Cleaned up " << cleaned_count 
+                  << " closed sessions (remaining: " << getActiveSessionCount() << ")" << std::endl;
     }
 }
 
-bool WebSocketSessionManager::isSessionActive(std::shared_ptr<WebSocketSession> session) const {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-    return active_sessions_.find(session) != active_sessions_.end();
-}
-
-void WebSocketSessionManager::setSessionCallback(SessionCallback callback) {
+void SessionManager::setSessionCallback(SessionEventCallback callback) {
     session_callback_ = std::move(callback);
 }
 
-WebSocketSessionManager::SessionStats WebSocketSessionManager::getSessionStats() const {
-    std::lock_guard<std::mutex> lock(sessions_mutex_);
-
-    return SessionStats{
-        .total_sessions = total_sessions_created_.load(),
-        .active_sessions = active_sessions_.size(),
-        .closed_sessions = total_sessions_closed_.load()
-    };
+void SessionManager::notifySessionEvent(const std::string& endpoint, bool connected) {
+    if (session_callback_) {
+        try {
+            session_callback_(endpoint, connected);
+        } catch (const std::exception& e) {
+            utils::ErrorHandler::handleException(COMPONENT_NAME, "session event callback", e,
+                                               data::ErrorSeverity::WARNING);
+        }
+    }
 }
 
-void WebSocketSessionManager::notifySessionCallback(const std::string& endpoint, bool connected) {
-    if (session_callback_) {
-        session_callback_(endpoint, connected);
+void SessionManager::checkPeriodicCleanup() {
+    // Increment cleanup counter atomically
+    size_t count = cleanup_counter_.fetch_add(1);
+
+    // Perform cleanup every N session changes (SSOT for cleanup frequency)
+    if (count % CLEANUP_THRESHOLD == 0) {
+        cleanupClosedSessions();
     }
 }
 

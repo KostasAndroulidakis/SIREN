@@ -22,8 +22,8 @@
 
 #include "data/sonar_types.hpp"
 #include "websocket/connection_acceptor.hpp"
-#include "websocket/websocket_session_manager.hpp"
-#include "websocket/websocket_message_broadcaster.hpp"
+#include "websocket/session_manager.hpp"
+#include "websocket/message_broadcaster.hpp"
 
 namespace siren::websocket {
 
@@ -230,8 +230,8 @@ private:
 
     // Specialized managers - SRP compliant components
     std::unique_ptr<ConnectionAcceptor> connection_acceptor_;
-    std::unique_ptr<WebSocketSessionManager> session_manager_;
-    std::unique_ptr<WebSocketMessageBroadcaster> message_broadcaster_;
+    std::unique_ptr<SessionManager> session_manager_;
+    std::unique_ptr<MessageBroadcaster> message_broadcaster_;
 
     // Statistics and monitoring
     mutable std::mutex stats_mutex_;

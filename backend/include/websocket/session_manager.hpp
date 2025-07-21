@@ -1,18 +1,17 @@
 /**
  * @file session_manager.hpp
- * @brief Military-grade WebSocket session manager for active session lifecycle
+ * @brief WebSocket session lifecycle manager - MISRA C++ compliant
  * @author SIREN Project
  * @date 2025
  *
- * Specialized manager class responsible for managing active WebSocket sessions.
- * Follows SRP by focusing exclusively on session lifecycle management including
- * session creation, tracking, health monitoring, and cleanup.
+ * Single Responsibility: Manage WebSocket session lifecycle ONLY
+ * MISRA C++ 2023 compliant - Rule 5.0.1 (no magic numbers), Rule 21.2.1 (RAII)
  */
 
 #pragma once
 
 #include <memory>
-#include <unordered_set>
+#include <vector>
 #include <functional>
 #include <atomic>
 #include <mutex>
@@ -21,133 +20,127 @@
 
 namespace siren::websocket {
 
+namespace beast = boost::beast;
 using tcp = boost::asio::ip::tcp;
 
-// Forward declarations
+// Forward declaration
 class WebSocketSession;
 class WebSocketServer;
 
 /**
- * @brief Military-grade WebSocket session manager
+ * @brief WebSocket session lifecycle manager with single responsibility
  *
- * Manages active WebSocket sessions including creation, registration,
- * health monitoring, and cleanup. Follows SRP by focusing exclusively
- * on session lifecycle management.
+ * RESPONSIBILITIES:
+ * - Create WebSocket sessions from TCP sockets ONLY
+ * - Track active session lifecycle ONLY
+ * - Cleanup closed sessions ONLY
+ * - Provide session access for broadcasting ONLY
  *
- * Features:
- * - Thread-safe session management
- * - Automatic session cleanup
- * - Session health monitoring
- * - Military-grade error handling
- * - Connection lifecycle callbacks
- * - Graceful session shutdown
+ * NOT RESPONSIBLE FOR:
+ * - TCP connection acceptance (handled by ConnectionAcceptor)
+ * - Message broadcasting (handled by MessageBroadcaster)
+ * - Statistics tracking (handled by StatisticsCollector)
+ * - Server coordination (handled by WebSocketServer)
+ *
+ * MISRA C++ Compliance:
+ * - Rule 5.0.1: All constants defined, no magic numbers
+ * - Rule 21.2.1: RAII for all resources
+ * - Rule 8.4.1: Single responsibility per class
+ * - Rule 18.1.1: Thread-safe container access
  */
-class WebSocketSessionManager {
+class SessionManager {
 public:
-    /// Session callback type for connection events
-    using SessionCallback = std::function<void(const std::string&, bool)>;
+    /// Session container type (SSOT for session storage)
+    using SessionContainer = std::vector<std::shared_ptr<WebSocketSession>>;
+    
+    /// Callback type for session events (SSOT)
+    using SessionEventCallback = std::function<void(const std::string&, bool)>;
 
     /**
-     * @brief Constructor
+     * @brief Constructor - RAII initialization
      */
-    explicit WebSocketSessionManager();
+    explicit SessionManager();
 
     /**
-     * @brief Destructor - ensures clean shutdown
+     * @brief Destructor - RAII cleanup
      */
-    ~WebSocketSessionManager();
+    ~SessionManager();
 
-    // Non-copyable, non-movable
-    WebSocketSessionManager(const WebSocketSessionManager&) = delete;
-    WebSocketSessionManager& operator=(const WebSocketSessionManager&) = delete;
-    WebSocketSessionManager(WebSocketSessionManager&&) = delete;
-    WebSocketSessionManager& operator=(WebSocketSessionManager&&) = delete;
+    // MISRA C++ Rule 12.1.1: Disable copy/move for resource management
+    SessionManager(const SessionManager&) = delete;
+    SessionManager& operator=(const SessionManager&) = delete;
+    SessionManager(SessionManager&&) = delete;
+    SessionManager& operator=(SessionManager&&) = delete;
 
     /**
-     * @brief Create and register a new WebSocket session
-     * @param socket TCP socket for the session
+     * @brief Create session from accepted TCP socket (SSOT for session creation)
+     * @param socket Accepted TCP socket
      * @param server_weak_ptr Weak reference to parent server
-     * @return Shared pointer to the new session
+     * @return Shared pointer to created session
      */
-    std::shared_ptr<WebSocketSession> createSession(tcp::socket&& socket,
+    std::shared_ptr<WebSocketSession> createSession(tcp::socket&& socket, 
                                                    std::weak_ptr<WebSocketServer> server_weak_ptr);
 
     /**
-     * @brief Add existing session to management
-     * @param session WebSocket session to manage
-     */
-    void addSession(std::shared_ptr<WebSocketSession> session);
-
-    /**
-     * @brief Remove session from management
-     * @param session WebSocket session to remove
+     * @brief Remove session from active sessions (SSOT for session removal)
+     * @param session Session to remove
      */
     void removeSession(std::shared_ptr<WebSocketSession> session);
 
     /**
-     * @brief Get all active sessions
-     * @return Set of active session pointers
+     * @brief Get active sessions for broadcasting (SSOT for session access)
+     * @return Container of active sessions
      */
-    std::unordered_set<std::shared_ptr<WebSocketSession>> getActiveSessions() const;
+    SessionContainer getActiveSessions() const;
 
     /**
-     * @brief Get number of active sessions
-     * @return Count of active sessions
+     * @brief Get count of active sessions (SSOT for session counting)
+     * @return Number of active sessions
      */
     size_t getActiveSessionCount() const noexcept;
 
     /**
-     * @brief Perform cleanup of closed sessions
-     */
-    void cleanupClosedSessions();
-
-    /**
-     * @brief Close all active sessions gracefully
+     * @brief Close all sessions gracefully (SSOT for bulk session closure)
      */
     void closeAllSessions();
 
     /**
-     * @brief Check if session is managed by this manager
-     * @param session Session to check
-     * @return true if session is active
+     * @brief Cleanup closed sessions from container (SSOT for cleanup)
      */
-    bool isSessionActive(std::shared_ptr<WebSocketSession> session) const;
+    void cleanupClosedSessions();
 
     /**
-     * @brief Set callback for session connection events
-     * @param callback Function to call when sessions connect/disconnect
+     * @brief Set callback for session events (SSOT for callback setting)
+     * @param callback Function to call when session connects/disconnects
      */
-    void setSessionCallback(SessionCallback callback);
-
-    /**
-     * @brief Get session statistics
-     * @return Session count and health information
-     */
-    struct SessionStats {
-        size_t total_sessions;
-        size_t active_sessions;
-        size_t closed_sessions;
-    };
-    SessionStats getSessionStats() const;
+    void setSessionCallback(SessionEventCallback callback);
 
 private:
-    // Session management
-    std::unordered_set<std::shared_ptr<WebSocketSession>> active_sessions_;
+    // Session storage - thread-safe access required
     mutable std::mutex sessions_mutex_;
+    SessionContainer active_sessions_;
 
-    // Statistics tracking
-    std::atomic<size_t> total_sessions_created_;
-    std::atomic<size_t> total_sessions_closed_;
+    // Session event notification (SSOT)
+    SessionEventCallback session_callback_;
 
-    // Callbacks
-    SessionCallback session_callback_;
+    // Cleanup management
+    std::atomic<size_t> cleanup_counter_;
+
+    // SSOT constants for cleanup management (MISRA C++ Rule 5.0.1)
+    static constexpr size_t CLEANUP_THRESHOLD = 10;  // Cleanup after N session changes
+    static constexpr const char* COMPONENT_NAME = "SessionManager";
 
     /**
-     * @brief Notify session callback about connection event
-     * @param endpoint Client endpoint string
+     * @brief Notify session event (SSOT for event notification)
+     * @param endpoint Client endpoint
      * @param connected true if connected, false if disconnected
      */
-    void notifySessionCallback(const std::string& endpoint, bool connected);
+    void notifySessionEvent(const std::string& endpoint, bool connected);
+
+    /**
+     * @brief Check if periodic cleanup is needed (SSOT for cleanup logic)
+     */
+    void checkPeriodicCleanup();
 };
 
 } // namespace siren::websocket

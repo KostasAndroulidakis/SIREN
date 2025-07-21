@@ -1,67 +1,69 @@
 /**
  * @file message_broadcaster.hpp
- * @brief Military-grade WebSocket message broadcaster for data distribution
+ * @brief WebSocket message broadcaster - MISRA C++ compliant
  * @author SIREN Project
  * @date 2025
  *
- * Specialized broadcaster class responsible for distributing messages to
- * multiple WebSocket sessions. Follows SRP by focusing exclusively on
- * message broadcasting and distribution coordination.
+ * Single Responsibility: Broadcast messages to multiple WebSocket sessions ONLY
+ * MISRA C++ 2023 compliant - Rule 5.0.1 (no magic numbers), Rule 21.2.1 (RAII)
  */
 
 #pragma once
 
 #include <memory>
-#include <unordered_set>
+#include <vector>
 #include <functional>
 #include <atomic>
-#include <mutex>
-#include <queue>
-#include <thread>
-#include <condition_variable>
 #include "data/sonar_types.hpp"
 
 namespace siren::websocket {
 
 // Forward declarations
 class WebSocketSession;
-class WebSocketSessionManager;
 
 /**
- * @brief Military-grade WebSocket message broadcaster
+ * @brief WebSocket message broadcaster with single responsibility
  *
- * Handles message distribution to multiple WebSocket sessions with
- * thread-safe operations and performance optimization. Follows SRP
- * by focusing exclusively on message broadcasting coordination.
+ * RESPONSIBILITIES:
+ * - Broadcast sonar data to multiple sessions ONLY
+ * - Broadcast performance metrics to multiple sessions ONLY
+ * - Handle broadcast completion tracking ONLY
+ * - Manage broadcast error handling ONLY
  *
- * Features:
- * - Thread-safe message broadcasting
- * - Asynchronous message distribution
- * - Message queue management
- * - Performance optimization for high-frequency data
- * - Military-grade error handling
- * - Message serialization coordination
+ * NOT RESPONSIBLE FOR:
+ * - Session lifecycle management (handled by SessionManager)
+ * - TCP connection acceptance (handled by ConnectionAcceptor)
+ * - Statistics collection (handled by StatisticsCollector)
+ * - Server coordination (handled by WebSocketServer)
+ *
+ * MISRA C++ Compliance:
+ * - Rule 5.0.1: All constants defined, no magic numbers
+ * - Rule 21.2.1: RAII for all resources
+ * - Rule 8.4.1: Single responsibility per class
  */
-class WebSocketMessageBroadcaster {
+class MessageBroadcaster {
 public:
-    /// Message broadcast callback type
+    /// Session container type (SSOT for session handling)
+    using SessionContainer = std::vector<std::shared_ptr<WebSocketSession>>;
+    
+    /// Callback type for broadcast completion (SSOT)
     using BroadcastCallback = std::function<void(size_t)>;
 
     /**
-     * @brief Constructor
+     * @brief Constructor - RAII initialization
      */
-    explicit WebSocketMessageBroadcaster();
+    explicit MessageBroadcaster();
 
     /**
-     * @brief Destructor - ensures clean shutdown
+     * @brief Destructor - RAII cleanup
      */
-    ~WebSocketMessageBroadcaster();
+    ~MessageBroadcaster();
 
-    // Non-copyable, non-movable
-    WebSocketMessageBroadcaster(const WebSocketMessageBroadcaster&) = delete;
-    WebSocketMessageBroadcaster& operator=(const WebSocketMessageBroadcaster&) = delete;
-    WebSocketMessageBroadcaster(WebSocketMessageBroadcaster&&) = delete;
-    WebSocketMessageBroadcaster& operator=(WebSocketMessageBroadcaster&&) = delete;
+    // MISRA C++ Rule 12.1.1: Disable copy/move for resource management
+    MessageBroadcaster(const MessageBroadcaster&) = delete;
+    MessageBroadcaster& operator=(const MessageBroadcaster&) = delete;
+    MessageBroadcaster(MessageBroadcaster&&) = delete;
+    MessageBroadcaster& operator=(MessageBroadcaster&&) = delete;
 
     /**
      * @brief Initialize the message broadcaster
@@ -81,131 +83,85 @@ public:
     void stop();
 
     /**
-     * @brief Check if broadcaster is active
+     * @brief Check if broadcaster is running
      */
-    bool isActive() const noexcept;
+    bool isRunning() const noexcept;
 
     /**
-     * @brief Broadcast sonar data to all active sessions
+     * @brief Broadcast sonar data to all active sessions (SSOT for sonar broadcasting)
      * @param data Sonar data point to broadcast
-     * @param sessions Active WebSocket sessions to broadcast to
+     * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastSonarData(const data::SonarDataPoint& data,
-                           const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions);
+    void broadcastSonarData(const data::SonarDataPoint& data, 
+                           const SessionContainer& sessions);
 
     /**
-     * @brief Broadcast performance metrics to all active sessions
+     * @brief Broadcast performance metrics to all active sessions (SSOT for metrics broadcasting)
      * @param metrics Performance metrics to broadcast
-     * @param sessions Active WebSocket sessions to broadcast to
+     * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics,
-                                   const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions);
+    void broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics, 
+                                   const SessionContainer& sessions);
 
     /**
-     * @brief Broadcast raw message to all active sessions
-     * @param message Raw message string to broadcast
-     * @param sessions Active WebSocket sessions to broadcast to
+     * @brief Broadcast generic message to all active sessions (SSOT for message broadcasting)
+     * @param message Serialized message to broadcast
+     * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastRawMessage(const std::string& message,
-                           const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions);
+    void broadcastMessage(const std::string& message, 
+                         const SessionContainer& sessions);
 
     /**
-     * @brief Get broadcast statistics
-     */
-    struct BroadcastStats {
-        uint64_t total_messages_sent;
-        uint64_t total_sessions_reached;
-        uint64_t failed_broadcasts;
-        uint32_t average_broadcast_time_us;
-    };
-    BroadcastStats getBroadcastStats() const;
-
-    /**
-     * @brief Set callback for broadcast events
-     * @param callback Function to call after each broadcast
+     * @brief Set callback for broadcast completion (SSOT for callback setting)
+     * @param callback Function to call when broadcast completes
      */
     void setBroadcastCallback(BroadcastCallback callback);
 
+    /**
+     * @brief Get total number of successful broadcasts (SSOT for broadcast counting)
+     */
+    uint64_t getTotalBroadcasts() const noexcept;
+
+    /**
+     * @brief Get total number of failed broadcasts (SSOT for error counting)
+     */
+    uint64_t getFailedBroadcasts() const noexcept;
+
 private:
-    /// Message types for internal queue
-    enum class MessageType {
-        SONAR_DATA,
-        PERFORMANCE_METRICS,
-        RAW_MESSAGE
-    };
+    // State management
+    std::atomic<bool> running_;
+    std::atomic<bool> initialized_;
 
-    /// Internal message structure
-    struct BroadcastMessage {
-        MessageType type;
-        std::string serialized_data;
-        std::unordered_set<std::shared_ptr<WebSocketSession>> target_sessions;
-        std::chrono::steady_clock::time_point timestamp;
-    };
-
-    // Core state
-    std::atomic<bool> active_;
-    std::atomic<bool> shutdown_requested_;
-
-    // Message queue and processing
-    std::queue<BroadcastMessage> message_queue_;
-    std::mutex queue_mutex_;
-    std::condition_variable queue_cv_;
-    std::thread broadcaster_thread_;
-
-    // Statistics tracking
-    std::atomic<uint64_t> total_messages_sent_;
-    std::atomic<uint64_t> total_sessions_reached_;
+    // Broadcasting statistics (thread-safe)
+    std::atomic<uint64_t> total_broadcasts_;
     std::atomic<uint64_t> failed_broadcasts_;
-    std::atomic<uint32_t> average_broadcast_time_us_;
 
-    // Callbacks
+    // Broadcast completion notification (SSOT)
     BroadcastCallback broadcast_callback_;
 
-    /**
-     * @brief Main broadcasting thread function
-     */
-    void broadcasterThreadFunction();
+    // SSOT constants (MISRA C++ Rule 5.0.1)
+    static constexpr const char* COMPONENT_NAME = "MessageBroadcaster";
 
     /**
-     * @brief Process a single broadcast message
-     * @param message Message to broadcast
-     */
-    void processBroadcastMessage(const BroadcastMessage& message);
-
-    /**
-     * @brief Send message to a specific session
-     * @param session Target WebSocket session
+     * @brief Send message to individual session (SSOT for session messaging)
+     * @param session Target session
      * @param message Message to send
-     * @return true if successful
+     * @return true if message sent successfully
      */
-    bool sendMessageToSession(std::shared_ptr<WebSocketSession> session, const std::string& message);
+    bool sendToSession(std::shared_ptr<WebSocketSession> session, 
+                      const std::string& message);
 
     /**
-     * @brief Serialize sonar data to JSON
-     * @param data Sonar data point to serialize
-     * @return JSON string representation
+     * @brief Notify broadcast completion (SSOT for completion notification)
+     * @param sessions_reached Number of sessions that received the message
      */
-    std::string serializeSonarData(const data::SonarDataPoint& data);
+    void notifyBroadcastComplete(size_t sessions_reached);
 
     /**
-     * @brief Serialize performance metrics to JSON
-     * @param metrics Performance metrics to serialize
-     * @return JSON string representation
+     * @brief Update broadcast statistics (SSOT for statistics tracking)
+     * @param success true if broadcast was successful
      */
-    std::string serializePerformanceMetrics(const data::PerformanceMetrics& metrics);
-
-    /**
-     * @brief Enqueue message for broadcasting
-     * @param message Message to enqueue
-     */
-    void enqueueMessage(BroadcastMessage message);
-
-    /**
-     * @brief Update broadcast statistics
-     * @param sessions_reached Number of sessions reached
-     * @param broadcast_time_us Time taken for broadcast in microseconds
-     */
-    void updateBroadcastStats(size_t sessions_reached, uint32_t broadcast_time_us);
+    void updateBroadcastStats(bool success);
 };
 
 } // namespace siren::websocket

@@ -1,257 +1,224 @@
 /**
  * @file message_broadcaster.cpp
- * @brief Implementation of military-grade WebSocket message broadcaster
+ * @brief Implementation of WebSocket message broadcaster - MISRA C++ compliant
  * @author SIREN Project
  * @date 2025
  *
- * Specialized broadcaster for WebSocket message distribution.
- * Follows SRP by focusing exclusively on message broadcasting
- * and distribution coordination.
+ * Single Responsibility: Broadcast messages to multiple WebSocket sessions ONLY
  */
 
 #include "websocket/message_broadcaster.hpp"
-#include "websocket/server.hpp"
+#include "websocket/server.hpp" // For WebSocketSession definition
 #include "utils/json_serializer.hpp"
+#include "utils/error_handler.hpp"
 #include <iostream>
-#include <chrono>
 
 namespace siren::websocket {
 
-WebSocketMessageBroadcaster::WebSocketMessageBroadcaster()
-    : active_(false)
-    , shutdown_requested_(false)
-    , total_messages_sent_(0)
-    , total_sessions_reached_(0)
+MessageBroadcaster::MessageBroadcaster()
+    : running_(false)
+    , initialized_(false)
+    , total_broadcasts_(0)
     , failed_broadcasts_(0)
-    , average_broadcast_time_us_(0)
+    , broadcast_callback_(nullptr)
 {
-    std::cout << "[WebSocketMessageBroadcaster] Initializing message broadcaster" << std::endl;
+    std::cout << "[" << COMPONENT_NAME << "] Initializing message broadcaster" << std::endl;
 }
 
-WebSocketMessageBroadcaster::~WebSocketMessageBroadcaster() {
-    stop();
-    std::cout << "[WebSocketMessageBroadcaster] Message broadcaster destroyed" << std::endl;
+MessageBroadcaster::~MessageBroadcaster() {
+    if (running_.load()) {
+        stop();
+    }
 }
 
-bool WebSocketMessageBroadcaster::initialize() {
-    std::cout << "[WebSocketMessageBroadcaster] ✅ Message broadcaster initialized" << std::endl;
-    return true;
-}
-
-bool WebSocketMessageBroadcaster::start() {
-    if (active_.load()) {
-        std::cout << "[WebSocketMessageBroadcaster] ⚠️ Message broadcaster already active" << std::endl;
+bool MessageBroadcaster::initialize() {
+    if (initialized_.load()) {
+        utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
+                                             "Already initialized",
+                                             data::ErrorSeverity::WARNING);
         return true;
     }
 
     try {
-        active_.store(true);
-        shutdown_requested_.store(false);
+        // Reset statistics
+        total_broadcasts_.store(0);
+        failed_broadcasts_.store(0);
 
-        // Start broadcaster thread
-        broadcaster_thread_ = std::thread(&WebSocketMessageBroadcaster::broadcasterThreadFunction, this);
+        initialized_.store(true);
 
-        std::cout << "[WebSocketMessageBroadcaster] 🚀 Message broadcaster started" << std::endl;
+        std::cout << "[" << COMPONENT_NAME << "] Initialized successfully" << std::endl;
         return true;
 
     } catch (const std::exception& e) {
-        std::cout << "[WebSocketMessageBroadcaster] ❌ Failed to start broadcaster: " << e.what() << std::endl;
-        active_.store(false);
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "initialization", e,
+                                           data::ErrorSeverity::FATAL);
         return false;
     }
 }
 
-void WebSocketMessageBroadcaster::stop() {
-    if (!active_.load()) {
+bool MessageBroadcaster::start() {
+    if (!initialized_.load()) {
+        utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
+                                             "Not initialized - cannot start",
+                                             data::ErrorSeverity::ERROR);
+        return false;
+    }
+
+    if (running_.load()) {
+        utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
+                                             "Already running",
+                                             data::ErrorSeverity::WARNING);
+        return true;
+    }
+
+    try {
+        running_.store(true);
+
+        std::cout << "[" << COMPONENT_NAME << "] Started successfully" << std::endl;
+        return true;
+
+    } catch (const std::exception& e) {
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "start operation", e,
+                                           data::ErrorSeverity::ERROR);
+        return false;
+    }
+}
+
+void MessageBroadcaster::stop() {
+    if (!running_.load()) {
         return;
     }
 
-    std::cout << "[WebSocketMessageBroadcaster] 🛑 Stopping message broadcaster..." << std::endl;
+    std::cout << "[" << COMPONENT_NAME << "] Stopping message broadcaster..." << std::endl;
 
-    shutdown_requested_.store(true);
-    active_.store(false);
+    running_.store(false);
 
-    // Wake up broadcaster thread
-    queue_cv_.notify_all();
-
-    // Join broadcaster thread
-    if (broadcaster_thread_.joinable()) {
-        broadcaster_thread_.join();
-    }
-
-    // Clear remaining messages
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-        std::queue<BroadcastMessage> empty;
-        message_queue_.swap(empty);
-    }
-
-    std::cout << "[WebSocketMessageBroadcaster] ✅ Message broadcaster stopped" << std::endl;
+    std::cout << "[" << COMPONENT_NAME << "] Stopped (broadcasts: " 
+              << total_broadcasts_.load() << ", failures: " 
+              << failed_broadcasts_.load() << ")" << std::endl;
 }
 
-bool WebSocketMessageBroadcaster::isActive() const noexcept {
-    return active_.load();
+bool MessageBroadcaster::isRunning() const noexcept {
+    return running_.load();
 }
 
-void WebSocketMessageBroadcaster::broadcastSonarData(const data::SonarDataPoint& data,
-                                                    const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions) {
-    if (!active_.load()) {
+void MessageBroadcaster::broadcastSonarData(const data::SonarDataPoint& data,
+                                                    const SessionContainer& sessions) {
+    if (!running_.load()) {
+        return; // Not running
+    }
+
+    try {
+        // Serialize sonar data to JSON (SSOT for sonar serialization)
+        const std::string message = utils::JsonSerializer::serialize(data);
+
+        // Broadcast to all sessions
+        broadcastMessage(message, sessions);
+
+    } catch (const std::exception& e) {
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "sonar data broadcast", e,
+                                           data::ErrorSeverity::ERROR);
+        updateBroadcastStats(false);
+    }
+}
+
+void MessageBroadcaster::broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics,
+                                                             const SessionContainer& sessions) {
+    if (!running_.load()) {
+        return; // Not running
+    }
+
+    try {
+        // Serialize performance metrics to JSON (SSOT for metrics serialization)
+        const std::string message = utils::JsonSerializer::serialize(metrics);
+
+        // Broadcast to all sessions
+        broadcastMessage(message, sessions);
+
+    } catch (const std::exception& e) {
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "performance metrics broadcast", e,
+                                           data::ErrorSeverity::ERROR);
+        updateBroadcastStats(false);
+    }
+}
+
+void MessageBroadcaster::broadcastMessage(const std::string& message,
+                                                  const SessionContainer& sessions) {
+    if (!running_.load() || message.empty()) {
         return;
     }
 
-    BroadcastMessage message;
-    message.type = MessageType::SONAR_DATA;
-    message.serialized_data = serializeSonarData(data);
-    message.target_sessions = sessions;
-    message.timestamp = std::chrono::steady_clock::now();
-
-    enqueueMessage(std::move(message));
-}
-
-void WebSocketMessageBroadcaster::broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics,
-                                                             const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions) {
-    if (!active_.load()) {
-        return;
-    }
-
-    BroadcastMessage message;
-    message.type = MessageType::PERFORMANCE_METRICS;
-    message.serialized_data = serializePerformanceMetrics(metrics);
-    message.target_sessions = sessions;
-    message.timestamp = std::chrono::steady_clock::now();
-
-    enqueueMessage(std::move(message));
-}
-
-void WebSocketMessageBroadcaster::broadcastRawMessage(const std::string& message,
-                                                     const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions) {
-    if (!active_.load()) {
-        return;
-    }
-
-    BroadcastMessage broadcast_msg;
-    broadcast_msg.type = MessageType::RAW_MESSAGE;
-    broadcast_msg.serialized_data = message;
-    broadcast_msg.target_sessions = sessions;
-    broadcast_msg.timestamp = std::chrono::steady_clock::now();
-
-    enqueueMessage(std::move(broadcast_msg));
-}
-
-WebSocketMessageBroadcaster::BroadcastStats WebSocketMessageBroadcaster::getBroadcastStats() const {
-    return BroadcastStats{
-        .total_messages_sent = total_messages_sent_.load(),
-        .total_sessions_reached = total_sessions_reached_.load(),
-        .failed_broadcasts = failed_broadcasts_.load(),
-        .average_broadcast_time_us = average_broadcast_time_us_.load()
-    };
-}
-
-void WebSocketMessageBroadcaster::setBroadcastCallback(BroadcastCallback callback) {
-    broadcast_callback_ = std::move(callback);
-}
-
-void WebSocketMessageBroadcaster::broadcasterThreadFunction() {
-    std::cout << "[WebSocketMessageBroadcaster] 🧵 Broadcaster thread started" << std::endl;
-
-    while (!shutdown_requested_.load()) {
-        std::unique_lock<std::mutex> lock(queue_mutex_);
-
-        // Wait for messages or shutdown
-        queue_cv_.wait(lock, [this] {
-            return !message_queue_.empty() || shutdown_requested_.load();
-        });
-
-        if (shutdown_requested_.load()) {
-            break;
-        }
-
-        // Process all available messages
-        while (!message_queue_.empty()) {
-            BroadcastMessage message = std::move(message_queue_.front());
-            message_queue_.pop();
-            lock.unlock();
-
-            // Process the message
-            processBroadcastMessage(message);
-
-            lock.lock();
-        }
-    }
-
-    std::cout << "[WebSocketMessageBroadcaster] 🧵 Broadcaster thread stopped" << std::endl;
-}
-
-void WebSocketMessageBroadcaster::processBroadcastMessage(const BroadcastMessage& message) {
-    auto start_time = std::chrono::steady_clock::now();
     size_t sessions_reached = 0;
-    size_t failed_sends = 0;
+    size_t total_sessions = sessions.size();
 
-    for (auto& session : message.target_sessions) {
+    // Broadcast to each active session
+    for (const auto& session : sessions) {
         if (session && session->isAlive()) {
-            if (sendMessageToSession(session, message.serialized_data)) {
-                sessions_reached++;
-            } else {
-                failed_sends++;
+            if (sendToSession(session, message)) {
+                ++sessions_reached;
             }
         }
     }
 
-    auto end_time = std::chrono::steady_clock::now();
-    auto broadcast_time_us = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count();
+    // Update statistics and notify completion
+    const bool success = (sessions_reached > 0 || total_sessions == 0);
+    updateBroadcastStats(success);
+    notifyBroadcastComplete(sessions_reached);
 
-    // Update statistics
-    updateBroadcastStats(sessions_reached, static_cast<uint32_t>(broadcast_time_us));
-
-    if (failed_sends > 0) {
-        failed_broadcasts_.fetch_add(failed_sends);
-    }
-
-    // Notify callback
-    if (broadcast_callback_) {
-        broadcast_callback_(sessions_reached);
+    // Log broadcast results for debugging
+    if (total_sessions > 0) {
+        std::cout << "[" << COMPONENT_NAME << "] Broadcast to " << sessions_reached 
+                  << "/" << total_sessions << " sessions" << std::endl;
     }
 }
 
-bool WebSocketMessageBroadcaster::sendMessageToSession(std::shared_ptr<WebSocketSession> session, const std::string& message) {
+void MessageBroadcaster::setBroadcastCallback(BroadcastCallback callback) {
+    broadcast_callback_ = std::move(callback);
+}
+
+uint64_t MessageBroadcaster::getTotalBroadcasts() const noexcept {
+    return total_broadcasts_.load();
+}
+
+uint64_t MessageBroadcaster::getFailedBroadcasts() const noexcept {
+    return failed_broadcasts_.load();
+}
+
+bool MessageBroadcaster::sendToSession(std::shared_ptr<WebSocketSession> session,
+                                               const std::string& message) {
+    if (!session || !session->isAlive()) {
+        return false;
+    }
+
     try {
-        // MISRA C++ compliance: Use correct public interface method
-        // Send the serialized message through the public interface
         session->sendMessage(message);
         return true;
 
     } catch (const std::exception& e) {
-        std::cout << "[WebSocketMessageBroadcaster] ❌ Failed to send message to session: " << e.what() << std::endl;
+        utils::ErrorHandler::handleException(COMPONENT_NAME, 
+                                           "session message send for " + session->getClientEndpoint(), 
+                                           e, data::ErrorSeverity::WARNING);
         return false;
     }
 }
 
-std::string WebSocketMessageBroadcaster::serializeSonarData(const data::SonarDataPoint& data) {
-    return utils::JsonSerializer::serialize(data);
-}
-
-std::string WebSocketMessageBroadcaster::serializePerformanceMetrics(const data::PerformanceMetrics& metrics) {
-    return utils::JsonSerializer::serialize(metrics);
-}
-
-void WebSocketMessageBroadcaster::enqueueMessage(BroadcastMessage message) {
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-        message_queue_.push(std::move(message));
+void MessageBroadcaster::notifyBroadcastComplete(size_t sessions_reached) {
+    if (broadcast_callback_) {
+        try {
+            broadcast_callback_(sessions_reached);
+        } catch (const std::exception& e) {
+            utils::ErrorHandler::handleException(COMPONENT_NAME, "broadcast completion callback", e,
+                                               data::ErrorSeverity::WARNING);
+        }
     }
-
-    // Notify broadcaster thread
-    queue_cv_.notify_one();
 }
 
-void WebSocketMessageBroadcaster::updateBroadcastStats(size_t sessions_reached, uint32_t broadcast_time_us) {
-    total_messages_sent_.fetch_add(1);
-    total_sessions_reached_.fetch_add(sessions_reached);
-
-    // Update average broadcast time (simplified moving average)
-    uint32_t current_avg = average_broadcast_time_us_.load();
-    uint32_t new_avg = (current_avg + broadcast_time_us) / 2;
-    average_broadcast_time_us_.store(new_avg);
+void MessageBroadcaster::updateBroadcastStats(bool success) {
+    total_broadcasts_.fetch_add(1);
+    
+    if (!success) {
+        failed_broadcasts_.fetch_add(1);
+    }
 }
 
 } // namespace siren::websocket
