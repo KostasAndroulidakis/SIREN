@@ -14,18 +14,18 @@
 #include <Adafruit_Sensor.h>
 
 // Environmental sensor hardware configuration
-const int DHT_PIN = 4;                     ///< Digital pin connected to DHT11 data line
-const int DHT_TYPE = DHT11;                ///< DHT sensor type (DHT11)
+constexpr int DHT_PIN = 4;                     ///< Digital pin connected to DHT11 data line
+constexpr int DHT_TYPE = DHT11;                ///< DHT sensor type (DHT11)
 
 // DHT11 timing constraints (from datasheet)
-const int DHT_READ_INTERVAL_MS = 2000;     ///< Minimum interval between readings (2 seconds)
-const int DHT_STARTUP_DELAY_MS = 1000;     ///< Startup stabilization time (1 second)
+constexpr int DHT_READ_INTERVAL_MS = 2000;     ///< Minimum interval between readings (2 seconds)
+constexpr int DHT_STARTUP_DELAY_MS = 1000;     ///< Startup stabilization time (1 second)
 
 // DHT11 actual measurement limits (from datasheet)
-const float MIN_TEMPERATURE = 0.0;        ///< DHT11 minimum temperature (°C)
-const float MAX_TEMPERATURE = 50.0;       ///< DHT11 maximum temperature (°C)  
-const float MIN_HUMIDITY = 20.0;          ///< DHT11 minimum humidity (%)
-const float MAX_HUMIDITY = 90.0;          ///< DHT11 maximum humidity (%)
+constexpr float MIN_TEMPERATURE = 0.0;        ///< DHT11 minimum temperature (°C)
+constexpr float MAX_TEMPERATURE = 50.0;       ///< DHT11 maximum temperature (°C)  
+constexpr float MIN_HUMIDITY = 20.0;          ///< DHT11 minimum humidity (%)
+constexpr float MAX_HUMIDITY = 90.0;          ///< DHT11 maximum humidity (%)
 
 // DHT sensor object
 DHT environmentSensor(DHT_PIN, DHT_TYPE);
