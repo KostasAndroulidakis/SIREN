@@ -2,7 +2,7 @@
 
 ![SIREN Logo](siren-logo.png)
 
-A minimal sonar system built from first principles.
+A minimal radar system built from first principles.
 
 An ultrasonic sensor sweeps 180 degrees on a servo motor, measuring distances.
 
@@ -32,10 +32,6 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 
 - HC-SR04s
 
-### Temperature & Humidity Sensor
-
-- DHT11
-
 ## Software
 
 ### System Launcher
@@ -62,7 +58,7 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 - Language: C++
 - Framework: Qt6 LTS
 - Location: `frontend/`
-- Purpose: Military-grade GUI with WebSocket client and sonar visualization
+- Purpose: Military-grade GUI with WebSocket client and radar visualization
 
 ### Architecture
 
@@ -110,12 +106,4 @@ g++ -std=c++17 main.cpp -o SIREN
 🔴 Pin 1 (+)    ──→  Breadboard (+)
 🟠 Pin 2 (PWM)  ──→  UNO D9 PWM
 ⚫ Pin 3 (-)    ──→  Breadboard (-)
-```
-
-### Temperature & Humidity Sensor DHT11
-
-```text
-🔴 VCC          ──→  Breadboard (+)
-🟢 DATA         ──→  UNO D4
-⚫ GND          ──→  Breadboard (-)
 ```
