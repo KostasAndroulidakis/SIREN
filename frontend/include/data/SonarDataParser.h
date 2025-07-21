@@ -131,7 +131,6 @@ private:
     static constexpr const char* DISTANCE_FIELD = "distance";
     static constexpr const char* TIMESTAMP_FIELD = "timestamp";
     static constexpr const char* SONAR_DATA_TYPE = "sonar_data";
-    static constexpr const char* SONAR_DATA_TYPE = "sonar_data";  // Legacy support
 };
 
 } // namespace data
