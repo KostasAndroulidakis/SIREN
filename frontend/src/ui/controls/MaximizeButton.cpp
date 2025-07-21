@@ -5,7 +5,7 @@
  *
  * @file MaximizeButton.cpp
  * @brief Implementation of maximize/restore window control button
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

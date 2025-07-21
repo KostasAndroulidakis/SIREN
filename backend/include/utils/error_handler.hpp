@@ -1,7 +1,7 @@
 /**
  * @file error_handler.hpp
  * @brief Centralized error handling utility for military-grade error processing
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Military-grade centralized error handling with standardized logging,

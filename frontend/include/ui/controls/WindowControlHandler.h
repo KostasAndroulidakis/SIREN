@@ -5,7 +5,7 @@
  *
  * @file WindowControlHandler.h
  * @brief Window control event handler (MIL-STD-1472 compliant)
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -37,13 +37,13 @@ namespace Controls {
 /**
  * @class WindowControlHandler
  * @brief Event handler for window control operations
- * 
+ *
  * Single Responsibility:
  * - Handles window control events (minimize, maximize, restore, close)
  * - Manages window state synchronization
  * - Provides clean separation between UI and business logic
  * - Implements proper event handling for military-grade applications
- * 
+ *
  * MISRA C++ Compliance:
  * - Explicit constructor
  * - Virtual destructor for proper cleanup
@@ -61,7 +61,7 @@ public:
      * @param targetWindow The window to control
      * @param parent Parent object (may be nullptr)
      */
-    explicit WindowControlHandler(WindowControlBar* controlBar, 
+    explicit WindowControlHandler(WindowControlBar* controlBar,
                                  QWidget* targetWindow,
                                  QObject* parent = nullptr);
 

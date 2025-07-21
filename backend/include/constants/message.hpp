@@ -1,7 +1,7 @@
 /**
  * @file message.hpp
  * @brief Message formats, JSON fields, and communication protocols for military-grade sonar
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  * @classification UNCLASSIFIED
  *

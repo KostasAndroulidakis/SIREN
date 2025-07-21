@@ -1,11 +1,11 @@
 /**
  * @file session.hpp
  * @brief WebSocket session for individual client connections - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Handle WebSocket protocol communication for one client
- * 
+ *
  * RESPONSIBILITIES:
  * - WebSocket protocol handling (handshake, read, write)
  * - Message serialization and transmission
@@ -14,7 +14,7 @@
  *
  * NOT RESPONSIBLE FOR:
  * - Session lifecycle management (handled by SessionManager)
- * - Message broadcasting (handled by MessageBroadcaster) 
+ * - Message broadcasting (handled by MessageBroadcaster)
  * - Connection acceptance (handled by ConnectionAcceptor)
  * - Server orchestration (handled by WebSocketServer)
  *
@@ -116,13 +116,13 @@ public:
 private:
     // WebSocket stream - RAII managed
     websocket::stream<beast::tcp_stream> ws_;
-    
+
     // Server reference - weak to avoid circular dependency
     std::weak_ptr<WebSocketServer> server_weak_ptr_;
-    
+
     // Client information - SSOT
     std::string client_endpoint_;
-    
+
     // Connection state - atomic for thread safety
     std::atomic<bool> is_alive_;
     std::atomic<bool> closing_;

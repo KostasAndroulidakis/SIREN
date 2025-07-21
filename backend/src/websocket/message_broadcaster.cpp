@@ -1,7 +1,7 @@
 /**
  * @file message_broadcaster.cpp
  * @brief Implementation of WebSocket message broadcaster - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Broadcast messages to multiple WebSocket sessions ONLY
@@ -93,8 +93,8 @@ void MessageBroadcaster::stop() {
 
     running_.store(false);
 
-    std::cout << "[" << COMPONENT_NAME << "] Stopped (broadcasts: " 
-              << total_broadcasts_.load() << ", failures: " 
+    std::cout << "[" << COMPONENT_NAME << "] Stopped (broadcasts: "
+              << total_broadcasts_.load() << ", failures: "
               << failed_broadcasts_.load() << ")" << std::endl;
 }
 
@@ -167,7 +167,7 @@ void MessageBroadcaster::broadcastMessage(const std::string& message,
 
     // Log broadcast results for debugging
     if (total_sessions > 0) {
-        std::cout << "[" << COMPONENT_NAME << "] Broadcast to " << sessions_reached 
+        std::cout << "[" << COMPONENT_NAME << "] Broadcast to " << sessions_reached
                   << "/" << total_sessions << " sessions" << std::endl;
     }
 }
@@ -195,8 +195,8 @@ bool MessageBroadcaster::sendToSession(std::shared_ptr<WebSocketSession> session
         return true;
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, 
-                                           "session message send for " + session->getClientEndpoint(), 
+        utils::ErrorHandler::handleException(COMPONENT_NAME,
+                                           "session message send for " + session->getClientEndpoint(),
                                            e, data::ErrorSeverity::WARNING);
         return false;
     }
@@ -215,7 +215,7 @@ void MessageBroadcaster::notifyBroadcastComplete(size_t sessions_reached) {
 
 void MessageBroadcaster::updateBroadcastStats(bool success) {
     total_broadcasts_.fetch_add(1);
-    
+
     if (!success) {
         failed_broadcasts_.fetch_add(1);
     }

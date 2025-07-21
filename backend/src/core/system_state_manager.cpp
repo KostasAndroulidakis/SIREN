@@ -1,7 +1,7 @@
 /**
  * @file system_state_manager.cpp
  * @brief Implementation of system state manager
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  */
 

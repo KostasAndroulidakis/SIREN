@@ -1,7 +1,7 @@
 /**
  * @file sonar.ino
  * @brief Sonar sweep control module for SIREN system
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Orchestrates the complete sonar sweep operation by coordinating

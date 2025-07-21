@@ -1,7 +1,7 @@
 /**
  * @file connection_acceptor.hpp
  * @brief TCP connection acceptor with single responsibility - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Accept incoming TCP connections ONLY
@@ -44,7 +44,7 @@ class ConnectionAcceptor {
 public:
     /// Callback type for accepted connections (SSOT)
     using AcceptCallback = std::function<void(tcp::socket)>;
-    
+
     /// Callback type for acceptor errors (SSOT)
     using ErrorCallback = std::function<void(const std::string&, beast::error_code)>;
 

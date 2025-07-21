@@ -1,7 +1,7 @@
 /**
  * @file session.cpp
  * @brief Implementation of WebSocket session - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: WebSocket protocol communication for one client
@@ -43,11 +43,11 @@ WebSocketSession::WebSocketSession(tcp::socket&& socket,
         // Get client endpoint information for logging
         auto endpoint = ws_.next_layer().socket().remote_endpoint();
         client_endpoint_ = endpoint.address().to_string() + ":" + std::to_string(endpoint.port());
-        
+
         std::cout << "[" << COMPONENT_NAME << "] Session created for " << client_endpoint_ << std::endl;
-        
+
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, "constructor", e, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "constructor", e,
                                            data::ErrorSeverity::WARNING);
         client_endpoint_ = "unknown";
     }
@@ -58,11 +58,11 @@ void WebSocketSession::start() {
         // Set WebSocket options
         ws_.set_option(websocket::stream_base::timeout::suggested(
             beast::role_type::server));
-            
+
         // Set decorator for HTTP response
         ws_.set_option(websocket::stream_base::decorator(
             [](websocket::response_type& res) {
-                res.set(beast::http::field::server, 
+                res.set(beast::http::field::server,
                        std::string("SIREN-Military-Server"));
             }));
 
@@ -72,7 +72,7 @@ void WebSocketSession::start() {
                 self->onAccept(ec);
             });
 
-        std::cout << "[" << COMPONENT_NAME << "] Starting WebSocket handshake for " 
+        std::cout << "[" << COMPONENT_NAME << "] Starting WebSocket handshake for "
                   << client_endpoint_ << std::endl;
 
     } catch (const std::exception& e) {
@@ -91,8 +91,8 @@ void WebSocketSession::sendSonarData(const data::SonarDataPoint& data) {
         enqueueMessage(message);
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, 
-                                           "sonar data serialization for " + client_endpoint_, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME,
+                                           "sonar data serialization for " + client_endpoint_,
                                            e, data::ErrorSeverity::ERROR);
     }
 }
@@ -108,8 +108,8 @@ void WebSocketSession::sendPerformanceMetrics(const data::PerformanceMetrics& me
         enqueueMessage(message);
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, 
-                                           "performance metrics serialization for " + client_endpoint_, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME,
+                                           "performance metrics serialization for " + client_endpoint_,
                                            e, data::ErrorSeverity::ERROR);
     }
 }
@@ -135,7 +135,7 @@ void WebSocketSession::close() {
                 [self = shared_from_this()](beast::error_code ec) {
                     if (ec) {
                         // Log close error but don't throw
-                        std::cout << "[" << self->COMPONENT_NAME << "] Close error for " 
+                        std::cout << "[" << self->COMPONENT_NAME << "] Close error for "
                                   << self->client_endpoint_ << ": " << ec.message() << std::endl;
                     }
                     self->is_alive_.store(false);
@@ -150,8 +150,8 @@ void WebSocketSession::close() {
         }
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, 
-                                           "session closure for " + client_endpoint_, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME,
+                                           "session closure for " + client_endpoint_,
                                            e, data::ErrorSeverity::WARNING);
         is_alive_.store(false);
     }
@@ -172,7 +172,7 @@ void WebSocketSession::onAccept(beast::error_code ec) {
     }
 
     is_alive_.store(true);
-    std::cout << "[" << COMPONENT_NAME << "] WebSocket handshake completed for " 
+    std::cout << "[" << COMPONENT_NAME << "] WebSocket handshake completed for "
               << client_endpoint_ << std::endl;
 
     // Start reading for incoming messages
@@ -190,7 +190,7 @@ void WebSocketSession::onRead(beast::error_code ec, std::size_t bytes_transferre
 
     // For now, we just acknowledge the message and continue reading
     // In a full implementation, we would process control messages here
-    std::cout << "[" << COMPONENT_NAME << "] Received " << bytes_transferred 
+    std::cout << "[" << COMPONENT_NAME << "] Received " << bytes_transferred
               << " bytes from " << client_endpoint_ << std::endl;
 
     // Clear buffer for next read
@@ -213,7 +213,7 @@ void WebSocketSession::onWrite(beast::error_code ec, std::size_t bytes_transferr
         return;
     }
 
-    std::cout << "[" << COMPONENT_NAME << "] Sent " << bytes_transferred 
+    std::cout << "[" << COMPONENT_NAME << "] Sent " << bytes_transferred
               << " bytes to " << client_endpoint_ << std::endl;
 
     // Process next message in queue
@@ -226,14 +226,14 @@ void WebSocketSession::processNextMessage() {
     }
 
     std::string message;
-    
+
     // Get next message from queue (thread-safe)
     {
         std::lock_guard<std::mutex> lock(queue_mutex_);
         if (message_queue_.empty()) {
             return; // No messages to send
         }
-        
+
         message = std::move(message_queue_.front());
         message_queue_.pop();
     }
@@ -241,7 +241,7 @@ void WebSocketSession::processNextMessage() {
     // Send the message
     if (!message.empty()) {
         write_in_progress_.store(true);
-        
+
         ws_.async_write(boost::asio::buffer(message),
             [self = shared_from_this()](beast::error_code ec, std::size_t bytes_transferred) {
                 self->onWrite(ec, bytes_transferred);
@@ -259,7 +259,7 @@ void WebSocketSession::enqueueMessage(const std::string& message) {
     // Add message to queue (thread-safe)
     {
         std::lock_guard<std::mutex> lock(queue_mutex_);
-        
+
         // Prevent queue from growing too large
         if (message_queue_.size() >= MAX_MESSAGE_QUEUE_SIZE) {
             utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
@@ -267,7 +267,7 @@ void WebSocketSession::enqueueMessage(const std::string& message) {
                 data::ErrorSeverity::WARNING);
             return;
         }
-        
+
         message_queue_.push(message);
         should_start_write = !write_in_progress_.load();
     }
@@ -281,7 +281,7 @@ void WebSocketSession::enqueueMessage(const std::string& message) {
 void WebSocketSession::handleError(const std::string& error_message, beast::error_code ec) {
     // Determine error severity
     data::ErrorSeverity severity = data::ErrorSeverity::ERROR;
-    
+
     if (ec == websocket::error::closed) {
         severity = data::ErrorSeverity::INFO; // Normal closure
     } else if (ec == boost::asio::error::operation_aborted) {
@@ -290,7 +290,7 @@ void WebSocketSession::handleError(const std::string& error_message, beast::erro
 
     if (ec) {
         utils::ErrorHandler::handleBoostError(COMPONENT_NAME,
-                                              error_message + " for " + client_endpoint_, 
+                                              error_message + " for " + client_endpoint_,
                                               ec, severity);
     } else {
         utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
@@ -300,7 +300,7 @@ void WebSocketSession::handleError(const std::string& error_message, beast::erro
 
     // Mark session as not alive and close
     is_alive_.store(false);
-    
+
     if (!closing_.load()) {
         close();
     }

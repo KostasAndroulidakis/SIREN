@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @brief Main entry point for SIREN military-grade C++ server
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  */
 

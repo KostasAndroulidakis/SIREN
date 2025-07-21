@@ -5,7 +5,7 @@
  *
  * @file WebSocketClient.h
  * @brief Concrete WebSocket client implementation with automatic reconnection
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

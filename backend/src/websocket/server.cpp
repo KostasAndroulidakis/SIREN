@@ -1,7 +1,7 @@
 /**
  * @file server.cpp
  * @brief Implementation of military-grade WebSocket server
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * High-performance WebSocket server for real-time sonar data streaming

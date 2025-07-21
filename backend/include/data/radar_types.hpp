@@ -1,7 +1,7 @@
 /**
  * @file sonar_types.hpp
  * @brief Core data types for SIREN military-grade server
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Defines all data structures used throughout the sonar system.

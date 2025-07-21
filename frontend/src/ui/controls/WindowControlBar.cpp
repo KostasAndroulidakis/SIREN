@@ -5,7 +5,7 @@
  *
  * @file WindowControlBar.cpp
  * @brief Implementation of window control bar container widget
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

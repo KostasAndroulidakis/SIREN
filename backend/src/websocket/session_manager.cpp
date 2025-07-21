@@ -1,7 +1,7 @@
 /**
  * @file session_manager.cpp
  * @brief Implementation of WebSocket session lifecycle manager - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Manage WebSocket session lifecycle ONLY
@@ -22,7 +22,7 @@ SessionManager::SessionManager()
     , cleanup_counter_(0)
 {
     std::cout << "[" << COMPONENT_NAME << "] Initializing session manager" << std::endl;
-    
+
     // Reserve reasonable capacity to avoid frequent reallocations
     active_sessions_.reserve(32); // SSOT for initial capacity
 }
@@ -32,9 +32,9 @@ SessionManager::~SessionManager() {
 }
 
 std::shared_ptr<WebSocketSession> SessionManager::createSession(
-    tcp::socket&& socket, 
+    tcp::socket&& socket,
     std::weak_ptr<WebSocketServer> server_weak_ptr) {
-    
+
     try {
         // Create new session (RAII managed)
         auto session = std::make_shared<WebSocketSession>(std::move(socket), server_weak_ptr);
@@ -54,7 +54,7 @@ std::shared_ptr<WebSocketSession> SessionManager::createSession(
         // Check if cleanup is needed
         checkPeriodicCleanup();
 
-        std::cout << "[" << COMPONENT_NAME << "] Created session for " << endpoint 
+        std::cout << "[" << COMPONENT_NAME << "] Created session for " << endpoint
                   << " (total: " << getActiveSessionCount() << ")" << std::endl;
 
         return session;
@@ -77,7 +77,7 @@ void SessionManager::removeSession(std::shared_ptr<WebSocketSession> session) {
     // Remove from active sessions (thread-safe)
     {
         std::lock_guard<std::mutex> lock(sessions_mutex_);
-        
+
         auto it = std::find(active_sessions_.begin(), active_sessions_.end(), session);
         if (it != active_sessions_.end()) {
             active_sessions_.erase(it);
@@ -92,7 +92,7 @@ void SessionManager::removeSession(std::shared_ptr<WebSocketSession> session) {
         // Check if cleanup is needed
         checkPeriodicCleanup();
 
-        std::cout << "[" << COMPONENT_NAME << "] Removed session for " << endpoint 
+        std::cout << "[" << COMPONENT_NAME << "] Removed session for " << endpoint
                   << " (total: " << getActiveSessionCount() << ")" << std::endl;
     }
 }
@@ -160,7 +160,7 @@ void SessionManager::cleanupClosedSessions() {
     }
 
     if (cleaned_count > 0) {
-        std::cout << "[" << COMPONENT_NAME << "] Cleaned up " << cleaned_count 
+        std::cout << "[" << COMPONENT_NAME << "] Cleaned up " << cleaned_count
                   << " closed sessions (remaining: " << getActiveSessionCount() << ")" << std::endl;
     }
 }

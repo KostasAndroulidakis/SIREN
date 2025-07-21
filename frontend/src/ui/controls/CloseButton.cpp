@@ -5,7 +5,7 @@
  *
  * @file CloseButton.cpp
  * @brief Implementation of close window control button
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

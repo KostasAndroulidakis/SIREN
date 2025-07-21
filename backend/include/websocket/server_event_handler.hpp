@@ -1,11 +1,11 @@
 /**
  * @file server_event_handler.hpp
  * @brief WebSocket server event handling - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Handle WebSocket server events ONLY
- * 
+ *
  * RESPONSIBILITIES:
  * - Process connection accepted events
  * - Handle connection errors
@@ -81,7 +81,7 @@ public:
      * @param socket Accepted TCP socket
      * @param server_weak_ptr Weak reference to server for session creation
      */
-    void onConnectionAccepted(tcp::socket socket, 
+    void onConnectionAccepted(tcp::socket socket,
                              std::weak_ptr<class WebSocketServer> server_weak_ptr);
 
     /**

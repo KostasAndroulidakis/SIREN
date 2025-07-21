@@ -5,7 +5,7 @@
  *
  * @file Network.h
  * @brief Network-related constants for WebSocket communication
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

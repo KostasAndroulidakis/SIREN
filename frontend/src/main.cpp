@@ -5,7 +5,7 @@
  *
  * @file main.cpp
  * @brief Main entry point for SIREN frontend
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -63,24 +63,24 @@ int main(int argc, char *argv[])
 
     // Create splash screen for military-grade startup sequence
     siren::ui::SplashScreen splash;
-    
+
     // Create main window but don't show it yet
     siren::ui::MainWindow window;
-    
+
     // Connect splash screen completion to main window display
     QObject::connect(&splash, &siren::ui::SplashScreen::loadingComplete, [&window]() {
         window.showMaximized();  // Open in full-size window
         window.raise();
         window.activateWindow();
     });
-    
+
     // Handle splash screen errors gracefully
     QObject::connect(&splash, &siren::ui::SplashScreen::errorOccurred, [&window](const QString& error) {
         qDebug() << "Splash screen error:" << error;
         // Show main window anyway if splash fails
         window.showMaximized();  // Open in full-size window
     });
-    
+
     // Show splash screen and start application
     if (!splash.showSplash()) {
         // If splash fails, show main window directly

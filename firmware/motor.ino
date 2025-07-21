@@ -1,7 +1,7 @@
 /**
  * @file motor.ino
  * @brief Servo motor control module for SIREN system
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Controls the SG90 micro servo motor that provides the rotating platform

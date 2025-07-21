@@ -5,7 +5,7 @@
  *
  * @file MinimizeButton.cpp
  * @brief Implementation of minimize window control button
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

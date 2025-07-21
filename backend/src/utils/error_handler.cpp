@@ -1,7 +1,7 @@
 /**
  * @file error_handler.cpp
  * @brief Implementation of centralized error handling utility
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  */
 

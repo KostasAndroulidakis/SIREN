@@ -5,7 +5,7 @@
  *
  * @file SonarDataParser.h
  * @brief Parser for sonar data JSON messages
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

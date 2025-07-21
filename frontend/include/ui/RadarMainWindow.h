@@ -5,7 +5,7 @@
  *
  * @file SonarMainWindow.h
  * @brief Main application window for SIREN system
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

@@ -1,7 +1,7 @@
 /**
  * @file session_manager.hpp
  * @brief WebSocket session lifecycle manager - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Manage WebSocket session lifecycle ONLY
@@ -52,7 +52,7 @@ class SessionManager {
 public:
     /// Session container type (SSOT for session storage)
     using SessionContainer = std::vector<std::shared_ptr<WebSocketSession>>;
-    
+
     /// Callback type for session events (SSOT)
     using SessionEventCallback = std::function<void(const std::string&, bool)>;
 
@@ -78,7 +78,7 @@ public:
      * @param server_weak_ptr Weak reference to parent server
      * @return Shared pointer to created session
      */
-    std::shared_ptr<WebSocketSession> createSession(tcp::socket&& socket, 
+    std::shared_ptr<WebSocketSession> createSession(tcp::socket&& socket,
                                                    std::weak_ptr<WebSocketServer> server_weak_ptr);
 
     /**

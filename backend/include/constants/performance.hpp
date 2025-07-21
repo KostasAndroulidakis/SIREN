@@ -1,7 +1,7 @@
 /**
  * @file performance.hpp
  * @brief Real-time performance requirements and memory management for military-grade sonar
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  * @classification UNCLASSIFIED
  *

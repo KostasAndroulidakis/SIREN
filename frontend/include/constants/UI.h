@@ -5,7 +5,7 @@
  *
  * @file UI.h
  * @brief User Interface constants (MIL-STD-1472 compliant)
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

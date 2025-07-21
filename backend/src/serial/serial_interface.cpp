@@ -1,7 +1,7 @@
 /**
  * @file serial_interface.cpp
  * @brief Implementation of military-grade serial communication interface
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * High-performance Arduino communication with real-time data parsing.

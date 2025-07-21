@@ -1,7 +1,7 @@
 /**
  * @file serial_interface.hpp
  * @brief Military-grade serial communication interface for Arduino sonar
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Handles high-performance serial communication with Arduino UNO R3.

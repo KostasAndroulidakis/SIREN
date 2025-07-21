@@ -5,7 +5,7 @@
  *
  * @file WindowControlHandler.cpp
  * @brief Implementation of window control event handler
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -23,7 +23,7 @@ namespace siren {
 namespace UI {
 namespace Controls {
 
-WindowControlHandler::WindowControlHandler(WindowControlBar* controlBar, 
+WindowControlHandler::WindowControlHandler(WindowControlBar* controlBar,
                                            QWidget* targetWindow,
                                            QObject* parent)
     : QObject(parent)
@@ -48,13 +48,13 @@ void WindowControlHandler::initialize()
 
     // Connect control bar signals
     connectControlBarSignals();
-    
+
     // Set up window event monitoring
     setupWindowEventMonitoring();
-    
+
     // Initialize window state
     validateAndUpdateWindowState();
-    
+
     m_isInitialized = true;
 }
 
@@ -99,7 +99,7 @@ void WindowControlHandler::validateAndUpdateWindowState()
 
     // Check current window state
     bool isCurrentlyMaximized = m_targetWindow->isMaximized();
-    
+
     if (m_isMaximized != isCurrentlyMaximized) {
         m_isMaximized = isCurrentlyMaximized;
         updateControlBarState();
@@ -120,7 +120,7 @@ void WindowControlHandler::updateControlBarState()
 void WindowControlHandler::setControlsEnabled(bool enabled)
 {
     m_controlsEnabled = enabled;
-    
+
     if (m_controlBar != nullptr) {
         m_controlBar->setControlsEnabled(enabled);
     }
@@ -193,7 +193,7 @@ bool WindowControlHandler::eventFilter(QObject* watched, QEvent* event)
 void WindowControlHandler::handleWindowStateChange(QEvent* event)
 {
     Q_UNUSED(event)
-    
+
     // Validate and update window state
     validateAndUpdateWindowState();
 }

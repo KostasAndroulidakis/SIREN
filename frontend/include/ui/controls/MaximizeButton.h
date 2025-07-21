@@ -5,7 +5,7 @@
  *
  * @file MaximizeButton.h
  * @brief Maximize/restore window control button (MIL-STD-1472 compliant)
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

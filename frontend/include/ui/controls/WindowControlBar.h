@@ -5,7 +5,7 @@
  *
  * @file WindowControlBar.h
  * @brief Window control bar container widget (MIL-STD-1472 compliant)
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant
@@ -38,13 +38,13 @@ namespace Controls {
 /**
  * @class WindowControlBar
  * @brief Container widget for window control buttons
- * 
+ *
  * Single Responsibility:
  * - Manages layout and positioning of window control buttons
  * - Provides unified interface for window control operations
  * - Implements proper tab order for keyboard navigation
  * - Handles window state synchronization
- * 
+ *
  * MISRA C++ Compliance:
  * - Explicit constructor
  * - Virtual destructor for proper cleanup

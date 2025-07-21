@@ -1,7 +1,7 @@
 /**
  * @file statistics_calculator.hpp
  * @brief Military-grade statistical calculation utility
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Template-based utility for statistical calculations including moving averages,

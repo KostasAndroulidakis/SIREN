@@ -1,7 +1,7 @@
 /**
  * @file server_event_handler.cpp
  * @brief Implementation of WebSocket server event handler - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: WebSocket server event processing
@@ -68,7 +68,7 @@ void ServerEventHandler::onConnectionAccepted(tcp::socket socket,
         }
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME,
                                            "connection acceptance processing", e,
                                            data::ErrorSeverity::ERROR);
     }
@@ -102,7 +102,7 @@ void ServerEventHandler::onSessionEvent(const std::string& endpoint, bool connec
         }
 
         // Log session event for debugging
-        std::cout << "[" << COMPONENT_NAME << "] Session event: " << endpoint 
+        std::cout << "[" << COMPONENT_NAME << "] Session event: " << endpoint
                   << " " << (connected ? "connected" : "disconnected") << std::endl;
 
     } catch (const std::exception& e) {
@@ -115,7 +115,7 @@ void ServerEventHandler::onSessionEvent(const std::string& endpoint, bool connec
 void ServerEventHandler::onBroadcastCompleted(size_t sessions_reached) {
     try {
         // Log broadcast completion for debugging
-        std::cout << "[" << COMPONENT_NAME << "] Broadcast completed, reached " 
+        std::cout << "[" << COMPONENT_NAME << "] Broadcast completed, reached "
                   << sessions_reached << " sessions" << std::endl;
 
         // Future extension point: Additional metrics tracking for broadcasts

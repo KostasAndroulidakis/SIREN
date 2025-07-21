@@ -1,7 +1,7 @@
 /**
  * @file performance_monitor.cpp
  * @brief Implementation of performance monitor
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  */
 

@@ -1,7 +1,7 @@
 /**
  * @file security.hpp
  * @brief Security and cryptographic constants for military-grade sonar system
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  * @classification UNCLASSIFIED
  *

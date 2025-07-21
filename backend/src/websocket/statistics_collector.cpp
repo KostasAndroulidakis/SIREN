@@ -1,7 +1,7 @@
 /**
  * @file statistics_collector.cpp
  * @brief Implementation of WebSocket server statistics collector - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Collect and manage WebSocket server statistics ONLY

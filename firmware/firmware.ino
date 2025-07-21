@@ -1,7 +1,7 @@
 /**
  * @file SIREN.ino
  * @brief Main Arduino sketch for SIREN system
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * This is the main orchestration file for the SIREN system that combines

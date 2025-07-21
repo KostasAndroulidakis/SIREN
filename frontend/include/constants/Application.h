@@ -5,7 +5,7 @@
  *
  * @file Application.h
  * @brief Application metadata and configuration constants
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

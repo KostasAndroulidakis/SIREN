@@ -1,7 +1,7 @@
 /**
  * @file math.hpp
  * @brief Mathematical constants and formulas for military-grade sonar calculations
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  * @classification UNCLASSIFIED
  *

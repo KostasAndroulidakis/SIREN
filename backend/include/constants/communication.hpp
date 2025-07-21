@@ -1,7 +1,7 @@
 /**
  * @file communication.hpp
  * @brief Communication protocols and network configuration for military-grade sonar
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  * @classification UNCLASSIFIED
  *

@@ -1,7 +1,7 @@
 /**
  * @file master_controller.cpp
  * @brief Implementation of refactored master controller
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Coordination-focused implementation with delegated responsibilities.

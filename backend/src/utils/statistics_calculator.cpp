@@ -1,7 +1,7 @@
 /**
  * @file statistics_calculator.cpp
  * @brief Implementation of military-grade statistical calculation utility
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Template specializations and explicit instantiations for commonly used

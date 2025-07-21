@@ -5,7 +5,7 @@
  *
  * @file IWebSocketClient.h
  * @brief WebSocket client interface for dependency injection and testability
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

@@ -5,7 +5,7 @@
  *
  * @file Data.h
  * @brief Data processing and validation constants
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

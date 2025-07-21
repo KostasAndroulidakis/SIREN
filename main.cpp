@@ -5,7 +5,7 @@
  *
  * @file main.cpp
  * @brief Main entry point for SIREN military-grade sonar system
- * @author SIREN Defense Systems
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * MISRA C++ 2008 Compliant

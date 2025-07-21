@@ -1,7 +1,7 @@
 /**
  * @file performance_monitor.hpp
  * @brief Performance monitoring component for SIREN
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single responsibility: Monitor and collect system performance metrics.

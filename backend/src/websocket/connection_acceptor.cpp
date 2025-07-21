@@ -1,7 +1,7 @@
 /**
  * @file connection_acceptor.cpp
  * @brief Implementation of TCP connection acceptor - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Accept incoming TCP connections ONLY
@@ -48,25 +48,25 @@ bool ConnectionAcceptor::initialize() {
 
         // Configure acceptor endpoint
         tcp::endpoint endpoint(tcp::v4(), port_);
-        
+
         // Open acceptor
         acceptor_->open(endpoint.protocol());
-        
+
         // Set socket options for better performance
         acceptor_->set_option(tcp::acceptor::reuse_address(true));
-        
+
         // Bind to endpoint
         acceptor_->bind(endpoint);
-        
+
         // Start listening
         acceptor_->listen(ACCEPTOR_BACKLOG);
 
-        std::cout << "[" << COMPONENT_NAME << "] Initialized on " 
+        std::cout << "[" << COMPONENT_NAME << "] Initialized on "
                   << endpoint.address().to_string() << ":" << endpoint.port() << std::endl;
         return true;
 
     } catch (const std::exception& e) {
-        utils::ErrorHandler::handleException(COMPONENT_NAME, "initialization", e, 
+        utils::ErrorHandler::handleException(COMPONENT_NAME, "initialization", e,
                                            data::ErrorSeverity::FATAL);
         return false;
     }
@@ -74,8 +74,8 @@ bool ConnectionAcceptor::initialize() {
 
 bool ConnectionAcceptor::start() {
     if (running_.load()) {
-        utils::ErrorHandler::handleSystemError(COMPONENT_NAME, 
-                                             "Already running", 
+        utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
+                                             "Already running",
                                              data::ErrorSeverity::WARNING);
         return true;
     }
@@ -90,11 +90,11 @@ bool ConnectionAcceptor::start() {
     try {
         running_.store(true);
         shutdown_requested_.store(false);
-        
+
         // Start accepting connections
         startAccept();
 
-        std::cout << "[" << COMPONENT_NAME << "] Started accepting connections on port " 
+        std::cout << "[" << COMPONENT_NAME << "] Started accepting connections on port "
                   << port_ << std::endl;
         return true;
 
@@ -167,7 +167,7 @@ void ConnectionAcceptor::onAccept(beast::error_code ec, tcp::socket socket) {
     // Successfully accepted connection
     try {
         auto endpoint = socket.remote_endpoint();
-        std::cout << "[" << COMPONENT_NAME << "] Accepted connection from " 
+        std::cout << "[" << COMPONENT_NAME << "] Accepted connection from "
                   << endpoint.address().to_string() << ":" << endpoint.port() << std::endl;
 
         // Notify parent via callback (SSOT for notification)
@@ -184,7 +184,7 @@ void ConnectionAcceptor::onAccept(beast::error_code ec, tcp::socket socket) {
     startAccept();
 }
 
-void ConnectionAcceptor::handleAcceptorError(const std::string& operation_name, 
+void ConnectionAcceptor::handleAcceptorError(const std::string& operation_name,
                                            beast::error_code ec) {
     const std::string error_message = operation_name + " failed: " + ec.message();
 
@@ -203,7 +203,7 @@ void ConnectionAcceptor::handleAcceptorError(const std::string& operation_name,
     }
 
     // Continue accepting if not a fatal error and still running
-    if (running_.load() && !shutdown_requested_.load() && 
+    if (running_.load() && !shutdown_requested_.load() &&
         ec != boost::asio::error::operation_aborted) {
         startAccept();
     }

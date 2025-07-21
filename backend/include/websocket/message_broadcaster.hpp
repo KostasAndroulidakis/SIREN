@@ -1,7 +1,7 @@
 /**
  * @file message_broadcaster.hpp
  * @brief WebSocket message broadcaster - MISRA C++ compliant
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * Single Responsibility: Broadcast messages to multiple WebSocket sessions ONLY
@@ -45,7 +45,7 @@ class MessageBroadcaster {
 public:
     /// Session container type (SSOT for session handling)
     using SessionContainer = std::vector<std::shared_ptr<WebSocketSession>>;
-    
+
     /// Callback type for broadcast completion (SSOT)
     using BroadcastCallback = std::function<void(size_t)>;
 
@@ -92,7 +92,7 @@ public:
      * @param data Sonar data point to broadcast
      * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastSonarData(const data::SonarDataPoint& data, 
+    void broadcastSonarData(const data::SonarDataPoint& data,
                            const SessionContainer& sessions);
 
     /**
@@ -100,7 +100,7 @@ public:
      * @param metrics Performance metrics to broadcast
      * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics, 
+    void broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics,
                                    const SessionContainer& sessions);
 
     /**
@@ -108,7 +108,7 @@ public:
      * @param message Serialized message to broadcast
      * @param sessions Container of active sessions to broadcast to
      */
-    void broadcastMessage(const std::string& message, 
+    void broadcastMessage(const std::string& message,
                          const SessionContainer& sessions);
 
     /**
@@ -148,7 +148,7 @@ private:
      * @param message Message to send
      * @return true if message sent successfully
      */
-    bool sendToSession(std::shared_ptr<WebSocketSession> session, 
+    bool sendToSession(std::shared_ptr<WebSocketSession> session,
                       const std::string& message);
 
     /**

@@ -1,7 +1,7 @@
 /**
  * @file arduino_protocol_parser.cpp
  * @brief Implementation of military-grade Arduino protocol parser
- * @author SIREN Project
+ * @author KostasAndroulidakis
  * @date 2025
  *
  * High-performance Arduino message parsing with hardware validation.
