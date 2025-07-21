@@ -54,7 +54,9 @@ void SonarAnimationController::resume()
 
 void SonarAnimationController::reset()
 {
-    m_currentAngle = MIN_ANGLE;
+    m_currentAngle = SERVO_MIN_ANGLE;  // Start at actual servo minimum
+    m_targetAngle = SERVO_MIN_ANGLE;   // Reset target too
+    m_isInterpolating = false;         // Stop any interpolation
     m_currentDirection = SweepDirection::FORWARD;
     emit angleChanged(m_currentAngle);
     emit directionChanged(m_currentDirection);
@@ -77,31 +79,50 @@ void SonarAnimationController::updateAnimation()
     const std::uint64_t deltaTime = currentTime - m_lastUpdateTime;
     m_lastUpdateTime = currentTime;
 
-    // Calculate angle change based on time and speed
+    // Calculate time delta
     const double deltaSeconds = static_cast<double>(deltaTime) / 1000.0;
-    const double deltaAngle = m_sweepSpeed * deltaSeconds;
-
-    // Update angle based on direction
     double newAngle = static_cast<double>(m_currentAngle);
 
-    if (m_currentDirection == SweepDirection::FORWARD) {
-        newAngle += deltaAngle;
-
-        // Check if we've reached the end
-        if (newAngle >= static_cast<double>(MAX_ANGLE)) {
-            newAngle = static_cast<double>(MAX_ANGLE);
-            m_currentDirection = SweepDirection::BACKWARD;
-            emit directionChanged(m_currentDirection);
+    if (m_isInterpolating) {
+        // Smooth interpolation to real servo position
+        const double targetAngle = static_cast<double>(m_targetAngle);
+        const double angleDifference = targetAngle - newAngle;
+        
+        if (std::abs(angleDifference) > 0.5) {  // Not close enough yet
+            const double moveDistance = INTERPOLATION_SPEED * deltaSeconds;
+            if (angleDifference > 0) {
+                newAngle += std::min(moveDistance, angleDifference);
+            } else {
+                newAngle += std::max(-moveDistance, angleDifference);
+            }
+        } else {
+            // Close enough, snap to target
+            newAngle = targetAngle;
+            m_isInterpolating = false;
         }
     } else {
-        newAngle -= deltaAngle;
-
-        // Check if we've reached the beginning
-        if (newAngle <= static_cast<double>(MIN_ANGLE)) {
-            newAngle = static_cast<double>(MIN_ANGLE);
-            m_currentDirection = SweepDirection::FORWARD;
-            emit directionChanged(m_currentDirection);
-            emit sweepCycleCompleted();
+        // Simulated sweep animation (when not synced to real servo)
+        const double deltaAngle = m_sweepSpeed * deltaSeconds;
+        
+        if (m_currentDirection == SweepDirection::FORWARD) {
+            newAngle += deltaAngle;
+            
+            // Check if we've reached the servo maximum
+            if (newAngle >= static_cast<double>(SERVO_MAX_ANGLE)) {
+                newAngle = static_cast<double>(SERVO_MAX_ANGLE);
+                m_currentDirection = SweepDirection::BACKWARD;
+                emit directionChanged(m_currentDirection);
+            }
+        } else {
+            newAngle -= deltaAngle;
+            
+            // Check if we've reached the servo minimum
+            if (newAngle <= static_cast<double>(SERVO_MIN_ANGLE)) {
+                newAngle = static_cast<double>(SERVO_MIN_ANGLE);
+                m_currentDirection = SweepDirection::FORWARD;
+                emit directionChanged(m_currentDirection);
+                emit sweepCycleCompleted();
+            }
         }
     }
 
@@ -110,6 +131,46 @@ void SonarAnimationController::updateAnimation()
     if (roundedAngle != m_currentAngle) {
         m_currentAngle = roundedAngle;
         emit angleChanged(m_currentAngle);
+    }
+
+    // Animation timer keeps running as long as we're animating or interpolating
+    // It will be stopped explicitly when stop() is called
+}
+
+void SonarAnimationController::syncWithServoPosition(std::uint16_t servoAngle)
+{
+    // Clamp to actual servo operating range (5-175)
+    std::uint16_t clampedAngle = servoAngle;
+    if (clampedAngle < SERVO_MIN_ANGLE) {
+        clampedAngle = SERVO_MIN_ANGLE;
+    } else if (clampedAngle > SERVO_MAX_ANGLE) {
+        clampedAngle = SERVO_MAX_ANGLE;
+    }
+
+    // Update direction based on target change
+    if (clampedAngle != m_targetAngle) {
+        if (clampedAngle > m_currentAngle) {
+            if (m_currentDirection != SweepDirection::FORWARD) {
+                m_currentDirection = SweepDirection::FORWARD;
+                emit directionChanged(m_currentDirection);
+            }
+        } else if (clampedAngle < m_currentAngle) {
+            if (m_currentDirection != SweepDirection::BACKWARD) {
+                m_currentDirection = SweepDirection::BACKWARD;
+                emit directionChanged(m_currentDirection);
+            }
+        }
+
+        // Set new target for smooth interpolation
+        m_targetAngle = clampedAngle;
+        m_isInterpolating = true;
+
+        // Ensure animation timer is running for smooth movement
+        if (!m_isAnimating) {
+            m_isAnimating = true;
+            m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
+            m_animationTimer->start();
+        }
     }
 }
 

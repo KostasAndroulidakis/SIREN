@@ -114,6 +114,15 @@ public:
      */
     [[nodiscard]] double getSweepSpeed() const { return m_sweepSpeed; }
 
+    /**
+     * @brief Synchronize cursor with actual servo position
+     * @param servoAngle Current servo angle in degrees (5-175)
+     * 
+     * This method synchronizes the display cursor with the real servo motor position.
+     * It overrides any simulated animation and tracks the actual hardware position.
+     */
+    void syncWithServoPosition(std::uint16_t servoAngle);
+
 signals:
     /**
      * @brief Emitted when sweep angle changes
@@ -140,9 +149,11 @@ private slots:
 
 private:
     // Animation state
-    std::uint16_t m_currentAngle{0};
+    std::uint16_t m_currentAngle{5};      // Start at servo minimum
+    std::uint16_t m_targetAngle{5};       // Target angle for smooth interpolation
     SweepDirection m_currentDirection{SweepDirection::FORWARD};
     bool m_isAnimating{false};
+    bool m_isInterpolating{false};        // Smooth movement to target
 
     // Timing
     QTimer* m_animationTimer{nullptr};
@@ -153,8 +164,16 @@ private:
     static constexpr int ANIMATION_FPS = 60;
     static constexpr int ANIMATION_INTERVAL_MS = 1000 / ANIMATION_FPS;
     static constexpr double DEFAULT_SWEEP_SPEED = 45.0;  // degrees per second
-    static constexpr std::uint16_t MIN_ANGLE = 0;
-    static constexpr std::uint16_t MAX_ANGLE = 180;
+    // Display range (full semicircle shown)
+    static constexpr std::uint16_t DISPLAY_MIN_ANGLE = 0;
+    static constexpr std::uint16_t DISPLAY_MAX_ANGLE = 180;
+    
+    // Servo operating range (actual hardware limits)
+    static constexpr std::uint16_t SERVO_MIN_ANGLE = 5;   // Firmware safety limits
+    static constexpr std::uint16_t SERVO_MAX_ANGLE = 175; // Firmware safety limits
+    
+    // Smooth interpolation
+    static constexpr double INTERPOLATION_SPEED = 120.0;  // degrees per second for smooth tracking
 };
 
 } // namespace visualization

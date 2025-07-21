@@ -54,6 +54,9 @@ void SonarVisualizationWidget::initializeComponents()
 void SonarVisualizationWidget::updateSonarData(const data::SonarDataPoint& sonarData)
 {
     if (sonarData.valid) {
+        // CRITICAL: Synchronize cursor with actual servo position
+        m_animationController->syncWithServoPosition(sonarData.angle);
+
         // Add data point with current timestamp
         const std::uint64_t timestamp = QDateTime::currentMSecsSinceEpoch();
         m_dataBuffer->addPoint(sonarData, timestamp);
@@ -172,8 +175,8 @@ void SonarVisualizationWidget::drawDistanceRings(QPainter& painter) const
 
 void SonarVisualizationWidget::drawAngleLines(QPainter& painter) const
 {
-    // Draw angle lines
-    for (std::uint16_t angle = 0; angle <= SERVO_MAX_ANGLE; angle += ANGLE_MARKER_INTERVAL) {
+    // Draw angle lines across full display range (0-180°)
+    for (std::uint16_t angle = 0; angle <= 180; angle += ANGLE_MARKER_INTERVAL) {
         // Major line at 0°, 90°, 180°
         if (angle % 90 == 0) {
             painter.setPen(QPen(QColor(colors::GRID_PRIMARY), GRID_MAJOR_LINE_WIDTH));
@@ -202,8 +205,8 @@ void SonarVisualizationWidget::drawScaleLabels(QPainter& painter) const
         painter.drawText(textRect, Qt::AlignCenter, label);
     }
 
-    // Draw angle labels
-    for (std::uint16_t angle = 0; angle <= SERVO_MAX_ANGLE; angle += ANGLE_MARKER_INTERVAL) {
+    // Draw angle labels across full display range (0-180°)
+    for (std::uint16_t angle = 0; angle <= 180; angle += ANGLE_MARKER_INTERVAL) {
         const QPoint labelPoint = m_coordinateConverter->polarToScreen(angle, DISPLAY_MAX_DISTANCE + 20);
         const QString label = QString("%1°").arg(angle);
 

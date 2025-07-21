@@ -27,9 +27,13 @@ constexpr int SCALE_FONT_SIZE = 10;
 constexpr int TITLE_FONT_SIZE = 14;
 constexpr int LABEL_FONT_SIZE = 12;
 
-// Hardware specifications (from datasheets)
-constexpr std::uint16_t SERVO_MIN_ANGLE = 0;      // SG90 servo minimum
-constexpr std::uint16_t SERVO_MAX_ANGLE = 180;    // SG90 servo maximum
+// Display range (full sonar semicircle for visual completeness)
+constexpr std::uint16_t DISPLAY_MIN_ANGLE = 0;    // Display shows full range
+constexpr std::uint16_t DISPLAY_MAX_ANGLE = 180;  // Display shows full range
+
+// Hardware specifications (actual servo operating range from firmware)
+constexpr std::uint16_t SERVO_MIN_ANGLE = 5;      // Firmware safety limit (5° margin)  
+constexpr std::uint16_t SERVO_MAX_ANGLE = 175;    // Firmware safety limit (5° margin)
 constexpr std::uint16_t SENSOR_MIN_DISTANCE = 2;   // HC-SR04 minimum (cm)
 constexpr std::uint16_t SENSOR_MAX_DISTANCE = 400; // HC-SR04 maximum (cm)
 
