@@ -1,4 +1,4 @@
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Panel Factory Implementation
 // Single Responsibility: Create Panel Widgets ONLY
 
@@ -13,13 +13,13 @@ namespace ui {
 QFrame* PanelFactory::createPanel(PanelType type, QWidget* parent)
 {
     QFrame* panel = new QFrame(parent);
-    
+
     // Configure basic frame properties
     configureFrameProperties(panel);
-    
+
     // Set dimensions based on panel type
     configurePanelDimensions(panel, type);
-    
+
     // Set object name for styling
     switch (type) {
         case PanelType::STATUS:
@@ -28,8 +28,8 @@ QFrame* PanelFactory::createPanel(PanelType type, QWidget* parent)
         case PanelType::CONTROL:
             panel->setObjectName("controlPanel");
             break;
-        case PanelType::RADAR:
-            panel->setObjectName("radarPanel");
+        case PanelType::SONAR:
+            panel->setObjectName("sonarPanel");
             break;
         case PanelType::DATA:
             panel->setObjectName("dataPanel");
@@ -38,7 +38,7 @@ QFrame* PanelFactory::createPanel(PanelType type, QWidget* parent)
             panel->setObjectName("performancePanel");
             break;
     }
-    
+
     return panel;
 }
 
@@ -46,7 +46,7 @@ QFrame* PanelFactory::createPlaceholder(const QString& title, QWidget* parent)
 {
     QFrame* placeholder = new QFrame(parent);
     configureFrameProperties(placeholder);
-    
+
     // Create layout for centering text
     QVBoxLayout* layout = new QVBoxLayout(placeholder);
     layout->setContentsMargins(
@@ -55,14 +55,14 @@ QFrame* PanelFactory::createPlaceholder(const QString& title, QWidget* parent)
         constants::layout::PANEL_MARGIN,
         constants::layout::PANEL_MARGIN
     );
-    
+
     // Create centered label
     QLabel* label = new QLabel(title, placeholder);
     label->setAlignment(Qt::AlignCenter);
     label->setObjectName("placeholderLabel");
-    
+
     layout->addWidget(label);
-    
+
     return placeholder;
 }
 
@@ -71,7 +71,7 @@ QFrame* PanelFactory::createSection(QWidget* parent)
     QFrame* section = new QFrame(parent);
     section->setFrameStyle(QFrame::NoFrame);
     section->setObjectName("sectionFrame");
-    
+
     return section;
 }
 
@@ -80,33 +80,33 @@ QFrame* PanelFactory::createGroupBox(QWidget* parent)
     QFrame* group = new QFrame(parent);
     configureFrameProperties(group);
     group->setObjectName("groupBox");
-    
+
     return group;
 }
 
 void PanelFactory::configurePanelDimensions(QFrame* panel, PanelType type)
 {
     using namespace constants::layout;
-    
+
     switch (type) {
         case PanelType::STATUS:
             panel->setFixedHeight(STATUS_PANEL_HEIGHT);
             break;
-            
+
         case PanelType::CONTROL:
             panel->setFixedWidth(CONTROL_PANEL_WIDTH);
             break;
-            
+
         case PanelType::DATA:
             panel->setFixedWidth(DATA_PANEL_WIDTH);
             break;
-            
+
         case PanelType::PERFORMANCE:
             panel->setFixedHeight(PERFORMANCE_PANEL_HEIGHT);
             break;
-            
-        case PanelType::RADAR:
-            // Radar panel is flexible size (fills remaining space)
+
+        case PanelType::SONAR:
+            // Sonar panel is flexible size (fills remaining space)
             // No fixed dimensions needed
             break;
     }

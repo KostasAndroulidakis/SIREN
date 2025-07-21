@@ -1,6 +1,6 @@
 /**
  * @file message.hpp
- * @brief Message formats, JSON fields, and communication protocols for military-grade radar
+ * @brief Message formats, JSON fields, and communication protocols for military-grade sonar
  * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
@@ -42,7 +42,7 @@ namespace json_fields {
 
 /// JSON message types - Single Source of Truth for message type identification
 namespace json_types {
-    constexpr const char* RADAR_DATA = "radar_data";
+    constexpr const char* SONAR_DATA = "sonar_data";
     constexpr const char* PERFORMANCE_METRICS = "performance_metrics";
     constexpr const char* STATUS_UPDATE = "status_update";
     constexpr const char* ERROR_REPORT = "error_report";

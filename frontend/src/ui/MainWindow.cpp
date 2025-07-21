@@ -74,14 +74,14 @@ void MainWindow::createPanels()
     // Create placeholder panels for other components
     QFrame* statusPanel = PanelFactory::createPanel(PanelFactory::PanelType::STATUS, this);
     QFrame* controlPanel = PanelFactory::createPlaceholder("CONTROL PANEL", this);
-    QFrame* radarPanel = PanelFactory::createPanel(PanelFactory::PanelType::RADAR, this);
+    QFrame* sonarPanel = PanelFactory::createPanel(PanelFactory::PanelType::SONAR, this);
     QFrame* dataPanel = PanelFactory::createPanel(PanelFactory::PanelType::DATA, this);
     QFrame* performancePanel = PanelFactory::createPlaceholder("PERFORMANCE METRICS", this);
 
     // Apply theme styling to panels
     Theme::applyStatusPanelStyle(statusPanel);
     Theme::applyControlPanelStyle(controlPanel);
-    Theme::applyRadarPanelStyle(radarPanel);
+    Theme::applySonarPanelStyle(sonarPanel);
     Theme::applyDataPanelStyle(dataPanel);
     Theme::applyPerformancePanelStyle(performancePanel);
 
@@ -107,15 +107,15 @@ void MainWindow::createPanels()
     dataLayout->addWidget(m_sonarDataWidget);
     dataLayout->addStretch(); // Push sonar data to the top
 
-    // Add sonar visualization to radar panel
-    QVBoxLayout* radarLayout = new QVBoxLayout(radarPanel);
-    radarLayout->setContentsMargins(0, 0, 0, 0);  // No margins for full display
-    radarLayout->addWidget(m_sonarVisualizationWidget);
+    // Add sonar visualization to sonar panel
+    QVBoxLayout* sonarLayout = new QVBoxLayout(sonarPanel);
+    sonarLayout->setContentsMargins(0, 0, 0, 0);  // No margins for full display
+    sonarLayout->addWidget(m_sonarVisualizationWidget);
 
     // Set widgets in main layout (SRP: MainLayout only arranges)
     m_mainLayout->setStatusWidget(statusPanel);
     m_mainLayout->setControlWidget(controlPanel);
-    m_mainLayout->setCenterWidget(radarPanel);
+    m_mainLayout->setCenterWidget(sonarPanel);
     m_mainLayout->setDataWidget(dataPanel);
     m_mainLayout->setPerformanceWidget(performancePanel);
 

@@ -1,10 +1,10 @@
 /**
- * @file radar_types.hpp
+ * @file sonar_types.hpp
  * @brief Core data types for SIREN military-grade server
  * @author SIREN Project
  * @date 2025
  *
- * Defines all data structures used throughout the radar system.
+ * Defines all data structures used throughout the sonar system.
  * Following SRP - each type has a single, well-defined responsibility.
  */
 
@@ -17,11 +17,11 @@ namespace siren {
 namespace data {
 
 // ============================================================================
-// RADAR MEASUREMENT TYPES
+// SONAR MEASUREMENT TYPES
 // ============================================================================
 
-/// Single radar measurement point
-struct RadarDataPoint {
+/// Single sonar measurement point
+struct SonarDataPoint {
     /// Servo angle in degrees (15-165 range)
     int16_t angle;
 
@@ -35,7 +35,7 @@ struct RadarDataPoint {
     uint8_t quality;
 
     /// Default constructor
-    RadarDataPoint()
+    SonarDataPoint()
         : angle(0), distance(0), quality(0) {
         auto now = std::chrono::steady_clock::now();
         timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -43,7 +43,7 @@ struct RadarDataPoint {
     }
 
     /// Constructor with values
-    RadarDataPoint(int16_t a, int16_t d, uint8_t q = 100)
+    SonarDataPoint(int16_t a, int16_t d, uint8_t q = 100)
         : angle(a), distance(d), quality(q) {
         auto now = std::chrono::steady_clock::now();
         timestamp_us = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -51,14 +51,14 @@ struct RadarDataPoint {
     }
 };
 
-/// Sweep direction for radar operation
+/// Sweep direction for sonar operation
 enum class SweepDirection : uint8_t {
     FORWARD = 0,   ///< Sweeping from min to max angle
     BACKWARD = 1,  ///< Sweeping from max to min angle
     STATIONARY = 2 ///< Not moving (single point measurement)
 };
 
-/// Radar sweep state information
+/// Sonar sweep state information
 struct SweepState {
     /// Current sweep direction
     SweepDirection direction;
@@ -135,7 +135,7 @@ enum class ConnectionState : uint8_t {
 
 /// WebSocket message types
 enum class MessageType : uint8_t {
-    RADAR_DATA = 0,      ///< Real-time radar measurement
+    SONAR_DATA = 0,      ///< Real-time sonar measurement
     STATUS_UPDATE = 1,   ///< System status information
     CONTROL_COMMAND = 2, ///< Control command from client
     ERROR_REPORT = 3,    ///< Error notification
@@ -158,7 +158,7 @@ struct WebSocketMessage {
 
     /// Default constructor
     WebSocketMessage()
-        : type(MessageType::RADAR_DATA), size(0)
+        : type(MessageType::SONAR_DATA), size(0)
         , timestamp(std::chrono::steady_clock::now()) {}
 
     /// Constructor with type and payload

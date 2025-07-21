@@ -1,6 +1,6 @@
 /**
  * @file error.hpp
- * @brief Error handling, logging, and recovery configuration for military-grade radar
+ * @brief Error handling, logging, and recovery configuration for military-grade sonar
  * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED

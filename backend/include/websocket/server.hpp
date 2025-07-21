@@ -1,11 +1,11 @@
 /**
  * @file server.hpp
- * @brief Military-grade WebSocket server for real-time radar data streaming
+ * @brief Military-grade WebSocket server for real-time sonar data streaming
  * @author SIREN Project
  * @date 2025
  *
  * High-performance WebSocket server using Boost.Beast for real-time
- * radar data distribution to frontend clients.
+ * sonar data distribution to frontend clients.
  */
 
 #pragma once
@@ -20,7 +20,7 @@
 #include <boost/beast.hpp>
 #include <boost/beast/websocket.hpp>
 
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include "websocket/connection_manager.hpp"
 #include "websocket/session_manager.hpp"
 #include "websocket/message_broadcaster.hpp"
@@ -53,10 +53,10 @@ public:
     void start();
 
     /**
-     * @brief Send radar data to client
-     * @param data Radar data point to send
+     * @brief Send sonar data to client
+     * @param data Sonar data point to send
      */
-    void sendRadarData(const data::RadarDataPoint& data);
+    void sendSonarData(const data::SonarDataPoint& data);
 
     /**
      * @brief Send performance metrics to client
@@ -132,10 +132,10 @@ private:
 };
 
 /**
- * @brief Military-grade WebSocket server for radar data streaming
+ * @brief Military-grade WebSocket server for sonar data streaming
  *
  * Features:
- * - Real-time radar data broadcasting
+ * - Real-time sonar data broadcasting
  * - Client connection management
  * - Performance monitoring
  * - Error recovery
@@ -187,10 +187,10 @@ public:
     bool isRunning() const noexcept;
 
     /**
-     * @brief Broadcast radar data to all connected clients
-     * @param data Radar data point to broadcast
+     * @brief Broadcast sonar data to all connected clients
+     * @param data Sonar data point to broadcast
      */
-    void broadcastRadarData(const data::RadarDataPoint& data);
+    void broadcastSonarData(const data::SonarDataPoint& data);
 
     /**
      * @brief Broadcast performance metrics to all connected clients

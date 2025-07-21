@@ -308,9 +308,9 @@ void SerialInterface::handleRead(const boost::system::error_code& error,
 
 
 void SerialInterface::processMessage(const std::string& message) {
-    auto radar_data = protocol_parser_->parseRadarData(message);
+    auto sonar_data = protocol_parser_->parseSonarData(message);
 
-    if (radar_data.has_value()) {
+    if (sonar_data.has_value()) {
         // Update statistics
         {
             std::lock_guard<std::mutex> lock(stats_mutex_);
@@ -320,11 +320,11 @@ void SerialInterface::processMessage(const std::string& message) {
 
         // Call data callback if set
         if (data_callback_) {
-            data_callback_(radar_data.value());
+            data_callback_(sonar_data.value());
         }
 
-        std::cout << "[SerialInterface] 📡 Radar data: angle="
-                  << radar_data->angle << "°, distance=" << radar_data->distance << "cm" << std::endl;
+        std::cout << "[SerialInterface] 📡 Sonar data: angle="
+                  << sonar_data->angle << "°, distance=" << sonar_data->distance << "cm" << std::endl;
     } else {
         // Update parse error statistics
         {

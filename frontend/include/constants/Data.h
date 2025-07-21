@@ -26,7 +26,7 @@ constexpr std::int32_t MAX_DISPLAY_ENTRIES = 100;
 constexpr std::int32_t DATA_BUFFER_SIZE = 1000;
 constexpr std::int32_t MIN_DATA_POINTS = 10;
 
-// Radar Data Constraints (from hardware specifications)
+// Sonar Data Constraints (from hardware specifications)
 constexpr double MIN_ANGLE_DEGREES = 0.0;
 constexpr double MAX_ANGLE_DEGREES = 180.0;
 constexpr double ANGLE_RESOLUTION = 1.0;

@@ -161,7 +161,7 @@ make
 
 ## Next Steps
 
-1. **Integration**: Add to RadarMainWindow
+1. **Integration**: Add to SonarMainWindow
 2. **Testing**: Implement unit tests with Google Test
 3. **Documentation**: Generate Doxygen documentation
 4. **Certification**: Prepare DO-178C compliance artifacts

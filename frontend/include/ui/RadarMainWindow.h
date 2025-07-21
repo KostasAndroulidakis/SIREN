@@ -3,7 +3,7 @@
  * EXPORT CONTROL: NOT SUBJECT TO EAR/ITAR
  * CONTRACT: SIREN-2025
  *
- * @file RadarMainWindow.h
+ * @file SonarMainWindow.h
  * @brief Main application window for SIREN system
  * @author SIREN Defense Systems
  * @date 2025
@@ -12,8 +12,8 @@
  * DO-178C Level A Certifiable
  */
 
-#ifndef SIREN_UI_RADAR_MAIN_WINDOW_H
-#define SIREN_UI_RADAR_MAIN_WINDOW_H
+#ifndef SIREN_UI_SONAR_MAIN_WINDOW_H
+#define SIREN_UI_SONAR_MAIN_WINDOW_H
 
 #include <QtWidgets/QMainWindow>
 #include <QtCore/QScopedPointer>
@@ -29,7 +29,7 @@ namespace siren {
 
 // Forward declarations
 namespace Network { class IWebSocketClient; }
-namespace Data { class RadarDataParser; struct RadarData; }
+namespace Data { class SonarDataParser; struct SonarData; }
 
 namespace UI {
 
@@ -39,17 +39,17 @@ namespace UI {
  * Single Responsibility: UI management and coordination only
  * MISRA C++ 2008: 11-0-1 - Member data private
  */
-class RadarMainWindow : public QMainWindow {
+class SonarMainWindow : public QMainWindow {
     Q_OBJECT
-    Q_DISABLE_COPY(RadarMainWindow)
+    Q_DISABLE_COPY(SonarMainWindow)
 
 public:
-    explicit RadarMainWindow(QWidget* parent = nullptr);
-    ~RadarMainWindow() override;
+    explicit SonarMainWindow(QWidget* parent = nullptr);
+    ~SonarMainWindow() override;
 
     // Dependency injection for testability
     void setWebSocketClient(std::unique_ptr<Network::IWebSocketClient> client);
-    void setDataParser(std::unique_ptr<Data::RadarDataParser> parser);
+    void setDataParser(std::unique_ptr<Data::SonarDataParser> parser);
 
 signals:
     void connectRequested();
@@ -63,7 +63,7 @@ private slots:
     void onConnectionError(const QString& error);
 
     // Data events
-    void onDataParsed(const Data::RadarData& data);
+    void onDataParsed(const Data::SonarData& data);
     void onParseError(const QString& error);
 
 private:
@@ -76,13 +76,13 @@ private:
 
     // UI Update methods
     void updateConnectionStatus(bool connected);
-    void displayRadarData(const Data::RadarData& data);
+    void displaySonarData(const Data::SonarData& data);
     void showError(const QString& error);
 
     // Member variables - MISRA C++ 2008: 11-0-1
     QScopedPointer<QTextEdit> m_dataDisplay;
     std::unique_ptr<Network::IWebSocketClient> m_webSocketClient;
-    std::unique_ptr<Data::RadarDataParser> m_dataParser;
+    std::unique_ptr<Data::SonarDataParser> m_dataParser;
 
     // UI state
     bool m_isConnected;
@@ -92,4 +92,4 @@ private:
 } // namespace UI
 } // namespace siren
 
-#endif // SIREN_UI_RADAR_MAIN_WINDOW_H
+#endif // SIREN_UI_SONAR_MAIN_WINDOW_H

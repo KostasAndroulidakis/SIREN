@@ -12,7 +12,7 @@
 #include <chrono>
 #include <mutex>
 #include <functional>
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include "utils/statistics_calculator.hpp"
 
 namespace siren::core {

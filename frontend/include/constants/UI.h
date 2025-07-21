@@ -34,8 +34,8 @@ namespace Colors {
     constexpr char WARNING_TEXT[] = "#FFA500";    // Amber
     constexpr char ERROR_TEXT[] = "#FF0000";      // Red
     constexpr char GRID_LINES[] = "#1F1F1F";      // Dark gray
-    constexpr char RADAR_SWEEP[] = "#00FF41";     // Military green
-    constexpr char RADAR_TARGET[] = "#FFFFFF";    // White
+    constexpr char SONAR_SWEEP[] = "#00FF41";     // Military green
+    constexpr char SONAR_TARGET[] = "#FFFFFF";    // White
 }
 
 // Font Configuration

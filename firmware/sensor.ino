@@ -3,10 +3,10 @@
  * @brief Ultrasonic sensor module for SIREN system
  * @author SIREN Project
  * @date 2025
- * 
+ *
  * Manages the HC-SR04 ultrasonic sensor for distance measurements.
  * Handles sensor initialization, distance calculation using sound wave
- * travel time, and data validation for reliable radar measurements.
+ * travel time, and data validation for reliable sonar measurements.
  */
 
 // Sensor hardware pin assignments
@@ -30,7 +30,7 @@ bool isValidDistance(int distance);
 
 /**
  * @brief Initialize the ultrasonic sensor
- * 
+ *
  * Configures the trigger pin as output and echo pin as input.
  * Must be called before any distance measurement attempts.
  */
@@ -42,13 +42,13 @@ void initSensor() {
 /**
  * @brief Measure distance using ultrasonic sensor
  * @return Distance in centimeters (0 if measurement is invalid)
- * 
+ *
  * Performs distance measurement using the HC-SR04 sensor:
  * 1. Sends 10μs trigger pulse
  * 2. Measures echo pulse duration
  * 3. Calculates distance using sound speed
  * 4. Validates measurement range
- * 
+ *
  * Returns 0 for invalid measurements (out of range or sensor error).
  */
 int getDistance() {
@@ -58,13 +58,13 @@ int getDistance() {
   digitalWrite(TRIG_PIN, HIGH);
   delayMicroseconds(TRIGGER_DELAY_HIGH_US);
   digitalWrite(TRIG_PIN, LOW);
-  
+
   // Measure echo pulse duration
   long duration = pulseIn(ECHO_PIN, HIGH);
-  
+
   // Calculate distance: (duration * sound_speed) / 2 (round trip)
   int distance = duration * SOUND_SPEED_CONVERSION / SOUND_TRAVEL_DIVISOR;
-  
+
   return isValidDistance(distance) ? distance : 0;
 }
 
@@ -72,7 +72,7 @@ int getDistance() {
  * @brief Validate distance measurement
  * @param distance Measured distance in centimeters
  * @return true if distance is within valid range, false otherwise
- * 
+ *
  * Checks if the measured distance falls within the sensor's reliable
  * operating range to filter out erroneous readings.
  */

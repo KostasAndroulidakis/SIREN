@@ -351,10 +351,10 @@ UInt32StatsCalculator createThroughputCalculator();
 UInt64StatsCalculator createMemoryUsageCalculator();
 
 /**
- * @brief Create a radar measurement statistics calculator
- * @return Pre-configured statistics calculator for radar distance measurements
+ * @brief Create a sonar measurement statistics calculator
+ * @return Pre-configured statistics calculator for sonar distance measurements
  */
-Int32StatsCalculator createRadarMeasurementCalculator();
+Int32StatsCalculator createSonarMeasurementCalculator();
 
 } // namespace performance_stats
 

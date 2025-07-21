@@ -27,7 +27,7 @@ MasterController::MasterController()
     , heartbeat_timer_(nullptr)
     , shutdown_requested_(false)
 {
-    std::cout << "[MasterController] Initializing military-grade radar controller..." << std::endl;
+    std::cout << "[MasterController] Initializing military-grade sonar controller..." << std::endl;
 }
 
 MasterController::~MasterController() {
@@ -240,9 +240,9 @@ bool MasterController::initializeSubsystems() {
         std::cout << "[MasterController] Initializing SerialInterface..." << std::endl;
         serial_interface_ = std::make_unique<serial::SerialInterface>(*io_context_);
 
-        // Set up callbacks for radar data and errors
+        // Set up callbacks for sonar data and errors
         serial_interface_->setDataCallback(
-            [this](const data::RadarDataPoint& data) { onRadarData(data); });
+            [this](const data::SonarDataPoint& data) { onSonarData(data); });
 
         serial_interface_->setErrorCallback(
             [this](const std::string& error, data::ErrorSeverity severity) {
@@ -364,17 +364,17 @@ void MasterController::onMetricsUpdate(const data::PerformanceMetrics& metrics) 
     (void)metrics; // Suppress unused parameter warning for now
 }
 
-void MasterController::onRadarData(const data::RadarDataPoint& radar_data) {
-    // Handle incoming radar data from SerialInterface
+void MasterController::onSonarData(const data::SonarDataPoint& sonar_data) {
+    // Handle incoming sonar data from SerialInterface
     performance_monitor_->recordMessage();
 
-    // Log radar data (for VS-1 testing)
-    std::cout << "[MasterController] Radar data: Angle=" << radar_data.angle
-              << "°, Distance=" << radar_data.distance << "cm" << std::endl;
+    // Log sonar data (for VS-1 testing)
+    std::cout << "[MasterController] Sonar data: Angle=" << sonar_data.angle
+              << "°, Distance=" << sonar_data.distance << "cm" << std::endl;
 
     // Forward to WebSocket server
     if (websocket_server_ && websocket_server_->isRunning()) {
-        websocket_server_->broadcastRadarData(radar_data);
+        websocket_server_->broadcastSonarData(sonar_data);
     }
 }
 

@@ -1,7 +1,7 @@
 #ifndef SIREN_CONNECTION_STATUS_WIDGET_H
 #define SIREN_CONNECTION_STATUS_WIDGET_H
 
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Connection Status Widget - Single Responsibility: Display Connection State
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -14,15 +14,15 @@ namespace ui {
 
 /**
  * @brief Connection status display widget - Single Responsibility: Show Connection State
- * 
+ *
  * This widget has ONE job: Display the current connection status to the backend.
  * It does NOT manage the connection, handle networking, or control other widgets.
- * 
+ *
  * Features:
  * - Visual indicator (colored circle)
  * - Status text ("Connected" / "Disconnected" / "Connecting...")
  * - Military-grade styling
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization
  * - Rule 21.2.1: RAII for all resources

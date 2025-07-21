@@ -1,7 +1,7 @@
 #ifndef SIREN_LAYOUT_CONSTANTS_H
 #define SIREN_LAYOUT_CONSTANTS_H
 
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Layout Constants - Single Source of Truth for 1920x1080 Desktop
 // Compliant with MISRA C++ 2023, SSOT, MIL-STD-1472
 
@@ -13,10 +13,10 @@ namespace layout {
 
 /**
  * @brief Single Source of Truth for layout dimensions (1920x1080 desktop)
- * 
+ *
  * All dimensions optimized for 1920x1080 resolution desktop displays.
  * No magic numbers should appear in UI code - all dimensions defined here.
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 5.0.1: No magic numbers (all dimensions defined here)
  * - Rule 2.10.1: All constants shall be used
@@ -38,7 +38,7 @@ constexpr std::uint16_t CONTROL_PANEL_WIDTH = 320;      // Left control panel (1
 constexpr std::uint16_t DATA_PANEL_WIDTH = 360;         // Right data panel (18.75% of width)
 constexpr std::uint16_t PERFORMANCE_PANEL_HEIGHT = 140; // Bottom performance panel
 
-// Center radar display area (calculated)
+// Center sonar display area (calculated)
 // Width: 1920 - 320 - 360 = 1240px
 // Height: 1080 - 60 - 140 = 880px
 

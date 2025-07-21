@@ -13,17 +13,17 @@ namespace ui {
 
 /**
  * @brief Theme manager - Single Responsibility: Apply Styling
- * 
+ *
  * This class has ONE job: Apply consistent styling to widgets.
  * It does NOT create widgets, manage layouts, or handle widget behavior.
- * 
+ *
  * Color Scheme:
  * - Primary Background: Black (#000000)
  * - Primary Accent: Cyan (#00FFFF) - main interactive elements
  * - Secondary Accent: Orange-Red (#FF4500) - warnings, highlights
  * - Text: White (#FFFFFF) on dark backgrounds
  * - Borders: Cyan for active, dark gray for inactive
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 5.0.1: No magic numbers (all colors defined as constants)
  * - Rule 2.10.1: All constants shall be used
@@ -50,10 +50,10 @@ public:
     static void applyControlPanelStyle(QWidget* panel);
 
     /**
-     * @brief Apply radar display styling
-     * @param panel Radar display widget
+     * @brief Apply sonar display styling
+     * @param panel Sonar display widget
      */
-    static void applyRadarPanelStyle(QWidget* panel);
+    static void applySonarPanelStyle(QWidget* panel);
 
     /**
      * @brief Apply data panel styling

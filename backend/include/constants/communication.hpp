@@ -1,6 +1,6 @@
 /**
  * @file communication.hpp
- * @brief Communication protocols and network configuration for military-grade radar
+ * @brief Communication protocols and network configuration for military-grade sonar
  * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
@@ -82,7 +82,7 @@ namespace json {
     /// Maximum string field length (security constraint)
     constexpr uint16_t MAX_STRING_LENGTH = 1024;
 
-    /// Expected JSON fields for radar data
+    /// Expected JSON fields for sonar data
     constexpr const char* FIELD_ANGLE = "angle";
     constexpr const char* FIELD_DISTANCE = "distance";
     constexpr const char* FIELD_TIMESTAMP = "timestamp";

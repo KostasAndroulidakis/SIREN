@@ -14,7 +14,7 @@ namespace data {
 
 /**
  * @brief Sonar data point from ultrasonic sensor
- * 
+ *
  * Contains angle (servo position) and distance (ultrasonic measurement)
  * from the Arduino HC-SR04 sensor and SG90 servo system.
  */
@@ -23,13 +23,13 @@ struct SonarDataPoint {
     std::uint16_t distance{0};     // Distance in centimeters (2-400)
     std::uint64_t timestamp{0};    // Timestamp in milliseconds
     bool valid{false};             // Data validity flag
-    
+
     /**
      * @brief Check if sonar data is within valid hardware ranges
      * @return True if data is valid for HC-SR04 and SG90 specs
      */
     [[nodiscard]] bool isWithinHardwareLimits() const;
-    
+
     /**
      * @brief Get human-readable string representation
      * @return Formatted string (e.g., "Angle: 90°, Distance: 142cm")
@@ -39,16 +39,16 @@ struct SonarDataPoint {
 
 /**
  * @brief Sonar data parser - Single Responsibility: Parse JSON Sonar Data
- * 
+ *
  * This class has ONE job: Parse JSON messages from the backend WebSocket.
  * It does NOT handle networking, UI updates, or data storage.
- * 
+ *
  * Features:
  * - Parse JSON sonar data messages
  * - Validate hardware constraints (HC-SR04, SG90)
  * - Convert to structured SonarDataPoint
  * - Error handling for malformed messages
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization
  * - Rule 21.2.1: RAII for all resources
@@ -76,7 +76,7 @@ public:
      * @param dataPoint Output sonar data point
      * @return Parse result status
      */
-    [[nodiscard]] static ParseResult parseMessage(const QJsonObject& jsonMessage, 
+    [[nodiscard]] static ParseResult parseMessage(const QJsonObject& jsonMessage,
                                                   SonarDataPoint& dataPoint);
 
     /**
@@ -85,7 +85,7 @@ public:
      * @param dataPoint Output sonar data point
      * @return Parse result status
      */
-    [[nodiscard]] static ParseResult parseJsonText(const QString& jsonText, 
+    [[nodiscard]] static ParseResult parseJsonText(const QString& jsonText,
                                                    SonarDataPoint& dataPoint);
 
     /**
@@ -115,7 +115,7 @@ private:
      * @param dataPoint Output data point
      * @return True if extraction successful
      */
-    [[nodiscard]] static bool extractSonarData(const QJsonObject& jsonObj, 
+    [[nodiscard]] static bool extractSonarData(const QJsonObject& jsonObj,
                                                SonarDataPoint& dataPoint);
 
     // Hardware constraints (SSOT for sensor specifications)
@@ -131,7 +131,7 @@ private:
     static constexpr const char* DISTANCE_FIELD = "distance";
     static constexpr const char* TIMESTAMP_FIELD = "timestamp";
     static constexpr const char* SONAR_DATA_TYPE = "sonar_data";
-    static constexpr const char* RADAR_DATA_TYPE = "radar_data";  // Legacy support
+    static constexpr const char* SONAR_DATA_TYPE = "sonar_data";  // Legacy support
 };
 
 } // namespace data

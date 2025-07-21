@@ -24,7 +24,7 @@ ArduinoProtocolParser::ArduinoProtocolParser()
     std::cout << "[ArduinoProtocolParser] ✅ Parser initialized with regex pattern" << std::endl;
 }
 
-std::optional<data::RadarDataPoint> ArduinoProtocolParser::parseRadarData(const std::string& message) {
+std::optional<data::SonarDataPoint> ArduinoProtocolParser::parseSonarData(const std::string& message) {
     auto parsing_start = std::chrono::steady_clock::now();
 
     try {
@@ -35,7 +35,7 @@ std::optional<data::RadarDataPoint> ArduinoProtocolParser::parseRadarData(const 
             int angle = std::stoi(matches[1].str());
             int distance = std::stoi(matches[2].str());
 
-            data::RadarDataPoint point(angle, distance);
+            data::SonarDataPoint point(angle, distance);
 
             // Calculate parsing time
             auto parsing_time = std::chrono::duration_cast<std::chrono::microseconds>(
@@ -45,7 +45,7 @@ std::optional<data::RadarDataPoint> ArduinoProtocolParser::parseRadarData(const 
                 updateStatistics(static_cast<uint32_t>(parsing_time), true, true);
                 return point;
             } else {
-                std::cout << "[ArduinoProtocolParser] ⚠️ Invalid radar data: angle="
+                std::cout << "[ArduinoProtocolParser] ⚠️ Invalid sonar data: angle="
                           << angle << "°, distance=" << distance << "cm" << std::endl;
                 updateStatistics(static_cast<uint32_t>(parsing_time), true, false);
             }
@@ -68,7 +68,7 @@ std::optional<data::RadarDataPoint> ArduinoProtocolParser::parseRadarData(const 
     return std::nullopt;
 }
 
-bool ArduinoProtocolParser::validateHardwareConstraints(const data::RadarDataPoint& data_point) const {
+bool ArduinoProtocolParser::validateHardwareConstraints(const data::SonarDataPoint& data_point) const {
     // Validate angle range against SG90 servo specifications
     if (data_point.angle < constants::hardware::servo::MIN_ANGLE_DEGREES ||
         data_point.angle > constants::hardware::servo::MAX_ANGLE_DEGREES) {

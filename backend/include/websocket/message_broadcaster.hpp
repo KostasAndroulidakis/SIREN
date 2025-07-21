@@ -19,7 +19,7 @@
 #include <queue>
 #include <thread>
 #include <condition_variable>
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 
 namespace siren::websocket {
 
@@ -86,11 +86,11 @@ public:
     bool isActive() const noexcept;
 
     /**
-     * @brief Broadcast radar data to all active sessions
-     * @param data Radar data point to broadcast
+     * @brief Broadcast sonar data to all active sessions
+     * @param data Sonar data point to broadcast
      * @param sessions Active WebSocket sessions to broadcast to
      */
-    void broadcastRadarData(const data::RadarDataPoint& data,
+    void broadcastSonarData(const data::SonarDataPoint& data,
                            const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions);
 
     /**
@@ -129,7 +129,7 @@ public:
 private:
     /// Message types for internal queue
     enum class MessageType {
-        RADAR_DATA,
+        SONAR_DATA,
         PERFORMANCE_METRICS,
         RAW_MESSAGE
     };
@@ -181,11 +181,11 @@ private:
     bool sendMessageToSession(std::shared_ptr<WebSocketSession> session, const std::string& message);
 
     /**
-     * @brief Serialize radar data to JSON
-     * @param data Radar data point to serialize
+     * @brief Serialize sonar data to JSON
+     * @param data Sonar data point to serialize
      * @return JSON string representation
      */
-    std::string serializeRadarData(const data::RadarDataPoint& data);
+    std::string serializeSonarData(const data::SonarDataPoint& data);
 
     /**
      * @brief Serialize performance metrics to JSON

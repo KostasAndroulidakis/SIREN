@@ -1,7 +1,7 @@
 #ifndef SIREN_SPLASH_SCREEN_H
 #define SIREN_SPLASH_SCREEN_H
 
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Splash Screen Component
 // Compliant with MISRA C++ 2023, Qt6 Best Practices, MIL-STD-1472
 
@@ -18,8 +18,8 @@ namespace siren {
 namespace ui {
 
 /**
- * @brief Military-grade splash screen for SIREN radar system startup
- * 
+ * @brief Military-grade splash screen for SIREN sonar system startup
+ *
  * Features:
  * - Embedded logo display with fallback handling
  * - Animated progress bar with realistic loading simulation
@@ -27,7 +27,7 @@ namespace ui {
  * - Deterministic timing (1-3 second display)
  * - RAII resource management
  * - Error handling without exceptions
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization
  * - Rule 21.2.1: RAII for all resources

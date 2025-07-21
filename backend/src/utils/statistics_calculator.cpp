@@ -24,7 +24,7 @@ namespace utils {
 /// Instantiation for uint32_t (most common for latency, timing metrics)
 template class StatisticsCalculator<uint32_t>;
 
-/// Instantiation for int32_t (angles, distances from radar)
+/// Instantiation for int32_t (angles, distances from sonar)
 template class StatisticsCalculator<int32_t>;
 
 /// Instantiation for double (high-precision calculations)
@@ -161,11 +161,11 @@ UInt64StatsCalculator createMemoryUsageCalculator() {
 }
 
 /**
- * @brief Create a radar measurement statistics calculator
- * @return Pre-configured statistics calculator for radar distance measurements
+ * @brief Create a sonar measurement statistics calculator
+ * @return Pre-configured statistics calculator for sonar distance measurements
  */
-Int32StatsCalculator createRadarMeasurementCalculator() {
-    // Use default alpha for radar measurements
+Int32StatsCalculator createSonarMeasurementCalculator() {
+    // Use default alpha for sonar measurements
     return Int32StatsCalculator(constants::performance::optimization::MOVING_AVERAGE_ALPHA);
 }
 

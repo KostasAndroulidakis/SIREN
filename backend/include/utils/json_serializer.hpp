@@ -11,7 +11,7 @@
 #pragma once
 
 #include <string>
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 
 namespace siren::utils {
 
@@ -24,11 +24,11 @@ namespace siren::utils {
 class JsonSerializer {
 public:
     /**
-     * @brief Serialize radar data point to JSON
-     * @param data Radar data point to serialize
+     * @brief Serialize sonar data point to JSON
+     * @param data Sonar data point to serialize
      * @return JSON string representation
      */
-    static std::string serialize(const data::RadarDataPoint& data);
+    static std::string serialize(const data::SonarDataPoint& data);
 
     /**
      * @brief Serialize performance metrics to JSON

@@ -4,7 +4,7 @@
  * @author SIREN Project
  * @date 2025
  *
- * High-performance WebSocket server for real-time radar data streaming
+ * High-performance WebSocket server for real-time sonar data streaming
  * with military-grade reliability and error handling.
  */
 
@@ -103,7 +103,7 @@ void WebSocketSession::onRead(beast::error_code ec, std::size_t bytes_transferre
         beast::bind_front_handler(&WebSocketSession::onRead, shared_from_this()));
 }
 
-void WebSocketSession::sendRadarData(const data::RadarDataPoint& data) {
+void WebSocketSession::sendSonarData(const data::SonarDataPoint& data) {
     if (!is_alive_.load() || closing_.load()) {
         return;
     }
@@ -366,7 +366,7 @@ bool WebSocketServer::isRunning() const noexcept {
     return running_.load();
 }
 
-void WebSocketServer::broadcastRadarData(const data::RadarDataPoint& data) {
+void WebSocketServer::broadcastSonarData(const data::SonarDataPoint& data) {
     if (!running_.load() || !message_broadcaster_) {
         return;
     }
@@ -375,7 +375,7 @@ void WebSocketServer::broadcastRadarData(const data::RadarDataPoint& data) {
     auto active_sessions = session_manager_->getActiveSessions();
 
     // Broadcast through message broadcaster
-    message_broadcaster_->broadcastRadarData(data, active_sessions);
+    message_broadcaster_->broadcastSonarData(data, active_sessions);
 
     // Update statistics (centralized statistics update)
     updateStatistics();

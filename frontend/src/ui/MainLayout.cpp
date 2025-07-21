@@ -1,4 +1,4 @@
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Main Window Layout Manager Implementation
 // Single Responsibility: Widget Arrangement ONLY
 

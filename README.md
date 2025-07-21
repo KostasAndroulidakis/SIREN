@@ -2,7 +2,7 @@
 
 ![SIREN Logo](siren-logo.png)
 
-A minimal radar system built from first principles.
+A minimal sonar system built from first principles.
 
 An ultrasonic sensor sweeps 180 degrees on a servo motor, measuring distances.
 
@@ -58,7 +58,7 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 - Language: C++
 - Framework: Qt6 LTS
 - Location: `frontend/`
-- Purpose: Military-grade GUI with WebSocket client and radar visualization
+- Purpose: Military-grade GUI with WebSocket client and sonar visualization
 
 ### Architecture
 

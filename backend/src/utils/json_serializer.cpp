@@ -13,10 +13,10 @@ namespace siren::utils {
 
 namespace constants = siren::constants;
 
-std::string JsonSerializer::serialize(const data::RadarDataPoint& data) {
+std::string JsonSerializer::serialize(const data::SonarDataPoint& data) {
     std::ostringstream oss;
     oss << "{"
-        << formatField(constants::message::json_fields::TYPE, constants::message::json_types::RADAR_DATA, true) << ","
+        << formatField(constants::message::json_fields::TYPE, constants::message::json_types::SONAR_DATA, true) << ","
         << formatField(constants::message::json_fields::TIMESTAMP, data.timestamp_us) << ","
         << formatField(constants::message::json_fields::ANGLE, data.angle) << ","
         << formatField(constants::message::json_fields::DISTANCE, data.distance) << ","

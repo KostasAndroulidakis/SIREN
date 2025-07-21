@@ -10,7 +10,7 @@
 
 #pragma once
 
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include <string>
 #include <exception>
 #include <mutex>

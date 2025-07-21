@@ -1,6 +1,6 @@
 /**
  * @file performance.hpp
- * @brief Real-time performance requirements and memory management for military-grade radar
+ * @brief Real-time performance requirements and memory management for military-grade sonar
  * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED
@@ -54,8 +54,8 @@ namespace buffers {
     /// Serial receive buffer size in bytes
     constexpr uint32_t SERIAL_BUFFER_SIZE_BYTES = 1024;
 
-    /// Radar data point buffer size (number of points)
-    constexpr uint32_t RADAR_DATA_BUFFER_SIZE = 1000;
+    /// Sonar data point buffer size (number of points)
+    constexpr uint32_t SONAR_DATA_BUFFER_SIZE = 1000;
 
     /// WebSocket message queue size
     constexpr uint32_t WEBSOCKET_QUEUE_SIZE = 100;

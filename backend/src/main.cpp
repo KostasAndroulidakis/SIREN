@@ -13,7 +13,7 @@
 #include <boost/asio.hpp>
 
 // Military-grade configuration headers
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include "constants/message.hpp"
 #include "constants/communication.hpp"
 #include "constants/hardware.hpp"
@@ -46,7 +46,7 @@ int main() {
     std::cout << "Target latency: " << perf::timing::TARGET_LOOP_TIME_US << "μs" << std::endl;
 
     // Test data types
-    siren::data::RadarDataPoint test_point(cnst::math::test::TEST_ANGLE_DEGREES, cnst::math::test::TEST_DISTANCE_CM);
+    siren::data::SonarDataPoint test_point(cnst::math::test::TEST_ANGLE_DEGREES, cnst::math::test::TEST_DISTANCE_CM);
     std::cout << "Test data point: angle=" << test_point.angle
               << "°, distance=" << test_point.distance << "cm" << std::endl;
 
@@ -72,7 +72,7 @@ int main() {
 
     // Run controller continuously (military-grade production mode)
     std::cout << "Running controller in production mode - Ctrl+C to stop..." << std::endl;
-    
+
     // Run the controller (this blocks until stop() is called)
     controller.run();
 

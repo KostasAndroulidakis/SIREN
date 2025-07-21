@@ -93,15 +93,15 @@ bool WebSocketMessageBroadcaster::isActive() const noexcept {
     return active_.load();
 }
 
-void WebSocketMessageBroadcaster::broadcastRadarData(const data::RadarDataPoint& data,
+void WebSocketMessageBroadcaster::broadcastSonarData(const data::SonarDataPoint& data,
                                                     const std::unordered_set<std::shared_ptr<WebSocketSession>>& sessions) {
     if (!active_.load()) {
         return;
     }
 
     BroadcastMessage message;
-    message.type = MessageType::RADAR_DATA;
-    message.serialized_data = serializeRadarData(data);
+    message.type = MessageType::SONAR_DATA;
+    message.serialized_data = serializeSonarData(data);
     message.target_sessions = sessions;
     message.timestamp = std::chrono::steady_clock::now();
 
@@ -226,7 +226,7 @@ bool WebSocketMessageBroadcaster::sendMessageToSession(std::shared_ptr<WebSocket
     }
 }
 
-std::string WebSocketMessageBroadcaster::serializeRadarData(const data::RadarDataPoint& data) {
+std::string WebSocketMessageBroadcaster::serializeSonarData(const data::SonarDataPoint& data) {
     return utils::JsonSerializer::serialize(data);
 }
 

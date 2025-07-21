@@ -1,6 +1,6 @@
 /**
  * @file hardware.hpp
- * @brief Hardware specifications and constraints for military-grade radar system
+ * @brief Hardware specifications and constraints for military-grade sonar system
  * @author SIREN Defense Systems
  * @date 2025
  * @classification UNCLASSIFIED

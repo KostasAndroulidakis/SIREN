@@ -1,7 +1,7 @@
 #ifndef SIREN_PANEL_FACTORY_H
 #define SIREN_PANEL_FACTORY_H
 
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // Panel Factory - Single Responsibility: Create Panel Widgets
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -32,7 +32,7 @@ public:
     enum class PanelType {
         STATUS,      // Top status bar
         CONTROL,     // Left control panel
-        RADAR,       // Center radar display
+        SONAR,       // Center sonar display
         DATA,        // Right data panel
         PERFORMANCE  // Bottom performance metrics
     };

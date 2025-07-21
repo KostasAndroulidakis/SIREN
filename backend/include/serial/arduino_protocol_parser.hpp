@@ -1,6 +1,6 @@
 /**
  * @file arduino_protocol_parser.hpp
- * @brief Military-grade Arduino protocol parser for radar data
+ * @brief Military-grade Arduino protocol parser for sonar data
  * @author SIREN Project
  * @date 2025
  *
@@ -14,12 +14,12 @@
 #include <optional>
 #include <regex>
 
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 
 namespace siren::serial {
 
 /**
- * @brief Arduino protocol parser for radar data messages
+ * @brief Arduino protocol parser for sonar data messages
  *
  * Military-grade protocol parser with:
  * - Regex-based message parsing
@@ -46,18 +46,18 @@ public:
     ArduinoProtocolParser& operator=(ArduinoProtocolParser&&) = delete;
 
     /**
-     * @brief Parse radar data from Arduino message
+     * @brief Parse sonar data from Arduino message
      * @param message Complete message from Arduino
-     * @return Parsed radar data point, or nullopt if parsing failed
+     * @return Parsed sonar data point, or nullopt if parsing failed
      */
-    std::optional<data::RadarDataPoint> parseRadarData(const std::string& message);
+    std::optional<data::SonarDataPoint> parseSonarData(const std::string& message);
 
     /**
-     * @brief Validate radar data point against hardware constraints
+     * @brief Validate sonar data point against hardware constraints
      * @param data_point Data point to validate
      * @return true if data is valid according to hardware specifications
      */
-    bool validateHardwareConstraints(const data::RadarDataPoint& data_point) const;
+    bool validateHardwareConstraints(const data::SonarDataPoint& data_point) const;
 
     /**
      * @brief Get parsing statistics

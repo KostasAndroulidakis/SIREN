@@ -13,7 +13,7 @@
 #include <memory>
 #include <boost/asio.hpp>
 
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include "core/system_state_manager.hpp"
 #include "core/performance_monitor.hpp"
 #include "serial/serial_interface.hpp"
@@ -56,23 +56,23 @@ public:
     bool initialize();
 
     /**
-     * @brief Start the radar system operation
+     * @brief Start the sonar system operation
      * @return true if started successfully
      */
     bool start();
 
     /**
-     * @brief Stop the radar system gracefully
+     * @brief Stop the sonar system gracefully
      */
     void stop();
 
     /**
-     * @brief Pause radar operation (maintains connections)
+     * @brief Pause sonar operation (maintains connections)
      */
     void pause();
 
     /**
-     * @brief Resume radar operation from paused state
+     * @brief Resume sonar operation from paused state
      */
     void resume();
 
@@ -161,9 +161,9 @@ private:
     void onMetricsUpdate(const data::PerformanceMetrics& metrics);
 
     /**
-     * @brief Radar data callback from SerialInterface
+     * @brief Sonar data callback from SerialInterface
      */
-    void onRadarData(const data::RadarDataPoint& radar_data);
+    void onSonarData(const data::SonarDataPoint& sonar_data);
 
     /**
      * @brief Serial error callback from SerialInterface

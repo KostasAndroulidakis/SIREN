@@ -21,7 +21,7 @@ if(APPLE)
     set(CMAKE_OSX_SYSROOT "/Library/Developer/CommandLineTools/SDKs/MacOSX15.5.sdk")
 endif()
 
-# Find Qt6 components including WebSockets for radar data
+# Find Qt6 components including WebSockets for sonar data
 find_package(Qt6 REQUIRED COMPONENTS Widgets Gui Core WebSockets)
 
 # Qt6 standard project setup

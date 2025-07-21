@@ -1,4 +1,4 @@
-// SIREN Military-Grade Radar System
+// SIREN Military-Grade Sonar System
 // WebSocket Client Implementation
 // Single Responsibility: Backend Communication ONLY
 
@@ -30,19 +30,19 @@ WebSocketClient::WebSocketClient(QObject* parent)
 {
     // Configure reconnect timer (single-shot)
     m_reconnectTimer->setSingleShot(true);
-    
+
     // Connect WebSocket signals (MISRA C++ Rule 21.2.1: RAII for connections)
-    connect(m_webSocket.data(), &QWebSocket::connected, 
+    connect(m_webSocket.data(), &QWebSocket::connected,
             this, &WebSocketClient::onConnected);
-    connect(m_webSocket.data(), &QWebSocket::disconnected, 
+    connect(m_webSocket.data(), &QWebSocket::disconnected,
             this, &WebSocketClient::onDisconnected);
-    connect(m_webSocket.data(), &QWebSocket::textMessageReceived, 
+    connect(m_webSocket.data(), &QWebSocket::textMessageReceived,
             this, &WebSocketClient::onTextMessageReceived);
     connect(m_webSocket.data(), &QWebSocket::errorOccurred,
             this, &WebSocketClient::onError);
-    
+
     // Connect reconnect timer
-    connect(m_reconnectTimer.data(), &QTimer::timeout, 
+    connect(m_reconnectTimer.data(), &QTimer::timeout,
             this, &WebSocketClient::attemptReconnect);
 }
 
@@ -52,13 +52,13 @@ void WebSocketClient::connectToServer(const QUrl& url)
     if (m_state == State::Connected || m_state == State::Connecting) {
         return; // Already connected or connecting
     }
-    
+
     m_serverUrl = url;
     m_state = State::Connecting;
     resetReconnectAttempts();
-    
+
     emit stateChanged(m_state);
-    
+
     // Start connection attempt
     m_webSocket->open(m_serverUrl);
 }
@@ -68,7 +68,7 @@ void WebSocketClient::disconnectFromServer()
     // Stop any reconnection attempts
     m_reconnectTimer->stop();
     m_autoReconnect = false;
-    
+
     if (m_state == State::Connected || m_state == State::Connecting) {
         m_state = State::Closing;
         emit stateChanged(m_state);
@@ -114,10 +114,10 @@ void WebSocketClient::onConnected()
 {
     m_state = State::Connected;
     resetReconnectAttempts();
-    
+
     emit connected();
     emit stateChanged(m_state);
-    
+
     qDebug() << "WebSocket connected to:" << m_serverUrl.toString();
 }
 
@@ -125,12 +125,12 @@ void WebSocketClient::onDisconnected()
 {
     const State previousState = m_state;
     m_state = State::Disconnected;
-    
+
     emit disconnected();
     emit stateChanged(m_state);
-    
+
     qDebug() << "WebSocket disconnected from:" << m_serverUrl.toString();
-    
+
     // Only attempt reconnection if we were previously connected and auto-reconnect is enabled
     if (m_autoReconnect && previousState == State::Connected) {
         const int delay = calculateReconnectDelay();
@@ -147,7 +147,7 @@ void WebSocketClient::onTextMessageReceived(const QString& message)
 void WebSocketClient::onError(QAbstractSocket::SocketError error)
 {
     QString errorString;
-    
+
     // Convert socket error to string (MISRA C++ Rule 16.1.1: All cases covered)
     switch (error) {
         case QAbstractSocket::ConnectionRefusedError:
@@ -175,16 +175,16 @@ void WebSocketClient::onError(QAbstractSocket::SocketError error)
             errorString = QString("Socket error: %1").arg(static_cast<int>(error));
             break;
     }
-    
+
     emit errorOccurred(errorString);
-    
+
     // If we're currently connecting and get an error, attempt reconnection
     if (m_state == State::Connecting && m_autoReconnect) {
         const int delay = calculateReconnectDelay();
         m_reconnectTimer->start(delay);
         emit reconnectScheduled(m_reconnectAttempts + 1, delay);
     }
-    
+
     m_state = State::Disconnected;
     emit stateChanged(m_state);
 }
@@ -193,17 +193,17 @@ void WebSocketClient::attemptReconnect()
 {
     // MISRA C++ Rule 8.18.2: No assignment in conditions
     m_reconnectAttempts++;
-    
+
     if (m_reconnectAttempts > MAX_RECONNECT_ATTEMPTS) {
         emit errorOccurred("Maximum reconnection attempts exceeded");
         return;
     }
-    
+
     qDebug() << "Attempting reconnection #" << m_reconnectAttempts << "to:" << m_serverUrl.toString();
-    
+
     m_state = State::Connecting;
     emit stateChanged(m_state);
-    
+
     m_webSocket->open(m_serverUrl);
 }
 
@@ -218,16 +218,16 @@ std::int32_t WebSocketClient::calculateReconnectDelay() const
     // Exponential backoff: delay = base * (multiplier ^ attempts)
     // MISRA C++ Rule 5.0.1: Use constants instead of magic numbers
     std::int32_t delay = BASE_RECONNECT_DELAY_MS;
-    
+
     for (int i = 0; i < m_reconnectAttempts && delay < MAX_RECONNECT_DELAY_MS; ++i) {
         delay *= RECONNECT_BACKOFF_MULTIPLIER;
     }
-    
+
     // Cap at maximum delay
     if (delay > MAX_RECONNECT_DELAY_MS) {
         delay = MAX_RECONNECT_DELAY_MS;
     }
-    
+
     return delay;
 }
 

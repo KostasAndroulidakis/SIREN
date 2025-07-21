@@ -1,6 +1,6 @@
 /**
  * @file serial_interface.hpp
- * @brief Military-grade serial communication interface for Arduino radar
+ * @brief Military-grade serial communication interface for Arduino sonar
  * @author SIREN Project
  * @date 2025
  *
@@ -17,13 +17,13 @@
 #include <mutex>
 #include <boost/asio.hpp>
 
-#include "data/radar_types.hpp"
+#include "data/sonar_types.hpp"
 #include "serial/arduino_protocol_parser.hpp"
 
 namespace siren::serial {
 
 /**
- * @brief Serial communication interface for Arduino radar system
+ * @brief Serial communication interface for Arduino sonar system
  *
  * Military-grade serial interface with:
  * - Asynchronous I/O operations
@@ -43,7 +43,7 @@ public:
     };
 
     /// Data callback function type
-    using DataCallback = std::function<void(const data::RadarDataPoint&)>;
+    using DataCallback = std::function<void(const data::SonarDataPoint&)>;
 
     /// Error callback function type
     using ErrorCallback = std::function<void(const std::string&, data::ErrorSeverity)>;
@@ -95,7 +95,7 @@ public:
 
     /**
      * @brief Set data received callback
-     * @param callback Function to call when radar data is received
+     * @param callback Function to call when sonar data is received
      */
     void setDataCallback(DataCallback callback);
 

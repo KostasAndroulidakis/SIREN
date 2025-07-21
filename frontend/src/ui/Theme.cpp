@@ -24,7 +24,7 @@ void Theme::applyStatusPanelStyle(QWidget* panel)
                 font-family: %4;
             }
         )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
-        
+
         panel->setStyleSheet(style);
     }
 }
@@ -40,22 +40,22 @@ void Theme::applyControlPanelStyle(QWidget* panel)
                 font-family: %4;
             }
         )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
-        
+
         panel->setStyleSheet(style);
     }
 }
 
-void Theme::applyRadarPanelStyle(QWidget* panel)
+void Theme::applySonarPanelStyle(QWidget* panel)
 {
     if (panel != nullptr) {
         const QString style = QString(R"(
-            #radarPanel {
+            #sonarPanel {
                 background-color: %1;
                 border: 2px solid %2;
                 color: %3;
             }
         )").arg(PRIMARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT);
-        
+
         panel->setStyleSheet(style);
     }
 }
@@ -71,7 +71,7 @@ void Theme::applyDataPanelStyle(QWidget* panel)
                 font-family: %4;
             }
         )").arg(PANEL_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
-        
+
         panel->setStyleSheet(style);
     }
 }
@@ -87,7 +87,7 @@ void Theme::applyPerformancePanelStyle(QWidget* panel)
                 font-family: %4;
             }
         )").arg(SECONDARY_BACKGROUND, BORDER_ACTIVE, PRIMARY_TEXT, MONOSPACE_FONT);
-        
+
         panel->setStyleSheet(style);
     }
 }
@@ -115,9 +115,9 @@ void Theme::applyConnectionIndicatorStyle(QWidget* widget)
                 border-color: %6;
                 color: %3;
             }
-        )").arg(SECONDARY_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT, 
+        )").arg(SECONDARY_BACKGROUND, BORDER_INACTIVE, PRIMARY_TEXT, MONOSPACE_FONT,
                 SUCCESS_COLOR, DANGER_COLOR);
-        
+
         widget->setStyleSheet(style);
     }
 }
@@ -150,7 +150,7 @@ void Theme::applyPrimaryButtonStyle(QWidget* button)
             }
         )").arg(PRIMARY_BACKGROUND, PRIMARY_ACCENT, BORDER_HOVER, MONOSPACE_FONT,
                 SECONDARY_BACKGROUND, DISABLED_TEXT);
-        
+
         button->setStyleSheet(style);
     }
 }
@@ -177,7 +177,7 @@ void Theme::applySecondaryButtonStyle(QWidget* button)
                 background-color: %3;
             }
         )").arg(PRIMARY_BACKGROUND, SECONDARY_ACCENT, "#CC3300", MONOSPACE_FONT);
-        
+
         button->setStyleSheet(style);
     }
 }
@@ -204,7 +204,7 @@ void Theme::applyDangerButtonStyle(QWidget* button)
                 background-color: %3;
             }
         )").arg(PRIMARY_BACKGROUND, DANGER_COLOR, "#CC0000", MONOSPACE_FONT);
-        
+
         button->setStyleSheet(style);
     }
 }

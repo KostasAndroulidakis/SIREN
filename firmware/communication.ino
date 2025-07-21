@@ -3,13 +3,13 @@
  * @brief Serial communication module for SIREN system
  * @author SIREN Project
  * @date 2025
- * 
- * Handles all serial communication protocols for transmitting radar data
+ *
+ * Handles all serial communication protocols for transmitting sonar data
  * to external systems. Provides a standardized data format for angle
  * and distance measurements.
  */
 
-// Communication configuration constants  
+// Communication configuration constants
 const int SERIAL_BAUD_RATE = 9600;   ///< Reliable serial communication (Arduino standard)
 
 // Communication protocol constants
@@ -18,7 +18,7 @@ const char DATA_TERMINATOR = '.'; ///< Character marking end of data transmissio
 
 /**
  * @brief Initialize serial communication
- * 
+ *
  * Configures the serial port with the system's standard baud rate.
  * Must be called before any serial communication attempts.
  */
@@ -27,14 +27,14 @@ void initCommunication() {
 }
 
 /**
- * @brief Send radar measurement data via serial
+ * @brief Send sonar measurement data via serial
  * @param angle The servo angle in degrees (0-180)
  * @param distance The measured distance in centimeters
- * 
- * Transmits formatted radar data in human-readable format.
+ *
+ * Transmits formatted sonar data in human-readable format.
  * Example output: "Angle: 90 - Distance: 150"
  */
-void sendRadarData(int angle, int distance) {
+void sendSonarData(int angle, int distance) {
   Serial.print("Angle: ");
   Serial.print(angle);
   Serial.print(" - Distance: ");
