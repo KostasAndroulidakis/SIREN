@@ -32,6 +32,10 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 
 - HC-SR04s
 
+### Temperature & Humidity Sensor
+
+- DHT11
+
 ## Software
 
 ### System Launcher
@@ -106,4 +110,12 @@ g++ -std=c++17 main.cpp -o SIREN
 🔴 Pin 1 (+)    ──→  Breadboard (+)
 🟠 Pin 2 (PWM)  ──→  UNO D9 PWM
 ⚫ Pin 3 (-)    ──→  Breadboard (-)
+```
+
+### Temperature & Humidity Sensor DHT11
+
+```text
+🔴 VCC          ──→  Breadboard (+)
+🟢 DATA         ──→  UNO D4
+⚫ GND          ──→  Breadboard (-)
 ```
