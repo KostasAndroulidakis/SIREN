@@ -10,16 +10,16 @@
  */
 
 // Sensor hardware pin assignments
-const int TRIG_PIN = 2;                        ///< Digital pin for trigger signal
-const int ECHO_PIN = 3;                        ///< Digital pin for echo signal
+constexpr int TRIG_PIN = 2;                        ///< Digital pin for trigger signal
+constexpr int ECHO_PIN = 3;                        ///< Digital pin for echo signal
 
 // Measurement range limits
-const int MIN_DISTANCE = 2;                    ///< Minimum reliable distance in cm
-const int MAX_DISTANCE = 400;                  ///< Maximum reliable distance in cm
+constexpr int MIN_DISTANCE = 2;                    ///< Minimum reliable distance in cm
+constexpr int MAX_DISTANCE = 400;                  ///< Maximum reliable distance in cm
 
 // Timing constants for sensor operation
-const int TRIGGER_DELAY_LOW_US = 2;            ///< Low trigger pulse duration in microseconds
-const int TRIGGER_DELAY_HIGH_US = 10;          ///< High trigger pulse duration in microseconds
+constexpr int TRIGGER_DELAY_LOW_US = 2;            ///< Low trigger pulse duration in microseconds
+constexpr int TRIGGER_DELAY_HIGH_US = 10;          ///< High trigger pulse duration in microseconds
 
 // SSOT: Distance calculation constants (MISRA C++ Rule 5.0.1)
 namespace {
