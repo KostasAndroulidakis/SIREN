@@ -10,6 +10,7 @@
 
 #include "websocket/server.hpp"
 #include "websocket/server_lifecycle_manager.hpp"
+#include "websocket/data_broadcast_coordinator.hpp"
 #include "utils/json_serializer.hpp"
 #include "constants/message.hpp"
 #include "utils/error_handler.hpp"
@@ -43,6 +44,8 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
     lifecycle_manager_ = std::make_unique<ServerLifecycleManager>(
         connection_acceptor_, session_manager_, message_broadcaster_, 
         statistics_collector_, event_handler_, port_);
+    broadcast_coordinator_ = std::make_unique<DataBroadcastCoordinator>(
+        session_manager_, message_broadcaster_);
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -68,28 +71,11 @@ bool WebSocketServer::isRunning() const noexcept {
 }
 
 void WebSocketServer::broadcastSonarData(const data::SonarDataPoint& data) {
-    if (!running_.load() || !message_broadcaster_) {
-        return;
-    }
-
-    // Get active sessions from session manager
-    auto active_sessions = session_manager_->getActiveSessions();
-
-    // Broadcast through message broadcaster
-    message_broadcaster_->broadcastSonarData(data, active_sessions);
-
+    broadcast_coordinator_->broadcastSonarData(data, running_);
 }
 
 void WebSocketServer::broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics) {
-    if (!running_.load() || !message_broadcaster_) {
-        return;
-    }
-
-    // Get active sessions from session manager
-    auto active_sessions = session_manager_->getActiveSessions();
-
-    // Broadcast through message broadcaster
-    message_broadcaster_->broadcastPerformanceMetrics(metrics, active_sessions);
+    broadcast_coordinator_->broadcastPerformanceMetrics(metrics, running_);
 }
 
 size_t WebSocketServer::getActiveConnections() const noexcept {
