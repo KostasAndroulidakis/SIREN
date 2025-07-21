@@ -21,9 +21,9 @@
 #include <boost/beast/websocket.hpp>
 
 #include "data/sonar_types.hpp"
-#include "websocket/connection_manager.hpp"
-#include "websocket/session_manager.hpp"
-#include "websocket/message_broadcaster.hpp"
+#include "websocket/connection_acceptor.hpp"
+#include "websocket/websocket_session_manager.hpp"
+#include "websocket/websocket_message_broadcaster.hpp"
 
 namespace siren::websocket {
 
@@ -228,8 +228,8 @@ private:
     std::atomic<bool> running_;
     std::atomic<bool> shutdown_requested_;
 
-    // Specialized managers
-    std::unique_ptr<WebSocketConnectionManager> connection_manager_;
+    // Specialized managers - SRP compliant components
+    std::unique_ptr<ConnectionAcceptor> connection_acceptor_;
     std::unique_ptr<WebSocketSessionManager> session_manager_;
     std::unique_ptr<WebSocketMessageBroadcaster> message_broadcaster_;
 
@@ -242,13 +242,13 @@ private:
     ConnectionCallback connection_callback_;
 
     /**
-     * @brief Handle accepted connection from connection manager
+     * @brief Handle accepted connection from connection acceptor
      * @param socket Accepted TCP socket
      */
     void onConnectionAccepted(tcp::socket socket);
 
     /**
-     * @brief Handle connection manager errors
+     * @brief Handle connection acceptor errors
      * @param error_message Error description
      * @param ec Error code
      */
