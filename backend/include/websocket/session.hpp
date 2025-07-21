@@ -29,13 +29,12 @@
 #include <memory>
 #include <string>
 #include <atomic>
-#include <mutex>
-#include <queue>
 #include <boost/asio.hpp>
 #include <boost/beast.hpp>
 #include <boost/beast/websocket.hpp>
 
 #include "data/sonar_types.hpp"
+#include "websocket/message_queue_manager.hpp"
 
 namespace siren::websocket {
 
@@ -127,9 +126,8 @@ private:
     std::atomic<bool> is_alive_;
     std::atomic<bool> closing_;
 
-    // Message queue for thread-safe sending - SSOT for message ordering
-    std::queue<std::string> message_queue_;
-    mutable std::mutex queue_mutex_;
+    // Message queue management - SRP compliant delegation
+    std::unique_ptr<MessageQueueManager> queue_manager_;
     std::atomic<bool> write_in_progress_;
 
     // Read buffer - RAII managed

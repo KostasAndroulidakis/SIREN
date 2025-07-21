@@ -9,6 +9,7 @@
 
 #include "websocket/session.hpp"
 #include "websocket/server.hpp"
+#include "websocket/message_queue_manager.hpp"
 #include "utils/json_serializer.hpp"
 #include "utils/error_handler.hpp"
 #include "constants/message.hpp"
@@ -23,7 +24,6 @@ namespace cnst = siren::constants;
 // SSOT for session constants (MISRA C++ Rule 5.0.1)
 namespace {
     constexpr const char* COMPONENT_NAME = "WebSocketSession";
-    constexpr size_t MAX_MESSAGE_QUEUE_SIZE = 100;  // Maximum queued messages
     constexpr auto WEBSOCKET_TIMEOUT = std::chrono::seconds(30);  // WebSocket timeout
 }
 
@@ -34,8 +34,7 @@ WebSocketSession::WebSocketSession(tcp::socket&& socket,
     , client_endpoint_()
     , is_alive_(false)
     , closing_(false)
-    , message_queue_()
-    , queue_mutex_()
+    , queue_manager_(nullptr)
     , write_in_progress_(false)
     , buffer_()
 {
@@ -43,6 +42,15 @@ WebSocketSession::WebSocketSession(tcp::socket&& socket,
         // Get client endpoint information for logging
         auto endpoint = ws_.next_layer().socket().remote_endpoint();
         client_endpoint_ = endpoint.address().to_string() + ":" + std::to_string(endpoint.port());
+
+        // Initialize queue manager with callback for client disconnection
+        queue_manager_ = std::make_unique<MessageQueueManager>(
+            client_endpoint_,
+            [this]() {
+                // Queue full callback - disconnect client
+                is_alive_.store(false);
+                close();
+            });
 
         std::cout << "[" << COMPONENT_NAME << "] Session created for " << client_endpoint_ << std::endl;
 
@@ -221,21 +229,15 @@ void WebSocketSession::onWrite(beast::error_code ec, std::size_t bytes_transferr
 }
 
 void WebSocketSession::processNextMessage() {
-    if (!isAlive() || write_in_progress_.load()) {
+    if (!isAlive() || write_in_progress_.load() || !queue_manager_) {
         return;
     }
 
     std::string message;
 
-    // Get next message from queue (thread-safe)
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-        if (message_queue_.empty()) {
-            return; // No messages to send
-        }
-
-        message = std::move(message_queue_.front());
-        message_queue_.pop();
+    // Get next message from queue manager - SRP compliance
+    if (!queue_manager_->getNextMessage(message)) {
+        return; // No messages to send
     }
 
     // Send the message
@@ -250,30 +252,15 @@ void WebSocketSession::processNextMessage() {
 }
 
 void WebSocketSession::enqueueMessage(const std::string& message) {
-    if (!isAlive() || message.empty()) {
+    if (!isAlive() || !queue_manager_) {
         return;
     }
 
-    bool should_start_write = false;
-
-    // Add message to queue (thread-safe)
-    {
-        std::lock_guard<std::mutex> lock(queue_mutex_);
-
-        // Prevent queue from growing too large
-        if (message_queue_.size() >= MAX_MESSAGE_QUEUE_SIZE) {
-            utils::ErrorHandler::handleSystemError(COMPONENT_NAME,
-                "Message queue full for client " + client_endpoint_,
-                data::ErrorSeverity::WARNING);
-            return;
-        }
-
-        message_queue_.push(message);
-        should_start_write = !write_in_progress_.load();
-    }
-
-    // Start writing if not already in progress
-    if (should_start_write) {
+    // Delegate to queue manager - SRP compliance
+    bool message_queued = queue_manager_->enqueueMessage(message, write_in_progress_);
+    
+    // Start writing if message was queued and no write in progress
+    if (message_queued && !write_in_progress_.load()) {
         processNextMessage();
     }
 }
