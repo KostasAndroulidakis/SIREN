@@ -13,14 +13,14 @@
 
 // Motor hardware and configuration
 Servo sonarServo;                    ///< Servo motor object for sonar platform
-const int SERVO_PIN = 9;             ///< PWM pin connected to servo control signal
-const int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
-const int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
+constexpr int SERVO_PIN = 9;             ///< PWM pin connected to servo control signal
+constexpr int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
+constexpr int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
 
 // Hardware-compliant timing (SG90 + HC-SR04 specifications)
-const int SERVO_SETTLE_TIME = 20;    ///< SG90 minimum settle time (15-20ms recommended)
-const int SENSOR_TIME = 40;          ///< HC-SR04 measurement time including safety margin
-const int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliable operation
+constexpr int SERVO_SETTLE_TIME = 20;    ///< SG90 minimum settle time (15-20ms recommended)
+constexpr int SENSOR_TIME = 40;          ///< HC-SR04 measurement time including safety margin
+constexpr int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliable operation
 
 /**
  * @brief Initialize the servo motor
