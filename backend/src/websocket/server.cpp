@@ -28,18 +28,16 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
     , port_(port)
     , running_(false)
     , shutdown_requested_(false)
-    , server_start_time_(std::chrono::steady_clock::now())
 {
     std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
               << cnst::message::websocket_status::INITIALIZING_SERVER << " " << port << std::endl;
 
-    // Initialize statistics
-    statistics_ = data::WebSocketStatistics{};
 
     // Create specialized managers - SRP compliant components
     connection_acceptor_ = std::make_unique<ConnectionAcceptor>(io_context_, port_);
     session_manager_ = std::make_unique<SessionManager>();
     message_broadcaster_ = std::make_unique<MessageBroadcaster>();
+    statistics_collector_ = std::make_unique<StatisticsCollector>();
 }
 
 WebSocketServer::~WebSocketServer() {
@@ -62,7 +60,15 @@ bool WebSocketServer::initialize() {
         if (!message_broadcaster_->initialize()) {
             utils::ErrorHandler::handleInitializationError(cnst::message::websocket_status::SERVER_PREFIX,
                                                             "message_broadcaster",
-                                                            cnst::message::websocket_status::INIT_FAILED_BROADCASTER);
+                                                            "Message broadcaster initialization failed");
+            return false;
+        }
+
+        // Initialize statistics collector
+        if (!statistics_collector_->initialize()) {
+            utils::ErrorHandler::handleInitializationError(cnst::message::websocket_status::SERVER_PREFIX,
+                                                            "statistics_collector",
+                                                            "Statistics collector initialization failed");
             return false;
         }
 
@@ -119,14 +125,23 @@ bool WebSocketServer::start() {
         // Start message broadcaster
         if (!message_broadcaster_->start()) {
             utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
-                                                    cnst::message::websocket_status::START_FAILED_BROADCASTER,
+                                                    "Message broadcaster start failed",
                                                     data::ErrorSeverity::ERROR);
-            connection_manager_->stop();
+            connection_acceptor_->stop();
+            return false;
+        }
+
+        // Start statistics collector
+        if (!statistics_collector_->start()) {
+            utils::ErrorHandler::handleSystemError(cnst::message::websocket_status::SERVER_PREFIX,
+                                                    "Statistics collector start failed",
+                                                    data::ErrorSeverity::ERROR);
+            connection_acceptor_->stop();
+            message_broadcaster_->stop();
             return false;
         }
 
         running_.store(true);
-        server_start_time_ = std::chrono::steady_clock::now();
 
         std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
                   << cnst::message::websocket_status::SERVER_STARTED << " " << port_ << std::endl;
@@ -153,8 +168,8 @@ void WebSocketServer::stop() {
     running_.store(false);
 
     // Stop specialized managers
-    if (connection_manager_) {
-        connection_manager_->stop();
+    if (connection_acceptor_) {
+        connection_acceptor_->stop();
     }
 
     if (message_broadcaster_) {
@@ -163,6 +178,10 @@ void WebSocketServer::stop() {
 
     if (session_manager_) {
         session_manager_->closeAllSessions();
+    }
+
+    if (statistics_collector_) {
+        statistics_collector_->stop();
     }
 
     std::cout << cnst::message::websocket_status::SERVER_PREFIX << " "
@@ -184,8 +203,6 @@ void WebSocketServer::broadcastSonarData(const data::SonarDataPoint& data) {
     // Broadcast through message broadcaster
     message_broadcaster_->broadcastSonarData(data, active_sessions);
 
-    // Update statistics (centralized statistics update)
-    updateStatistics();
 }
 
 void WebSocketServer::broadcastPerformanceMetrics(const data::PerformanceMetrics& metrics) {
@@ -205,18 +222,10 @@ size_t WebSocketServer::getActiveConnections() const noexcept {
 }
 
 data::WebSocketStatistics WebSocketServer::getStatistics() const {
-    std::lock_guard<std::mutex> lock(stats_mutex_);
-
-    auto stats = statistics_;
-    stats.active_connections = getActiveConnections();
-
-    // Calculate uptime
-    auto now = std::chrono::steady_clock::now();
-    auto uptime = std::chrono::duration_cast<std::chrono::seconds>(
-        now - server_start_time_).count();
-    stats.uptime_seconds = static_cast<uint64_t>(uptime);
-
-    return stats;
+    if (statistics_collector_) {
+        return statistics_collector_->getStatistics(getActiveConnections());
+    }
+    return data::WebSocketStatistics{};
 }
 
 void WebSocketServer::setConnectionCallback(ConnectionCallback callback) {
@@ -235,9 +244,8 @@ void WebSocketServer::onConnectionAccepted(tcp::socket socket) {
               << " " << cnst::message::websocket_status::TOTAL_CLIENTS << " " << getActiveConnections() << ")" << std::endl;
 
     // Update statistics
-    {
-        std::lock_guard<std::mutex> stats_lock(stats_mutex_);
-        statistics_.connections_accepted++;
+    if (statistics_collector_) {
+        statistics_collector_->recordConnectionAccepted();
     }
 }
 
@@ -252,8 +260,6 @@ void WebSocketServer::onConnectionError(const std::string& error_message, beast:
                                                 data::ErrorSeverity::ERROR);
     }
 
-    // Update error statistics (centralized statistics update)
-    updateStatistics();
 }
 
 void WebSocketServer::onSessionEvent(const std::string& endpoint, bool connected) {
@@ -274,11 +280,5 @@ void WebSocketServer::removeSession(std::shared_ptr<WebSocketSession> session) {
     }
 }
 
-void WebSocketServer::updateStatistics() {
-    // Periodic cleanup of closed sessions
-    if (session_manager_) {
-        session_manager_->cleanupClosedSessions();
-    }
-}
 
 } // namespace siren::websocket

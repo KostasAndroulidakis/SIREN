@@ -24,6 +24,7 @@
 #include "websocket/connection_acceptor.hpp"
 #include "websocket/session_manager.hpp"
 #include "websocket/message_broadcaster.hpp"
+#include "websocket/statistics_collector.hpp"
 
 namespace siren::websocket {
 
@@ -232,11 +233,7 @@ private:
     std::unique_ptr<ConnectionAcceptor> connection_acceptor_;
     std::unique_ptr<SessionManager> session_manager_;
     std::unique_ptr<MessageBroadcaster> message_broadcaster_;
-
-    // Statistics and monitoring
-    mutable std::mutex stats_mutex_;
-    data::WebSocketStatistics statistics_;
-    std::chrono::steady_clock::time_point server_start_time_;
+    std::unique_ptr<StatisticsCollector> statistics_collector_;
 
     // Callbacks
     ConnectionCallback connection_callback_;
@@ -267,10 +264,6 @@ private:
      */
     void onBroadcastCompleted(size_t sessions_reached);
 
-    /**
-     * @brief Update server statistics
-     */
-    void updateStatistics();
 };
 
 } // namespace siren::websocket
