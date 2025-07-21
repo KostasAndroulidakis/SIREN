@@ -34,12 +34,18 @@ void initMotor() {
 
 /**
  * @brief Move servo to specified angle with proper settling time
- * @param angle Target angle in degrees (should be between MIN_ANGLE and MAX_ANGLE)
+ * @param angle Target angle in degrees (must be between MIN_ANGLE and MAX_ANGLE)
  *
  * Commands the servo to move and waits for proper settling time.
  * SG90 requires 15-20ms minimum between commands for reliable operation.
+ * MISRA C++ compliant: Input validation prevents hardware damage.
  */
 void moveServoToAngle(int angle) {
+  // MISRA C++ Rule 18.1.1: Validate input parameters to prevent hardware damage
+  if (angle < MIN_ANGLE || angle > MAX_ANGLE) {
+    return;  // Reject invalid angles to protect servo hardware
+  }
+  
   sonarServo.write(angle);
   delay(SERVO_SETTLE_TIME);  // SG90 hardware requirement: 15-20ms settling
 }
