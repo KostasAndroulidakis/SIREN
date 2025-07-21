@@ -33,11 +33,11 @@ namespace arduino {
 
 /// SG90 Servo Motor specifications from datasheet
 namespace servo {
-    /// Minimum servo angle in degrees (physical hardware limit)
-    constexpr int16_t MIN_ANGLE_DEGREES = 15;
+    /// Minimum servo angle in degrees (5° safety margin from 0°)
+    constexpr int16_t MIN_ANGLE_DEGREES = 5;
 
-    /// Maximum servo angle in degrees (physical hardware limit)
-    constexpr int16_t MAX_ANGLE_DEGREES = 165;
+    /// Maximum servo angle in degrees (5° safety margin from 180°)
+    constexpr int16_t MAX_ANGLE_DEGREES = 175;
 
     /// Angular step size for optimal precision vs speed trade-off
     constexpr int16_t STEP_SIZE_DEGREES = 2;

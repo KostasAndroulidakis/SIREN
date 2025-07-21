@@ -22,7 +22,7 @@ namespace data {
 
 /// Single sonar measurement point
 struct SonarDataPoint {
-    /// Servo angle in degrees (15-165 range)
+    /// Servo angle in degrees (5-175 range with 5° safety margins)
     int16_t angle;
 
     /// Measured distance in centimeters (2-400 range)
