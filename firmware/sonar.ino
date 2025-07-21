@@ -45,44 +45,60 @@ void performSonarSweep() {
 }
 
 /**
- * @brief Execute enhanced bidirectional sonar sweep with environmental data
+ * @brief Execute real-time calibrated sonar sweep with environmental compensation
  *
- * Performs military-grade sonar sweep with integrated environmental monitoring.
- * Includes temperature and humidity readings for atmospheric compensation
- * and comprehensive system monitoring.
+ * SRP: Single responsibility for coordinating calibrated sonar sweep operation.
+ * SSOT: Single source of truth for real-time calibrated sonar measurements.
+ * MISRA C++ compliant: All constants defined, proper error handling.
  *
- * Environmental readings are taken periodically during sweep to minimize
- * impact on sonar performance while providing atmospheric data.
+ * Real-time calibration process:
+ * 1. Read environmental data (temperature, humidity) 
+ * 2. Calculate real-time atmospheric sound speed
+ * 3. Use calibrated sound speed for accurate distance measurement
+ * 4. Transmit all real-time data (angle, distance, temp, humidity, sound speed)
+ *
+ * Fallback: Uses default sound speed if environmental sensor fails.
  */
 void performEnhancedSonarSweep() {
   int stepSize = getDegreeStep();
   int sensorTime = getSensorTime();
   
-  // Get environmental data at start of sweep (DHT11 timing constraint)
+  // Get real-time environmental data (DHT11 timing constraint)
   float temperature, humidity;
   bool hasEnvironmentalData = getEnvironmentalData(temperature, humidity);
+  
+  // Calculate real-time sound speed for accurate distance measurement
+  float soundSpeed = hasEnvironmentalData ? 
+                    calculateAtmosphericSoundSpeed(temperature, humidity) : 
+                    getDefaultAtmosphericSoundSpeed();
 
-  // Forward sweep with environmental data
+  // Forward sweep with real-time calibrated measurements
   for(int angle = getMinAngle(); angle <= getMaxAngle(); angle += stepSize) {
     moveServoToAngle(angle);      // Includes 20ms servo settling delay
     delay(sensorTime);            // Additional time for HC-SR04 measurement
-    int distance = getDistance();
     
+    // Get calibrated distance using real-time sound speed
+    int distance = getCalibratedDistance(soundSpeed);
+    
+    // Send complete real-time calibrated data
     if (hasEnvironmentalData) {
-      sendEnhancedSonarData(angle, distance, temperature, humidity);
+      sendCalibratedSonarData(angle, distance, temperature, humidity, soundSpeed);
     } else {
       sendSonarData(angle, distance);  // Fallback to basic data
     }
   }
 
-  // Backward sweep - reuse environmental data (DHT11 2-second constraint)
+  // Backward sweep with same real-time calibration (DHT11 2-second constraint)
   for(int angle = getMaxAngle(); angle >= getMinAngle(); angle -= stepSize) {
     moveServoToAngle(angle);      // Includes 20ms servo settling delay  
     delay(sensorTime);            // Additional time for HC-SR04 measurement
-    int distance = getDistance();
     
+    // Get calibrated distance using same real-time sound speed
+    int distance = getCalibratedDistance(soundSpeed);
+    
+    // Send complete real-time calibrated data
     if (hasEnvironmentalData) {
-      sendEnhancedSonarData(angle, distance, temperature, humidity);
+      sendCalibratedSonarData(angle, distance, temperature, humidity, soundSpeed);
     } else {
       sendSonarData(angle, distance);  // Fallback to basic data
     }

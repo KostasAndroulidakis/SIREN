@@ -21,9 +21,11 @@ const int MAX_DISTANCE = 400;                  ///< Maximum reliable distance in
 const int TRIGGER_DELAY_LOW_US = 2;            ///< Low trigger pulse duration in microseconds
 const int TRIGGER_DELAY_HIGH_US = 10;          ///< High trigger pulse duration in microseconds
 
-// Distance calculation constants
-const float SOUND_SPEED_CONVERSION = 0.034;    ///< Sound speed conversion factor (cm/μs)
-const int SOUND_TRAVEL_DIVISOR = 2;            ///< Divisor for round-trip time calculation
+// SSOT: Distance calculation constants (MISRA C++ Rule 5.0.1)
+namespace {
+  constexpr float DEFAULT_SOUND_SPEED_CM_US = 0.034f; ///< Default sound speed (cm/μs) fallback
+  constexpr int SOUND_TRAVEL_DIVISOR = 2;             ///< Round-trip divisor (sound travels to target and back)
+}
 
 // Function declarations
 bool isValidDistance(int distance);
@@ -40,19 +42,33 @@ void initSensor() {
 }
 
 /**
- * @brief Measure distance using ultrasonic sensor
+ * @brief Measure distance using default sound speed (legacy compatibility)
  * @return Distance in centimeters (0 if measurement is invalid)
  *
- * Performs distance measurement using the HC-SR04 sensor:
- * 1. Sends 10μs trigger pulse
- * 2. Measures echo pulse duration
- * 3. Calculates distance using sound speed
- * 4. Validates measurement range
- *
- * Returns 0 for invalid measurements (out of range or sensor error).
+ * MISRA C++ compliant distance measurement with default sound speed.
+ * For backward compatibility when environmental data unavailable.
  */
 int getDistance() {
-  // Send trigger pulse
+  return getCalibratedDistance(DEFAULT_SOUND_SPEED_CM_US);
+}
+
+/**
+ * @brief Measure distance using real-time calibrated sound speed
+ * @param soundSpeedCmPerUs Real-time sound speed in cm/microsecond
+ * @return Distance in centimeters (0 if measurement is invalid)
+ *
+ * SRP: Single responsibility for calibrated distance measurement.
+ * SSOT: Single source of truth for HC-SR04 sensor operation.
+ * MISRA C++ Rule 5.0.1: All constants defined, no magic numbers.
+ *
+ * Process:
+ * 1. Sends 10μs trigger pulse (HC-SR04 specification)
+ * 2. Measures echo pulse duration
+ * 3. Calculates distance using real-time sound speed
+ * 4. Validates measurement against sensor range
+ */
+int getCalibratedDistance(float soundSpeedCmPerUs) {
+  // Send trigger pulse (HC-SR04 protocol)
   digitalWrite(TRIG_PIN, LOW);
   delayMicroseconds(TRIGGER_DELAY_LOW_US);
   digitalWrite(TRIG_PIN, HIGH);
@@ -62,8 +78,9 @@ int getDistance() {
   // Measure echo pulse duration
   long duration = pulseIn(ECHO_PIN, HIGH);
 
-  // Calculate distance: (duration * sound_speed) / 2 (round trip)
-  int distance = duration * SOUND_SPEED_CONVERSION / SOUND_TRAVEL_DIVISOR;
+  // Calculate calibrated distance: (duration * real_time_sound_speed) / 2
+  // Division by 2 because sound travels to target and back (round trip)
+  int distance = static_cast<int>((duration * soundSpeedCmPerUs) / SOUND_TRAVEL_DIVISOR);
 
   return isValidDistance(distance) ? distance : 0;
 }

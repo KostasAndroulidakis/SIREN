@@ -127,28 +127,7 @@ bool getEnvironmentalData(float &temperature, float &humidity) {
   return false;
 }
 
-/**
- * @brief Calculate atmospheric sound speed compensation
- * @param temperature Temperature in Celsius
- * @param humidity Humidity percentage
- * @return Sound speed in cm/microsecond
- *
- * Calculates sound speed based on atmospheric conditions for improved
- * sonar accuracy. Uses simplified atmospheric model suitable for
- * typical indoor/outdoor conditions.
- */
-float calculateSoundSpeed(float temperature, float humidity) {
-  // Base sound speed at 20°C, dry air: 343 m/s = 0.0343 cm/μs
-  const float BASE_SOUND_SPEED = 0.0343;
-  
-  // Temperature coefficient: +0.6 m/s per °C
-  const float TEMP_COEFFICIENT = 0.0006;
-  
-  // Humidity has minimal effect for typical ranges, simplified model
-  float temperatureEffect = (temperature - 20.0) * TEMP_COEFFICIENT;
-  
-  return BASE_SOUND_SPEED + temperatureEffect;
-}
+// Sound speed calculations moved to physics.ino for better SRP compliance
 
 /**
  * @brief Check if sensor can be read (timing constraint)

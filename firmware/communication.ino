@@ -63,6 +63,30 @@ void sendEnhancedSonarData(int angle, int distance, float temperature, float hum
 }
 
 /**
+ * @brief Send calibrated sonar data with real-time sound speed
+ * @param angle The servo angle in degrees (0-180)
+ * @param distance The calibrated distance in centimeters
+ * @param temperature Temperature in Celsius
+ * @param humidity Humidity percentage
+ * @param soundSpeed Real-time sound speed in cm/microsecond
+ *
+ * MISRA C++ compliant transmission of calibrated sonar measurements.
+ * Example output: "Angle: 90 - Distance: 150 - Temp: 23.5 - Humidity: 65.2 - SoundSpeed: 0.03456"
+ */
+void sendCalibratedSonarData(int angle, int distance, float temperature, float humidity, float soundSpeed) {
+  Serial.print("Angle: ");
+  Serial.print(angle);
+  Serial.print(" - Distance: ");
+  Serial.print(distance);
+  Serial.print(" - Temp: ");
+  Serial.print(temperature, 1);      // 1 decimal place precision
+  Serial.print(" - Humidity: ");
+  Serial.print(humidity, 1);         // 1 decimal place precision
+  Serial.print(" - SoundSpeed: ");
+  Serial.println(soundSpeed, 5);     // 5 decimal places for sound speed precision
+}
+
+/**
  * @brief Send environmental data only
  * @param temperature Temperature in Celsius  
  * @param humidity Humidity percentage
