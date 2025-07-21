@@ -20,7 +20,7 @@ namespace {
 }
 
 DataBroadcastCoordinator::DataBroadcastCoordinator(
-    std::unique_ptr<SessionManager>& session_manager,
+    std::shared_ptr<SessionManager>& session_manager,
     std::unique_ptr<MessageBroadcaster>& message_broadcaster)
     : session_manager_(session_manager)
     , message_broadcaster_(message_broadcaster)

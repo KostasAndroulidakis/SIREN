@@ -31,7 +31,7 @@ MessageQueueManager::MessageQueueManager(const std::string& client_endpoint,
 }
 
 bool MessageQueueManager::enqueueMessage(const std::string& message,
-                                        const std::atomic<bool>& write_in_progress) {
+                                        const std::atomic<bool>& /* write_in_progress */) {
     if (message.empty()) {
         return false;
     }

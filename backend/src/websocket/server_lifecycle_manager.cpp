@@ -29,9 +29,9 @@ namespace {
 
 ServerLifecycleManager::ServerLifecycleManager(
     std::unique_ptr<ConnectionAcceptor>& connection_acceptor,
-    std::unique_ptr<SessionManager>& session_manager,
+    std::shared_ptr<SessionManager>& session_manager,
     std::unique_ptr<MessageBroadcaster>& message_broadcaster,
-    std::unique_ptr<StatisticsCollector>& statistics_collector,
+    std::shared_ptr<StatisticsCollector>& statistics_collector,
     std::unique_ptr<ServerEventHandler>& event_handler,
     uint16_t port)
     : connection_acceptor_(connection_acceptor)

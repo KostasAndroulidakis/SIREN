@@ -158,13 +158,15 @@ struct WebSocketMessage {
 
     /// Default constructor
     WebSocketMessage()
-        : type(MessageType::SONAR_DATA), size(0)
-        , timestamp(std::chrono::steady_clock::now()) {}
+        : type(MessageType::SONAR_DATA)
+        , timestamp(std::chrono::steady_clock::now())
+        , size(0) {}
 
     /// Constructor with type and payload
     WebSocketMessage(MessageType t, const std::string& p)
-        : type(t), payload(p), size(p.length())
-        , timestamp(std::chrono::steady_clock::now()) {}
+        : type(t), payload(p)
+        , timestamp(std::chrono::steady_clock::now())
+        , size(p.length()) {}
 };
 
 // ============================================================================

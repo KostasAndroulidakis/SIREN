@@ -101,9 +101,8 @@ void StatisticsCollector::stop() {
     const auto final_stats = getStatistics(0); // No active connections when stopping
     std::cout << "[" << COMPONENT_NAME << "] Final statistics:" << std::endl;
     std::cout << "  - Connections accepted: " << final_stats.connections_accepted << std::endl;
-    std::cout << "  - Connections rejected: " << final_stats.connections_rejected << std::endl;
-    std::cout << "  - Messages broadcast: " << final_stats.messages_broadcast << std::endl;
-    std::cout << "  - Errors occurred: " << final_stats.errors_occurred << std::endl;
+    std::cout << "  - Messages sent: " << final_stats.messages_sent << std::endl;
+    std::cout << "  - Connection errors: " << final_stats.connection_errors << std::endl;
     std::cout << "  - Uptime: " << final_stats.uptime_seconds << " seconds" << std::endl;
 
     std::cout << "[" << COMPONENT_NAME << "] Stopped" << std::endl;
@@ -149,10 +148,8 @@ data::WebSocketStatistics StatisticsCollector::getStatistics(size_t active_conne
 
     // Atomic loads (thread-safe)
     stats.connections_accepted = connections_accepted_.load();
-    stats.connections_rejected = connections_rejected_.load();
-    stats.connections_closed = connections_closed_.load();
-    stats.messages_broadcast = messages_broadcast_.load();
-    stats.errors_occurred = errors_occurred_.load();
+    stats.messages_sent = messages_broadcast_.load();
+    stats.connection_errors = errors_occurred_.load();
 
     // Current active connections (provided by caller)
     stats.active_connections = active_connections;

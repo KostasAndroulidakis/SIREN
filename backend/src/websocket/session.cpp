@@ -143,7 +143,7 @@ void WebSocketSession::close() {
                 [self = shared_from_this()](beast::error_code ec) {
                     if (ec) {
                         // Log close error but don't throw
-                        std::cout << "[" << self->COMPONENT_NAME << "] Close error for "
+                        std::cout << "[WebSocketSession] Close error for "
                                   << self->client_endpoint_ << ": " << ec.message() << std::endl;
                     }
                     self->is_alive_.store(false);

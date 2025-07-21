@@ -137,9 +137,9 @@ private:
 
     // Specialized managers - SRP compliant components
     std::unique_ptr<ConnectionAcceptor> connection_acceptor_;
-    std::unique_ptr<SessionManager> session_manager_;
+    std::shared_ptr<SessionManager> session_manager_;
     std::unique_ptr<MessageBroadcaster> message_broadcaster_;
-    std::unique_ptr<StatisticsCollector> statistics_collector_;
+    std::shared_ptr<StatisticsCollector> statistics_collector_;
     std::unique_ptr<ServerEventHandler> event_handler_;
     std::unique_ptr<ServerLifecycleManager> lifecycle_manager_;
     std::unique_ptr<DataBroadcastCoordinator> broadcast_coordinator_;

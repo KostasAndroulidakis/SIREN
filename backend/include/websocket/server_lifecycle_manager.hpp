@@ -68,9 +68,9 @@ public:
      */
     explicit ServerLifecycleManager(
         std::unique_ptr<ConnectionAcceptor>& connection_acceptor,
-        std::unique_ptr<SessionManager>& session_manager,
+        std::shared_ptr<SessionManager>& session_manager,
         std::unique_ptr<MessageBroadcaster>& message_broadcaster,
-        std::unique_ptr<StatisticsCollector>& statistics_collector,
+        std::shared_ptr<StatisticsCollector>& statistics_collector,
         std::unique_ptr<ServerEventHandler>& event_handler,
         uint16_t port);
 
@@ -109,9 +109,9 @@ public:
 private:
     // Component references - not owned, avoid circular dependencies
     std::unique_ptr<ConnectionAcceptor>& connection_acceptor_;
-    std::unique_ptr<SessionManager>& session_manager_;
+    std::shared_ptr<SessionManager>& session_manager_;
     std::unique_ptr<MessageBroadcaster>& message_broadcaster_;
-    std::unique_ptr<StatisticsCollector>& statistics_collector_;
+    std::shared_ptr<StatisticsCollector>& statistics_collector_;
     std::unique_ptr<ServerEventHandler>& event_handler_;
 
     // Server configuration

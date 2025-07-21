@@ -37,9 +37,9 @@ WebSocketServer::WebSocketServer(boost::asio::io_context& io_context, uint16_t p
 
     // Create specialized managers - SRP compliant components
     connection_acceptor_ = std::make_unique<ConnectionAcceptor>(io_context_, port_);
-    session_manager_ = std::make_unique<SessionManager>();
+    session_manager_ = std::make_shared<SessionManager>();
     message_broadcaster_ = std::make_unique<MessageBroadcaster>();
-    statistics_collector_ = std::make_unique<StatisticsCollector>();
+    statistics_collector_ = std::make_shared<StatisticsCollector>();
     event_handler_ = std::make_unique<ServerEventHandler>(session_manager_, statistics_collector_);
     lifecycle_manager_ = std::make_unique<ServerLifecycleManager>(
         connection_acceptor_, session_manager_, message_broadcaster_, 

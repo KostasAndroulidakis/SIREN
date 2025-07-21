@@ -52,7 +52,7 @@ public:
      * @param session_manager Reference to session manager for active sessions
      * @param message_broadcaster Reference to message broadcaster
      */
-    explicit DataBroadcastCoordinator(std::unique_ptr<SessionManager>& session_manager,
+    explicit DataBroadcastCoordinator(std::shared_ptr<SessionManager>& session_manager,
                                      std::unique_ptr<MessageBroadcaster>& message_broadcaster);
 
     /**
@@ -84,7 +84,7 @@ public:
 
 private:
     // Component references - not owned, avoid circular dependencies
-    std::unique_ptr<SessionManager>& session_manager_;
+    std::shared_ptr<SessionManager>& session_manager_;
     std::unique_ptr<MessageBroadcaster>& message_broadcaster_;
 };
 
