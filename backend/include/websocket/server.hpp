@@ -25,6 +25,7 @@
 #include "websocket/session_manager.hpp"
 #include "websocket/message_broadcaster.hpp"
 #include "websocket/statistics_collector.hpp"
+#include "websocket/session.hpp"
 
 namespace siren::websocket {
 
@@ -32,105 +33,7 @@ namespace beast = boost::beast;
 namespace websocket = beast::websocket;
 using tcp = boost::asio::ip::tcp;
 
-/**
- * @brief WebSocket connection session for individual clients
- *
- * Each client connection is handled by a separate session instance
- * with military-grade error handling and performance monitoring.
- */
-class WebSocketSession : public std::enable_shared_from_this<WebSocketSession> {
-public:
-    /**
-     * @brief Constructor
-     * @param socket TCP socket for the connection
-     * @param server_weak_ptr Weak reference to parent server
-     */
-    explicit WebSocketSession(tcp::socket&& socket,
-                             std::weak_ptr<class WebSocketServer> server_weak_ptr);
-
-    /**
-     * @brief Start the WebSocket session
-     */
-    void start();
-
-    /**
-     * @brief Send sonar data to client
-     * @param data Sonar data point to send
-     */
-    void sendSonarData(const data::SonarDataPoint& data);
-
-    /**
-     * @brief Send performance metrics to client
-     * @param metrics Performance metrics to send
-     */
-    void sendPerformanceMetrics(const data::PerformanceMetrics& metrics);
-
-    /**
-     * @brief Send generic message to client
-     * @param message Serialized message to send
-     */
-    void sendMessage(const std::string& message);
-
-    /**
-     * @brief Close the connection gracefully
-     */
-    void close();
-
-    /**
-     * @brief Check if connection is alive
-     */
-    bool isAlive() const noexcept;
-
-    /**
-     * @brief Get client endpoint information
-     */
-    std::string getClientEndpoint() const;
-
-private:
-    websocket::stream<beast::tcp_stream> ws_;
-    std::weak_ptr<WebSocketServer> server_weak_ptr_;
-    std::string client_endpoint_;
-    std::atomic<bool> is_alive_;
-    std::atomic<bool> closing_;
-
-    // Message queue for thread-safe sending
-    std::queue<std::string> message_queue_;
-    std::mutex queue_mutex_;
-    std::atomic<bool> write_in_progress_;
-
-    /**
-     * @brief Handle WebSocket handshake
-     */
-    void onAccept(beast::error_code ec);
-
-    /**
-     * @brief Handle incoming messages
-     */
-    void onRead(beast::error_code ec, std::size_t bytes_transferred);
-
-    /**
-     * @brief Handle outgoing message writes
-     */
-    void onWrite(beast::error_code ec, std::size_t bytes_transferred);
-
-    /**
-     * @brief Process next message in queue
-     */
-    void processNextMessage();
-
-    /**
-     * @brief Enqueue message for sending (SSOT for message queuing)
-     * @param message Serialized message to send
-     */
-    void enqueueMessage(const std::string& message);
-
-    /**
-     * @brief Handle connection errors
-     */
-    void handleError(const std::string& error_message, beast::error_code ec);
-
-    beast::flat_buffer buffer_;
-};
+// WebSocketSession class now in separate file: websocket/session.hpp
 
 /**
  * @brief Military-grade WebSocket server for sonar data streaming

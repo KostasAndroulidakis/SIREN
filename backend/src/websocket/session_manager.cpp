@@ -8,7 +8,7 @@
  */
 
 #include "websocket/session_manager.hpp"
-#include "websocket/server.hpp" // For WebSocketSession definition
+#include "websocket/session.hpp" // For WebSocketSession definition
 #include "utils/error_handler.hpp"
 #include <iostream>
 #include <algorithm>
