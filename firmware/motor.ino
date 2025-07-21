@@ -7,6 +7,24 @@
  * Controls the SG90 micro servo motor that provides the rotating platform
  * for the ultrasonic sensor. Manages servo positioning, movement timing,
  * and operational angle limits for the sonar sweep functionality.
+ *
+ * POWER REQUIREMENTS (SG90 Servo Motor):
+ * - Operating Voltage: 4.8V - 6.0V DC (5V nominal)
+ * - Current Draw (Idle): ~10mA
+ * - Current Draw (Moving): 100-250mA typical
+ * - Current Draw (Stall): Up to 360mA maximum
+ * - Torque: 2.5 kg·cm at 4.8V
+ *
+ * ARDUINO POWER COMPATIBILITY WARNING:
+ * - Arduino I/O pins: 40mA maximum per pin (INSUFFICIENT for servo power)
+ * - Servo MUST be powered from external 5V supply or Arduino 5V rail
+ * - Signal wire connects to Arduino PWM pin (low current)
+ * - Ground must be common between Arduino and servo power supply
+ *
+ * RECOMMENDED POWER SETUP:
+ * - Servo VCC (Red): Arduino 5V pin or external 5V supply (>500mA capacity)
+ * - Servo GND (Black/Brown): Arduino GND (common ground required)
+ * - Servo Signal (Orange/Yellow): Arduino PWM Pin 9 (40mA signal, safe)
  */
 
 #include <Servo.h>
@@ -23,6 +41,14 @@ static int currentServoPosition = 90;  ///< Track current servo angle for dynami
 // SG90 pulse width specifications (from datasheet)
 constexpr int SG90_MIN_PULSE_WIDTH = 1000;  ///< SG90 minimum pulse width (1ms = 0°)
 constexpr int SG90_MAX_PULSE_WIDTH = 2000;  ///< SG90 maximum pulse width (2ms = 180°)
+
+// SG90 power specifications (from datasheet)
+constexpr float SG90_OPERATING_VOLTAGE_MIN = 4.8f;  ///< Minimum operating voltage (V)
+constexpr float SG90_OPERATING_VOLTAGE_MAX = 6.0f;  ///< Maximum operating voltage (V)
+constexpr int SG90_CURRENT_IDLE_MA = 10;            ///< Idle current draw (mA)
+constexpr int SG90_CURRENT_MOVING_MA = 200;         ///< Typical moving current (mA)
+constexpr int SG90_CURRENT_STALL_MA = 360;          ///< Maximum stall current (mA)
+constexpr int ARDUINO_PIN_MAX_CURRENT_MA = 40;      ///< Arduino I/O pin current limit (mA)
 
 // SG90 timing specifications (from datasheet)
 constexpr float SG90_SPEED_DEG_PER_MS = 0.6f;  ///< SG90 speed: 0.1s/60° = 0.6°/ms
@@ -56,13 +82,45 @@ int calculateSettlingTime(int targetAngle) {
 }
 
 /**
+ * @brief Display power supply warnings and requirements
+ *
+ * CRITICAL: Outputs power supply warnings to serial console.
+ * SG90 servo requires 100-360mA which exceeds Arduino I/O pin limits (40mA).
+ * Must be powered from Arduino 5V rail or external supply.
+ */
+void displayPowerRequirements() {
+  Serial.println("SG90 SERVO POWER REQUIREMENTS:");
+  Serial.print("  Operating Voltage: ");
+  Serial.print(SG90_OPERATING_VOLTAGE_MIN, 1);
+  Serial.print("V - ");
+  Serial.print(SG90_OPERATING_VOLTAGE_MAX, 1);
+  Serial.println("V");
+  Serial.print("  Current Draw (Moving): ");
+  Serial.print(SG90_CURRENT_MOVING_MA);
+  Serial.println("mA typical");
+  Serial.print("  Current Draw (Stall): ");
+  Serial.print(SG90_CURRENT_STALL_MA);
+  Serial.println("mA maximum");
+  Serial.println();
+  Serial.println("CRITICAL POWER WARNING:");
+  Serial.print("  Arduino I/O Pin Limit: ");
+  Serial.print(ARDUINO_PIN_MAX_CURRENT_MA);
+  Serial.println("mA (INSUFFICIENT for servo power)");
+  Serial.println("  SERVO MUST BE POWERED FROM ARDUINO 5V RAIL OR EXTERNAL SUPPLY");
+  Serial.println("  Signal wire only connects to PWM pin");
+  Serial.println();
+}
+
+/**
  * @brief Initialize the servo motor
  *
  * Attaches the servo motor to its control pin with SG90-specific pulse width calibration.
  * Uses datasheet-compliant 1000-2000µs range instead of Arduino library defaults.
+ * Displays power supply requirements and warnings.
  * Must be called before any servo movement commands.
  */
 void initMotor() {
+  displayPowerRequirements();
   sonarServo.attach(SERVO_PIN, SG90_MIN_PULSE_WIDTH, SG90_MAX_PULSE_WIDTH);
   currentServoPosition = 90;  // Initialize to center position
 }
