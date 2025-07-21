@@ -17,14 +17,43 @@ constexpr int SERVO_PIN = 9;             ///< PWM pin connected to servo control
 constexpr int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
 constexpr int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
 
+// Current servo position tracking
+static int currentServoPosition = 90;  ///< Track current servo angle for dynamic timing
+
 // SG90 pulse width specifications (from datasheet)
 constexpr int SG90_MIN_PULSE_WIDTH = 1000;  ///< SG90 minimum pulse width (1ms = 0°)
 constexpr int SG90_MAX_PULSE_WIDTH = 2000;  ///< SG90 maximum pulse width (2ms = 180°)
 
-// Hardware-compliant timing (SG90 + HC-SR04 specifications)
-constexpr int SERVO_SETTLE_TIME = 20;    ///< SG90 minimum settle time (15-20ms recommended)
+// SG90 timing specifications (from datasheet)
+constexpr float SG90_SPEED_DEG_PER_MS = 0.6f;  ///< SG90 speed: 0.1s/60° = 0.6°/ms
+constexpr int MIN_SETTLE_TIME = 20;            ///< Minimum settle time regardless of movement
+constexpr int MAX_SETTLE_TIME = 200;           ///< Maximum settle time cap for safety
+
+// Hardware-compliant timing (HC-SR04 specifications)
 constexpr int SENSOR_TIME = 40;          ///< HC-SR04 measurement time including safety margin
 constexpr int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliable operation
+
+/**
+ * @brief Calculate dynamic settling time based on angle movement
+ * @param targetAngle Target angle to move to
+ * @return Settling time in milliseconds based on SG90 datasheet specs
+ *
+ * SG90 specification: 0.1 seconds per 60° (0.6°/ms)
+ * Calculates time needed based on actual angle movement distance.
+ */
+int calculateSettlingTime(int targetAngle) {
+  int angleDifference = abs(targetAngle - currentServoPosition);
+  int settlingTime = static_cast<int>(angleDifference / SG90_SPEED_DEG_PER_MS);
+  
+  // Ensure settling time is within safe bounds
+  if (settlingTime < MIN_SETTLE_TIME) {
+    settlingTime = MIN_SETTLE_TIME;
+  } else if (settlingTime > MAX_SETTLE_TIME) {
+    settlingTime = MAX_SETTLE_TIME;
+  }
+  
+  return settlingTime;
+}
 
 /**
  * @brief Initialize the servo motor
@@ -35,14 +64,15 @@ constexpr int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliabl
  */
 void initMotor() {
   sonarServo.attach(SERVO_PIN, SG90_MIN_PULSE_WIDTH, SG90_MAX_PULSE_WIDTH);
+  currentServoPosition = 90;  // Initialize to center position
 }
 
 /**
- * @brief Move servo to specified angle with proper settling time
+ * @brief Move servo to specified angle with dynamic settling time
  * @param angle Target angle in degrees (must be between MIN_ANGLE and MAX_ANGLE)
  *
- * Commands the servo to move and waits for proper settling time.
- * SG90 requires 15-20ms minimum between commands for reliable operation.
+ * Commands the servo to move and waits for appropriate settling time based on movement distance.
+ * Uses SG90 datasheet specification: 0.1 seconds per 60° for accurate timing.
  * MISRA C++ compliant: Input validation prevents hardware damage.
  */
 void moveServoToAngle(int angle) {
@@ -51,8 +81,12 @@ void moveServoToAngle(int angle) {
     return;  // Reject invalid angles to protect servo hardware
   }
   
+  // Calculate dynamic settling time based on movement distance
+  int settlingTime = calculateSettlingTime(angle);
+  
   sonarServo.write(angle);
-  delay(SERVO_SETTLE_TIME);  // SG90 hardware requirement: 15-20ms settling
+  currentServoPosition = angle;  // Update position tracker
+  delay(settlingTime);  // SG90 datasheet-compliant dynamic settling time
 }
 
 /**
