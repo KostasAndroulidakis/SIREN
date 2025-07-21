@@ -14,8 +14,8 @@
 // Motor hardware and configuration
 Servo sonarServo;                    ///< Servo motor object for sonar platform
 constexpr int SERVO_PIN = 9;             ///< PWM pin connected to servo control signal
-constexpr int MIN_ANGLE = 15;            ///< Minimum sweep angle in degrees
-constexpr int MAX_ANGLE = 165;           ///< Maximum sweep angle in degrees
+constexpr int MIN_ANGLE = 5;             ///< Minimum sweep angle (5° safety margin from 0°)
+constexpr int MAX_ANGLE = 175;           ///< Maximum sweep angle (5° safety margin from 180°)
 
 // Current servo position tracking
 static int currentServoPosition = 90;  ///< Track current servo angle for dynamic timing
@@ -109,8 +109,9 @@ int getSensorTime() {
  * @brief Get minimum operational angle
  * @return Minimum angle in degrees for sonar sweep
  *
- * Returns the lower limit of the servo's operational range.
- * This prevents mechanical damage and ensures reliable operation.
+ * Returns the lower limit of the servo's operational range (5°).
+ * Provides 5° safety margin from SG90's absolute minimum (0°)
+ * for reliable operation while maximizing radar coverage.
  */
 int getMinAngle() {
   return MIN_ANGLE;
@@ -120,8 +121,9 @@ int getMinAngle() {
  * @brief Get maximum operational angle
  * @return Maximum angle in degrees for sonar sweep
  *
- * Returns the upper limit of the servo's operational range.
- * This prevents mechanical damage and ensures reliable operation.
+ * Returns the upper limit of the servo's operational range (175°).
+ * Provides 5° safety margin from SG90's absolute maximum (180°)
+ * for reliable operation while maximizing radar coverage.
  */
 int getMaxAngle() {
   return MAX_ANGLE;
