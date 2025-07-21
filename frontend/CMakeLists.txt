@@ -43,14 +43,18 @@ qt_add_executable(SIREN
     src/ui/controls/WindowControlBar.cpp
     src/ui/controls/WindowControlHandler.cpp
     src/ui/SplashScreen.cpp
-    src/ui/MilitaryMainWindow.cpp
+    src/ui/MainWindow.cpp
     src/ui/MainLayout.cpp
     src/ui/PanelFactory.cpp
     src/ui/MilitaryTheme.cpp
     src/ui/ConnectionStatusWidget.cpp
     src/ui/SonarDataWidget.cpp
+    src/ui/SonarVisualizationWidget.cpp
     src/network/WebSocketClient.cpp
     src/data/SonarDataParser.cpp
+    src/visualization/PolarCoordinateConverter.cpp
+    src/visualization/SonarDataBuffer.cpp
+    src/visualization/SonarAnimationController.cpp
     include/ui/controls/WindowControlButton.h
     include/ui/controls/MinimizeButton.h
     include/ui/controls/MaximizeButton.h
@@ -58,17 +62,22 @@ qt_add_executable(SIREN
     include/ui/controls/WindowControlBar.h
     include/ui/controls/WindowControlHandler.h
     include/ui/SplashScreen.h
-    include/ui/MilitaryMainWindow.h
+    include/ui/MainWindow.h
     include/ui/MainLayout.h
     include/ui/PanelFactory.h
     include/ui/MilitaryTheme.h
     include/ui/ConnectionStatusWidget.h
     include/ui/SonarDataWidget.h
+    include/ui/SonarVisualizationWidget.h
     include/network/IWebSocketClient.h
     include/network/WebSocketClient.h
     include/data/SonarDataParser.h
+    include/visualization/PolarCoordinateConverter.h
+    include/visualization/SonarDataBuffer.h
+    include/visualization/SonarAnimationController.h
     include/constants/WindowControls.h
     include/constants/LayoutConstants.h
+    include/constants/VisualizationConstants.h
     ${RESOURCES}
 )
 

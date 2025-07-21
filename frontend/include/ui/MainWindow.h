@@ -1,8 +1,8 @@
-#ifndef SIREN_MILITARY_MAIN_WINDOW_H
-#define SIREN_MILITARY_MAIN_WINDOW_H
+#ifndef SIREN_MAIN_WINDOW_H
+#define SIREN_MAIN_WINDOW_H
 
-// SIREN Military-Grade Radar System
-// Main Window - Single Responsibility: Application Window Management
+// SIREN Main Window
+// Single Responsibility: Application Window Management
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
 #include <QMainWindow>
@@ -14,6 +14,7 @@ namespace ui {
 class MainLayout;
 class ConnectionStatusWidget;
 class SonarDataWidget;
+class SonarVisualizationWidget;
 
 } // namespace ui
 
@@ -24,7 +25,7 @@ class IWebSocketClient;
 namespace ui {
 
 /**
- * @brief Military-grade main window - Single Responsibility: Window Management
+ * @brief Main window - Single Responsibility: Window Management
  * 
  * This window has ONE job: Manage the main application window lifecycle.
  * It does NOT create UI components, handle networking, or process data.
@@ -32,7 +33,7 @@ namespace ui {
  * Features:
  * - MainLayout integration for panel arrangement
  * - ConnectionStatusWidget integration
- * - Military theme application
+ * - Theme application
  * - Window state management
  * 
  * MISRA C++ Compliance:
@@ -40,27 +41,27 @@ namespace ui {
  * - Rule 21.2.1: RAII for all resources
  * - Rule 5.0.1: No magic numbers (uses constants)
  */
-class MilitaryMainWindow final : public QMainWindow
+class MainWindow final : public QMainWindow
 {
     Q_OBJECT
 
 public:
     /**
-     * @brief Construct military main window
+     * @brief Construct main window
      * @param parent Parent widget (Qt memory management)
      */
-    explicit MilitaryMainWindow(QWidget* parent = nullptr);
+    explicit MainWindow(QWidget* parent = nullptr);
 
     /**
      * @brief Destructor - RAII cleanup
      */
-    ~MilitaryMainWindow() override = default;
+    ~MainWindow() override = default;
 
     // MISRA C++ Rule 12.1.1: Disable copy/move for Qt widgets
-    MilitaryMainWindow(const MilitaryMainWindow&) = delete;
-    MilitaryMainWindow& operator=(const MilitaryMainWindow&) = delete;
-    MilitaryMainWindow(MilitaryMainWindow&&) = delete;
-    MilitaryMainWindow& operator=(MilitaryMainWindow&&) = delete;
+    MainWindow(const MainWindow&) = delete;
+    MainWindow& operator=(const MainWindow&) = delete;
+    MainWindow(MainWindow&&) = delete;
+    MainWindow& operator=(MainWindow&&) = delete;
 
 private:
     /**
@@ -69,9 +70,9 @@ private:
     void initializeUI();
 
     /**
-     * @brief Apply military theme styling
+     * @brief Apply theme styling
      */
-    void applyMilitaryTheme();
+    void applyTheme();
 
     /**
      * @brief Create all UI panels and widgets
@@ -87,6 +88,7 @@ private:
     MainLayout* m_mainLayout{nullptr};
     ConnectionStatusWidget* m_connectionStatus{nullptr};
     SonarDataWidget* m_sonarDataWidget{nullptr};
+    SonarVisualizationWidget* m_sonarVisualizationWidget{nullptr};
     
     // Network components
     Network::IWebSocketClient* m_webSocketClient{nullptr};
@@ -95,4 +97,4 @@ private:
 } // namespace ui
 } // namespace siren
 
-#endif // SIREN_MILITARY_MAIN_WINDOW_H
+#endif // SIREN_MAIN_WINDOW_H

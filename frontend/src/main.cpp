@@ -21,8 +21,8 @@
 // Include our constants
 #include "constants/Application.h"
 
-// Include military main window
-#include "ui/MilitaryMainWindow.h"
+// Include main window
+#include "ui/MainWindow.h"
 
 // Include splash screen
 #include "ui/SplashScreen.h"
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     siren::ui::SplashScreen splash;
     
     // Create main window but don't show it yet
-    siren::ui::MilitaryMainWindow window;
+    siren::ui::MainWindow window;
     
     // Connect splash screen completion to main window display
     QObject::connect(&splash, &siren::ui::SplashScreen::loadingComplete, [&window]() {

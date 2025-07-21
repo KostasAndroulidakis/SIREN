@@ -1,13 +1,13 @@
-// SIREN Military-Grade Radar System
-// Main Window Implementation
+// SIREN Main Window Implementation
 // Single Responsibility: Application Window Management ONLY
 
-#include "ui/MilitaryMainWindow.h"
+#include "ui/MainWindow.h"
 #include "ui/MainLayout.h"
 #include "ui/PanelFactory.h"
 #include "ui/MilitaryTheme.h"
 #include "ui/ConnectionStatusWidget.h"
 #include "ui/SonarDataWidget.h"
+#include "ui/SonarVisualizationWidget.h"
 #include "network/WebSocketClient.h"
 #include "data/SonarDataParser.h"
 #include "constants/LayoutConstants.h"
@@ -20,67 +20,71 @@
 namespace siren {
 namespace ui {
 
-MilitaryMainWindow::MilitaryMainWindow(QWidget* parent)
+MainWindow::MainWindow(QWidget* parent)
     : QMainWindow(parent)
     , m_mainLayout(nullptr)
     , m_connectionStatus(nullptr)
     , m_sonarDataWidget(nullptr)
+    , m_sonarVisualizationWidget(nullptr)
     , m_webSocketClient(nullptr)
 {
     initializeUI();
-    applyMilitaryTheme();
+    applyTheme();
     createPanels();
     initializeWebSocketClient();
 }
 
-void MilitaryMainWindow::initializeUI()
+void MainWindow::initializeUI()
 {
     // Set window properties
-    setWindowTitle("SIREN - Military-Grade Radar System");
+    setWindowTitle("SIREN - Sonar Detection System");
     resize(constants::layout::WINDOW_WIDTH, constants::layout::WINDOW_HEIGHT);
     setMinimumSize(constants::layout::MIN_WINDOW_WIDTH, constants::layout::MIN_WINDOW_HEIGHT);
-    
+
     // Create main layout widget that fills the entire window
     m_mainLayout = new MainLayout(this);
-    
+
     // Create central widget and set the layout
     QWidget* centralWidget = new QWidget(this);
     QVBoxLayout* mainWindowLayout = new QVBoxLayout(centralWidget);
     mainWindowLayout->setContentsMargins(0, 0, 0, 0);
     mainWindowLayout->setSpacing(0);
     mainWindowLayout->addWidget(m_mainLayout);
-    
+
     setCentralWidget(centralWidget);
 }
 
-void MilitaryMainWindow::applyMilitaryTheme()
+void MainWindow::applyTheme()
 {
-    // Apply military theme to application (SRP: only styling)
+    // Apply theme to application (SRP: only styling)
     MilitaryTheme::applyToApplication(this);
 }
 
-void MilitaryMainWindow::createPanels()
+void MainWindow::createPanels()
 {
     // Create connection status widget (SRP: only displays connection state)
     m_connectionStatus = new ConnectionStatusWidget(this);
-    
+
     // Create sonar data widget (SRP: only displays sonar readings)
     m_sonarDataWidget = new SonarDataWidget(this);
-    
+
+    // Create sonar visualization widget (SRP: only renders sonar display)
+    m_sonarVisualizationWidget = new SonarVisualizationWidget(this);
+
     // Create placeholder panels for other components
     QFrame* statusPanel = PanelFactory::createPanel(PanelFactory::PanelType::STATUS, this);
     QFrame* controlPanel = PanelFactory::createPlaceholder("CONTROL PANEL", this);
-    QFrame* radarPanel = PanelFactory::createPlaceholder("SONAR DISPLAY", this);
+    QFrame* radarPanel = PanelFactory::createPanel(PanelFactory::PanelType::RADAR, this);
     QFrame* dataPanel = PanelFactory::createPanel(PanelFactory::PanelType::DATA, this);
     QFrame* performancePanel = PanelFactory::createPlaceholder("PERFORMANCE METRICS", this);
-    
-    // Apply military theme styling to panels
+
+    // Apply theme styling to panels
     MilitaryTheme::applyStatusPanelStyle(statusPanel);
     MilitaryTheme::applyControlPanelStyle(controlPanel);
     MilitaryTheme::applyRadarPanelStyle(radarPanel);
     MilitaryTheme::applyDataPanelStyle(dataPanel);
     MilitaryTheme::applyPerformancePanelStyle(performancePanel);
-    
+
     // Add connection status to status panel
     QHBoxLayout* statusLayout = new QHBoxLayout(statusPanel);
     statusLayout->setContentsMargins(
@@ -91,7 +95,7 @@ void MilitaryMainWindow::createPanels()
     );
     statusLayout->addWidget(m_connectionStatus);
     statusLayout->addStretch(); // Push connection status to the left
-    
+
     // Add sonar data widget to data panel
     QVBoxLayout* dataLayout = new QVBoxLayout(dataPanel);
     dataLayout->setContentsMargins(
@@ -102,29 +106,34 @@ void MilitaryMainWindow::createPanels()
     );
     dataLayout->addWidget(m_sonarDataWidget);
     dataLayout->addStretch(); // Push sonar data to the top
-    
+
+    // Add sonar visualization to radar panel
+    QVBoxLayout* radarLayout = new QVBoxLayout(radarPanel);
+    radarLayout->setContentsMargins(0, 0, 0, 0);  // No margins for full display
+    radarLayout->addWidget(m_sonarVisualizationWidget);
+
     // Set widgets in main layout (SRP: MainLayout only arranges)
     m_mainLayout->setStatusWidget(statusPanel);
     m_mainLayout->setControlWidget(controlPanel);
     m_mainLayout->setCenterWidget(radarPanel);
     m_mainLayout->setDataWidget(dataPanel);
     m_mainLayout->setPerformanceWidget(performancePanel);
-    
+
     // Initialize connection status (start as disconnected)
     m_connectionStatus->updateConnectionState(ConnectionStatusWidget::ConnectionState::DISCONNECTED);
     m_connectionStatus->updateServerAddress("localhost:8080");
 }
 
-void MilitaryMainWindow::initializeWebSocketClient()
+void MainWindow::initializeWebSocketClient()
 {
     // Create WebSocket client (SRP: only handles backend communication)
     m_webSocketClient = new Network::WebSocketClient(this);
-    
+
     // Connect WebSocket state changes to connection status widget
     connect(m_webSocketClient, &Network::IWebSocketClient::stateChanged,
             this, [this](Network::IWebSocketClient::State state) {
                 ConnectionStatusWidget::ConnectionState widgetState;
-                
+
                 // Map WebSocket state to widget state
                 switch (state) {
                     case Network::IWebSocketClient::State::Disconnected:
@@ -140,30 +149,33 @@ void MilitaryMainWindow::initializeWebSocketClient()
                         widgetState = ConnectionStatusWidget::ConnectionState::DISCONNECTED;
                         break;
                 }
-                
+
                 m_connectionStatus->updateConnectionState(widgetState);
             });
-    
+
     // Connect to sonar data messages
     connect(m_webSocketClient, &Network::IWebSocketClient::textMessageReceived,
             this, [this](const QString& message) {
                 // Parse incoming sonar data
                 data::SonarDataPoint sonarData;
                 const auto parseResult = data::SonarDataParser::parseJsonText(message, sonarData);
-                
+
                 if (parseResult == data::SonarDataParser::ParseResult::SUCCESS) {
                     // Successfully parsed sonar data
                     qDebug() << "Sonar data received:" << sonarData.toString();
-                    
+
                     // Update sonar data widget (SRP: only displays data)
                     m_sonarDataWidget->updateSonarData(sonarData);
+
+                    // Update sonar visualization widget (SRP: only renders display)
+                    m_sonarVisualizationWidget->updateSonarData(sonarData);
                 } else {
                     // Log parsing errors for debugging
                     const QString errorDesc = data::SonarDataParser::getErrorDescription(parseResult);
                     qDebug() << "Failed to parse sonar data:" << errorDesc << "Message:" << message;
                 }
             });
-    
+
     // Connect to backend server automatically
     const QUrl serverUrl("ws://localhost:8080");
     m_webSocketClient->connectToServer(serverUrl);
