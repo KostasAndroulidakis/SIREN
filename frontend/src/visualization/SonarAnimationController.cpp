@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Animation Controller Implementation
 // Single Responsibility: Sweep Animation Timing ONLY
 
@@ -16,7 +16,7 @@ SonarAnimationController::SonarAnimationController(QObject* parent)
     // Configure animation timer
     m_animationTimer->setInterval(ANIMATION_INTERVAL_MS);
     m_animationTimer->setTimerType(Qt::PreciseTimer);  // For smooth animation
-    
+
     // Connect timer to update slot
     connect(m_animationTimer, &QTimer::timeout, this, &SonarAnimationController::updateAnimation);
 }
@@ -71,22 +71,22 @@ void SonarAnimationController::updateAnimation()
     if (!m_isAnimating) {
         return;
     }
-    
+
     // Calculate time delta
     const std::uint64_t currentTime = QDateTime::currentMSecsSinceEpoch();
     const std::uint64_t deltaTime = currentTime - m_lastUpdateTime;
     m_lastUpdateTime = currentTime;
-    
+
     // Calculate angle change based on time and speed
     const double deltaSeconds = static_cast<double>(deltaTime) / 1000.0;
     const double deltaAngle = m_sweepSpeed * deltaSeconds;
-    
+
     // Update angle based on direction
     double newAngle = static_cast<double>(m_currentAngle);
-    
+
     if (m_currentDirection == SweepDirection::FORWARD) {
         newAngle += deltaAngle;
-        
+
         // Check if we've reached the end
         if (newAngle >= static_cast<double>(MAX_ANGLE)) {
             newAngle = static_cast<double>(MAX_ANGLE);
@@ -95,7 +95,7 @@ void SonarAnimationController::updateAnimation()
         }
     } else {
         newAngle -= deltaAngle;
-        
+
         // Check if we've reached the beginning
         if (newAngle <= static_cast<double>(MIN_ANGLE)) {
             newAngle = static_cast<double>(MIN_ANGLE);
@@ -104,7 +104,7 @@ void SonarAnimationController::updateAnimation()
             emit sweepCycleCompleted();
         }
     }
-    
+
     // Update current angle
     const std::uint16_t roundedAngle = static_cast<std::uint16_t>(std::round(newAngle));
     if (roundedAngle != m_currentAngle) {

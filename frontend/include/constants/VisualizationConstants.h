@@ -1,7 +1,7 @@
 #ifndef SIREN_VISUALIZATION_CONSTANTS_H
 #define SIREN_VISUALIZATION_CONSTANTS_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Visualization Constants - Single Source of Truth (SSOT)
 // All sonar display related constants in one place
 

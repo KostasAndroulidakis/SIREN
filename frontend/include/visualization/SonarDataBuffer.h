@@ -1,7 +1,7 @@
 #ifndef SIREN_SONAR_DATA_BUFFER_H
 #define SIREN_SONAR_DATA_BUFFER_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Buffer - Single Responsibility: Data Point Storage with Decay ONLY
 // Compliant with MISRA C++ 2023, SRP, SSOT
 

@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Parser Implementation
 // Single Responsibility: Parse JSON Sonar Messages ONLY
 

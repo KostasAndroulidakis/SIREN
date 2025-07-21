@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Splash Screen Implementation
 // Compliant with MISRA C++ 2023, Qt6 Best Practices, MIL-STD-1472
 

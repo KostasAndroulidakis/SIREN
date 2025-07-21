@@ -1,6 +1,6 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
-    <!-- SIREN Military-Grade Sonar System Resources -->
+    <!-- SIREN Sonar System Resources -->
     <!-- Embeds assets in binary for deterministic access (MISRA C++ Rule 21.2.1) -->
 
     <qresource prefix="/images">

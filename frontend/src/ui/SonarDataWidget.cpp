@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Widget Implementation
 // Single Responsibility: Display Sonar Readings ONLY
 
@@ -39,7 +39,7 @@ SonarDataWidget::SonarDataWidget(QWidget* parent)
 void SonarDataWidget::updateSonarData(const data::SonarDataPoint& sonarData)
 {
     m_currentData = sonarData;
-    
+
     // Update angle display
     if (sonarData.valid) {
         const QString angleText = QString::number(sonarData.angle) + DEGREE_SYMBOL;
@@ -49,7 +49,7 @@ void SonarDataWidget::updateSonarData(const data::SonarDataPoint& sonarData)
         m_angleValue->setText(NO_DATA_TEXT);
         m_angleValue->setStyleSheet(QString("color: %1;").arg(INVALID_COLOR));
     }
-    
+
     // Update distance display
     if (sonarData.valid) {
         const QString distanceText = QString::number(sonarData.distance) + CM_UNIT;
@@ -59,13 +59,13 @@ void SonarDataWidget::updateSonarData(const data::SonarDataPoint& sonarData)
         m_distanceValue->setText(NO_DATA_TEXT);
         m_distanceValue->setStyleSheet(QString("color: %1;").arg(INVALID_COLOR));
     }
-    
+
     // Update timestamp
     m_timestampValue->setText(formatTimestamp(sonarData.timestamp));
-    
+
     // Update data quality
     updateDataQuality(sonarData.valid, sonarData.isWithinHardwareLimits());
-    
+
     // Update reception status
     setDataReceptionStatus(true);
 }
@@ -76,18 +76,18 @@ void SonarDataWidget::clearData()
     m_angleValue->setText(NO_DATA_TEXT);
     m_distanceValue->setText(NO_DATA_TEXT);
     m_timestampValue->setText(NO_DATA_TEXT);
-    
+
     // Reset colors to inactive
     m_angleValue->setStyleSheet(QString("color: %1;").arg(INACTIVE_COLOR));
     m_distanceValue->setStyleSheet(QString("color: %1;").arg(INACTIVE_COLOR));
     m_timestampValue->setStyleSheet(QString("color: %1;").arg(INACTIVE_COLOR));
-    
+
     // Clear quality indicator
     updateDataQuality(false, false);
-    
+
     // Update status
     setDataReceptionStatus(false);
-    
+
     // Reset current data
     m_currentData = data::SonarDataPoint{};
 }
@@ -95,7 +95,7 @@ void SonarDataWidget::clearData()
 void SonarDataWidget::setDataReceptionStatus(bool receiving)
 {
     m_dataReceiving = receiving;
-    
+
     if (receiving) {
         m_statusIndicator->setText(RECEIVING_TEXT);
         m_statusIndicator->setStyleSheet(QString("color: %1; font-weight: bold;").arg(VALID_COLOR));
@@ -111,7 +111,7 @@ void SonarDataWidget::initializeUI()
     m_mainLayout = new QVBoxLayout(this);
     m_mainLayout->setContentsMargins(WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN);
     m_mainLayout->setSpacing(ROW_SPACING);
-    
+
     // Create labels and values
     m_angleLabel = new QLabel(ANGLE_LABEL_TEXT, this);
     m_angleValue = new QLabel(NO_DATA_TEXT, this);
@@ -123,28 +123,28 @@ void SonarDataWidget::initializeUI()
     m_qualityIndicator = new QLabel(INVALID_TEXT, this);
     m_statusLabel = new QLabel(STATUS_LABEL_TEXT, this);
     m_statusIndicator = new QLabel(NO_SIGNAL_TEXT, this);
-    
+
     // Set label properties
     m_angleLabel->setMinimumWidth(LABEL_MIN_WIDTH);
     m_distanceLabel->setMinimumWidth(LABEL_MIN_WIDTH);
     m_timestampLabel->setMinimumWidth(LABEL_MIN_WIDTH);
     m_qualityLabel->setMinimumWidth(LABEL_MIN_WIDTH);
     m_statusLabel->setMinimumWidth(LABEL_MIN_WIDTH);
-    
+
     // Set value properties
     m_angleValue->setMinimumWidth(VALUE_MIN_WIDTH);
     m_distanceValue->setMinimumWidth(VALUE_MIN_WIDTH);
     m_timestampValue->setMinimumWidth(VALUE_MIN_WIDTH);
     m_qualityIndicator->setMinimumWidth(VALUE_MIN_WIDTH);
     m_statusIndicator->setMinimumWidth(VALUE_MIN_WIDTH);
-    
+
     // Create data rows
     m_angleRow = createDataRow(ANGLE_LABEL_TEXT, m_angleValue);
     m_distanceRow = createDataRow(DISTANCE_LABEL_TEXT, m_distanceValue);
     m_timestampRow = createDataRow(TIMESTAMP_LABEL_TEXT, m_timestampValue);
     m_qualityRow = createDataRow(QUALITY_LABEL_TEXT, m_qualityIndicator);
     m_statusRow = createDataRow(STATUS_LABEL_TEXT, m_statusIndicator);
-    
+
     // Add rows to main layout
     m_mainLayout->addWidget(m_angleRow);
     m_mainLayout->addWidget(m_distanceRow);
@@ -173,7 +173,7 @@ void SonarDataWidget::applyMilitaryTheme()
         "    border: none;"
         "}"
     );
-    
+
     setStyleSheet(widgetStyle);
 }
 
@@ -183,26 +183,26 @@ QFrame* SonarDataWidget::createDataRow(const QString& label, QWidget* valueWidge
     QHBoxLayout* layout = new QHBoxLayout(row);
     layout->setContentsMargins(0, 0, 0, 0);
     layout->setSpacing(10);
-    
+
     // Create label
     QLabel* labelWidget = new QLabel(label, row);
     labelWidget->setMinimumWidth(LABEL_MIN_WIDTH);
     labelWidget->setAlignment(Qt::AlignLeft);
-    
+
     // Set value widget properties
     valueWidget->setMinimumWidth(VALUE_MIN_WIDTH);
-    
+
     // Set alignment if it's a QLabel
     QLabel* labelValueWidget = qobject_cast<QLabel*>(valueWidget);
     if (labelValueWidget != nullptr) {
         labelValueWidget->setAlignment(Qt::AlignLeft);
     }
-    
+
     // Add to layout
     layout->addWidget(labelWidget);
     layout->addWidget(valueWidget);
     layout->addStretch(); // Push content to left
-    
+
     return row;
 }
 
@@ -225,7 +225,7 @@ QString SonarDataWidget::formatTimestamp(std::uint64_t timestamp)
     if (timestamp == 0) {
         return QString(NO_DATA_TEXT);
     }
-    
+
     // Convert to QDateTime and format
     const QDateTime dateTime = QDateTime::fromMSecsSinceEpoch(static_cast<qint64>(timestamp));
     return dateTime.toString("hh:mm:ss.zzz");

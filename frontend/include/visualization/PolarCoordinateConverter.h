@@ -1,7 +1,7 @@
 #ifndef SIREN_POLAR_COORDINATE_CONVERTER_H
 #define SIREN_POLAR_COORDINATE_CONVERTER_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Polar Coordinate Converter - Single Responsibility: Coordinate Transformation ONLY
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -14,17 +14,17 @@ namespace visualization {
 
 /**
  * @brief Polar coordinate converter - Single Responsibility: Coordinate Transformation
- * 
- * This class has ONE job: Convert between polar coordinates (angle/distance) 
+ *
+ * This class has ONE job: Convert between polar coordinates (angle/distance)
  * and Cartesian screen coordinates for sonar display.
  * It does NOT store data, handle UI, or manage state.
- * 
+ *
  * Features:
  * - Polar to screen coordinate conversion
  * - Screen to polar coordinate conversion
  * - Origin-based transformations
  * - Scale factor support
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 21.2.1: No dynamic allocation
  * - Rule 5.0.1: No magic numbers
@@ -66,8 +66,8 @@ public:
      * @param distance Output distance in centimeters
      * @return True if conversion successful (point within display)
      */
-    [[nodiscard]] bool screenToPolar(const QPoint& point, 
-                                    std::uint16_t& angle, 
+    [[nodiscard]] bool screenToPolar(const QPoint& point,
+                                    std::uint16_t& angle,
                                     std::uint16_t& distance) const;
 
     /**
@@ -119,7 +119,7 @@ private:
     static constexpr double PI = 3.14159265358979323846;
     static constexpr double DEGREES_TO_RADIANS = PI / 180.0;
     static constexpr double RADIANS_TO_DEGREES = 180.0 / PI;
-    
+
     // Sonar display convention: 0° is right, 90° is up, 180° is left
     // This matches the servo sweep pattern (right to left)
     static constexpr double ANGLE_OFFSET = 0.0;

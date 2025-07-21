@@ -1,7 +1,7 @@
 #ifndef SIREN_LAYOUT_CONSTANTS_H
 #define SIREN_LAYOUT_CONSTANTS_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Layout Constants - Single Source of Truth for 1920x1080 Desktop
 // Compliant with MISRA C++ 2023, SSOT, MIL-STD-1472
 

@@ -1,7 +1,7 @@
 #ifndef SIREN_CONNECTION_STATUS_WIDGET_H
 #define SIREN_CONNECTION_STATUS_WIDGET_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Connection Status Widget - Single Responsibility: Display Connection State
 // Compliant with MISRA C++ 2023, SRP, SSOT
 

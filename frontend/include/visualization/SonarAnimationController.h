@@ -1,7 +1,7 @@
 #ifndef SIREN_SONAR_ANIMATION_CONTROLLER_H
 #define SIREN_SONAR_ANIMATION_CONTROLLER_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Animation Controller - Single Responsibility: Sweep Animation Timing ONLY
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -14,16 +14,16 @@ namespace visualization {
 
 /**
  * @brief Sonar animation controller - Single Responsibility: Animation Timing
- * 
+ *
  * This class has ONE job: Control the sweep animation timing and angle updates.
  * It does NOT render, store data, or handle UI events.
- * 
+ *
  * Features:
  * - Bidirectional sweep animation (0° → 180° → 0°)
  * - Configurable sweep speed
  * - Frame rate independent animation
  * - Pause/resume functionality
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation
  * - Rule 21.2.1: RAII for timer resource
@@ -143,12 +143,12 @@ private:
     std::uint16_t m_currentAngle{0};
     SweepDirection m_currentDirection{SweepDirection::FORWARD};
     bool m_isAnimating{false};
-    
+
     // Timing
     QTimer* m_animationTimer{nullptr};
     std::uint64_t m_lastUpdateTime{0};
     double m_sweepSpeed{DEFAULT_SWEEP_SPEED};
-    
+
     // Animation constants (SSOT)
     static constexpr int ANIMATION_FPS = 60;
     static constexpr int ANIMATION_INTERVAL_MS = 1000 / ANIMATION_FPS;

@@ -1,7 +1,7 @@
 #ifndef SIREN_PANEL_FACTORY_H
 #define SIREN_PANEL_FACTORY_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Panel Factory - Single Responsibility: Create Panel Widgets
 // Compliant with MISRA C++ 2023, SRP, SSOT
 

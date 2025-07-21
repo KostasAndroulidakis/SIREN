@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Connection Status Widget Implementation
 // Single Responsibility: Display Connection State ONLY
 

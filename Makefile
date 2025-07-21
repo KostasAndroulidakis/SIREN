@@ -1,4 +1,4 @@
-# SIREN Military-Grade Sonar System
+# SIREN Sonar System
 # MISRA C++ 2008 Compliant Makefile
 # Single Responsibility: Build launcher only
 

@@ -74,7 +74,7 @@ namespace version {
 
     /// Build information
     constexpr const char* AUTHOR = "SIREN Defense Systems";
-    constexpr const char* SERVER_NAME = "SIREN Military-Grade Server";
+    constexpr const char* SERVER_NAME = "SIREN Server";
     constexpr const char* USER_AGENT = "SIREN/1.0.0 (military-grade)";
 }
 

@@ -1,6 +1,6 @@
 /**
  * @file sonar_types.hpp
- * @brief Core data types for SIREN military-grade server
+ * @brief Core data types for SIREN server
  * @author KostasAndroulidakis
  * @date 2025
  *

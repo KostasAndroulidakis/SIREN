@@ -1,7 +1,7 @@
 #ifndef SIREN_MAIN_LAYOUT_H
 #define SIREN_MAIN_LAYOUT_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Main Window Layout Manager - ONLY manages widget arrangement
 // Compliant with MISRA C++ 2023, SRP, SSOT
 

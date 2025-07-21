@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Visualization Widget Implementation
 // Single Responsibility: Render Sonar Display ONLY
 

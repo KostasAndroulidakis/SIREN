@@ -1,7 +1,7 @@
 #ifndef SIREN_SONAR_DATA_PARSER_H
 #define SIREN_SONAR_DATA_PARSER_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Parser - Single Responsibility: Parse JSON Sonar Messages
 // Compliant with MISRA C++ 2023, SRP, SSOT
 

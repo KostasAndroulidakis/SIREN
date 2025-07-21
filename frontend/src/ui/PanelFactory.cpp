@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Panel Factory Implementation
 // Single Responsibility: Create Panel Widgets ONLY
 

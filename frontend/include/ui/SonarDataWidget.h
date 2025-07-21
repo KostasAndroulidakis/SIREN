@@ -1,7 +1,7 @@
 #ifndef SIREN_SONAR_DATA_WIDGET_H
 #define SIREN_SONAR_DATA_WIDGET_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Widget - Single Responsibility: Display Sonar Readings
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -17,17 +17,17 @@ namespace ui {
 
 /**
  * @brief Sonar data display widget - Single Responsibility: Show Sonar Readings
- * 
+ *
  * This widget has ONE job: Display current sonar data in a structured format.
  * It does NOT parse data, handle networking, or manage data storage.
- * 
+ *
  * Features:
  * - Current angle and distance display
  * - Data quality indicators
  * - Timestamp information
  * - Military-grade styling
  * - Hardware range validation display
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization
  * - Rule 21.2.1: RAII for all resources
@@ -129,7 +129,7 @@ private:
 
     // UI Components (managed by Qt parent-child hierarchy)
     QVBoxLayout* m_mainLayout{nullptr};
-    
+
     // Data display labels
     QLabel* m_angleLabel{nullptr};
     QLabel* m_angleValue{nullptr};
@@ -159,14 +159,14 @@ private:
     static constexpr int LABEL_MIN_WIDTH = 80;
     static constexpr int VALUE_MIN_WIDTH = 100;
     static constexpr int INDICATOR_SIZE = 12;
-    
+
     // Text constants (SSOT for display strings)
     static constexpr const char* ANGLE_LABEL_TEXT = "Angle:";
     static constexpr const char* DISTANCE_LABEL_TEXT = "Distance:";
     static constexpr const char* TIMESTAMP_LABEL_TEXT = "Time:";
     static constexpr const char* QUALITY_LABEL_TEXT = "Quality:";
     static constexpr const char* STATUS_LABEL_TEXT = "Status:";
-    
+
     static constexpr const char* NO_DATA_TEXT = "---";
     static constexpr const char* DEGREE_SYMBOL = "°";
     static constexpr const char* CM_UNIT = "cm";
@@ -174,7 +174,7 @@ private:
     static constexpr const char* INVALID_TEXT = "Invalid";
     static constexpr const char* RECEIVING_TEXT = "Receiving";
     static constexpr const char* NO_SIGNAL_TEXT = "No Signal";
-    
+
     // Color constants (SSOT for validation colors)
     static constexpr const char* VALID_COLOR = "#00FF00";      // Green
     static constexpr const char* INVALID_COLOR = "#FF0000";    // Red

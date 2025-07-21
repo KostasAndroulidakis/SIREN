@@ -1,7 +1,7 @@
 #ifndef SIREN_SPLASH_SCREEN_H
 #define SIREN_SPLASH_SCREEN_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Splash Screen Component
 // Compliant with MISRA C++ 2023, Qt6 Best Practices, MIL-STD-1472
 

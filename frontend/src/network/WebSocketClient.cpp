@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // WebSocket Client Implementation
 // Single Responsibility: Backend Communication ONLY
 

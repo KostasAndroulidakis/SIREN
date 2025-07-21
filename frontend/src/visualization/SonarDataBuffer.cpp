@@ -1,4 +1,4 @@
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Data Buffer Implementation
 // Single Responsibility: Data Point Storage with Decay ONLY
 

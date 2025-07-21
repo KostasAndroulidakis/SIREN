@@ -1,7 +1,7 @@
 #ifndef SIREN_SONAR_VISUALIZATION_WIDGET_H
 #define SIREN_SONAR_VISUALIZATION_WIDGET_H
 
-// SIREN Military-Grade Sonar System
+// SIREN Sonar System
 // Sonar Visualization Widget - Single Responsibility: Render Sonar Display ONLY
 // Compliant with MISRA C++ 2023, SRP, SSOT
 
@@ -24,16 +24,16 @@ namespace ui {
 
 /**
  * @brief Sonar visualization widget - Single Responsibility: Render Display
- * 
+ *
  * This widget has ONE job: Paint the sonar display using data from other components.
  * It does NOT manage data, control animation, or convert coordinates.
- * 
+ *
  * Features:
  * - Delegates coordinate conversion to PolarCoordinateConverter
  * - Delegates data storage to SonarDataBuffer
  * - Delegates animation timing to SonarAnimationController
  * - Only handles painting and Qt events
- * 
+ *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization
  * - Rule 21.2.1: RAII for all resources

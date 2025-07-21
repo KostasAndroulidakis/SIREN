@@ -4,7 +4,7 @@
  * CONTRACT: SIREN-2025
  *
  * @file main.cpp
- * @brief Main entry point for SIREN military-grade sonar system
+ * @brief Main entry point for SIREN sonar system
  * @author KostasAndroulidakis
  * @date 2025
  *
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]) {
     static_cast<void>(argv);
 
     std::cout << "==================================================" << std::endl;
-    std::cout << " SIREN Military-Grade Sonar System v1.0.0" << std::endl;
+    std::cout << " SIREN Sonar System v1.0.0" << std::endl;
     std::cout << " CLASSIFICATION: UNCLASSIFIED" << std::endl;
     std::cout << "==================================================" << std::endl;
 

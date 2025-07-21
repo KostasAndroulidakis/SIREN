@@ -21,7 +21,7 @@ namespace Application {
 
 // Application Metadata
 constexpr char NAME[] = "SIREN";
-constexpr char FULL_NAME[] = "SIREN Military-Grade Sonar System";
+constexpr char FULL_NAME[] = "SIREN Sonar System";
 constexpr char COMMAND_CENTER_TITLE[] = "COMMAND CENTER";
 constexpr char VERSION[] = "1.0.0";
 constexpr char BUILD_TYPE[] = "RELEASE";
