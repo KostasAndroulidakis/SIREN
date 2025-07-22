@@ -20,6 +20,7 @@
 
 // Include our constants
 #include "constants/Application.h"
+#include "ui/Theme.h"
 
 // Include main window
 #include "ui/MainWindow.h"
@@ -43,17 +44,17 @@ int main(int argc, char *argv[])
 
     // Military-grade true black QPalette (Complete override)
     QPalette palette;
-    palette.setColor(QPalette::Window, QColor(0, 0, 0));           // True black background
-    palette.setColor(QPalette::WindowText, QColor(0, 255, 65));   // Military green text
-    palette.setColor(QPalette::Base, QColor(0, 0, 0));            // Input field background
-    palette.setColor(QPalette::AlternateBase, QColor(31, 31, 31)); // Alternate row color
-    palette.setColor(QPalette::Text, QColor(0, 255, 65));         // Input field text
-    palette.setColor(QPalette::Button, QColor(0, 0, 0));          // Button background
-    palette.setColor(QPalette::ButtonText, QColor(0, 255, 65));   // Button text
-    palette.setColor(QPalette::BrightText, QColor(255, 255, 255)); // Bright text
-    palette.setColor(QPalette::Link, QColor(0, 255, 65));         // Links
-    palette.setColor(QPalette::Highlight, QColor(0, 255, 65));    // Selection highlight
-    palette.setColor(QPalette::HighlightedText, QColor(0, 0, 0)); // Selected text
+    palette.setColor(QPalette::Window, siren::ui::Theme::getPrimaryBackground());           // True black background
+    palette.setColor(QPalette::WindowText, siren::ui::Theme::getMilitaryGreen());          // Military green text
+    palette.setColor(QPalette::Base, siren::ui::Theme::getPrimaryBackground());            // Input field background
+    palette.setColor(QPalette::AlternateBase, siren::ui::Theme::getAlternateRow());        // Alternate row color
+    palette.setColor(QPalette::Text, siren::ui::Theme::getMilitaryGreen());               // Input field text
+    palette.setColor(QPalette::Button, siren::ui::Theme::getPrimaryBackground());          // Button background
+    palette.setColor(QPalette::ButtonText, siren::ui::Theme::getMilitaryGreen());         // Button text
+    palette.setColor(QPalette::BrightText, siren::ui::Theme::getPrimaryText());           // Bright text
+    palette.setColor(QPalette::Link, siren::ui::Theme::getMilitaryGreen());               // Links
+    palette.setColor(QPalette::Highlight, siren::ui::Theme::getMilitaryGreen());          // Selection highlight
+    palette.setColor(QPalette::HighlightedText, siren::ui::Theme::getPrimaryBackground()); // Selected text
     app.setPalette(palette);
 
     // Set application metadata

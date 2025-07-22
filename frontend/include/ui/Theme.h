@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QString>
+#include <QColor>
 
 namespace siren {
 namespace ui {
@@ -97,6 +98,12 @@ public:
      */
     [[nodiscard]] static QString getStyleSheet();
 
+    // Color accessors for QPalette setup (SSOT compliance)
+    [[nodiscard]] static QColor getPrimaryBackground();
+    [[nodiscard]] static QColor getMilitaryGreen();
+    [[nodiscard]] static QColor getAlternateRow();
+    [[nodiscard]] static QColor getPrimaryText();
+
 private:
     // Static class - no instantiation
     Theme() = delete;
@@ -116,8 +123,10 @@ private:
     static constexpr const char* WARNING_COLOR = "#FFFF00";         // Yellow (warning)
 
     static constexpr const char* PRIMARY_TEXT = "#FFFFFF";          // White text
+    static constexpr const char* MILITARY_GREEN = "#00FF41";        // Military green (RGB: 0, 255, 65)
     static constexpr const char* SECONDARY_TEXT = "#CCCCCC";        // Light gray text
     static constexpr const char* DISABLED_TEXT = "#666666";         // Dark gray text
+    static constexpr const char* ALTERNATE_ROW = "#1F1F1F";         // Alternate row color (RGB: 31, 31, 31)
 
     static constexpr const char* BORDER_ACTIVE = "#00FFFF";         // Cyan border (active)
     static constexpr const char* BORDER_INACTIVE = "#333333";       // Dark gray border

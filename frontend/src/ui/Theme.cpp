@@ -315,5 +315,26 @@ QString Theme::getStyleSheet()
             BORDER_HOVER);          // %7 - Hover color
 }
 
+// Color accessors for QPalette setup (SSOT compliance)
+QColor Theme::getPrimaryBackground()
+{
+    return QColor(PRIMARY_BACKGROUND);
+}
+
+QColor Theme::getMilitaryGreen()
+{
+    return QColor(MILITARY_GREEN);
+}
+
+QColor Theme::getAlternateRow()
+{
+    return QColor(ALTERNATE_ROW);
+}
+
+QColor Theme::getPrimaryText()
+{
+    return QColor(PRIMARY_TEXT);
+}
+
 } // namespace ui
 } // namespace siren
