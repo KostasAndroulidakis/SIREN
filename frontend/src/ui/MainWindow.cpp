@@ -73,20 +73,16 @@ void MainWindow::createPanels()
     m_sonarVisualizationWidget = new SonarVisualizationWidget(this);
 
     // Create placeholder panels for other components
-    QFrame* statusPanel = PanelFactory::createPanel(PanelFactory::PanelType::STATUS, this);
     QFrame* controlPanel = PanelFactory::createPlaceholder("CONTROL PANEL", this);
     QFrame* sonarPanel = PanelFactory::createPanel(PanelFactory::PanelType::SONAR, this);
     QFrame* dataPanel = PanelFactory::createPanel(PanelFactory::PanelType::DATA, this);
     QFrame* performancePanel = PanelFactory::createPlaceholder("PERFORMANCE METRICS", this);
 
     // Apply theme styling to panels
-    Theme::applyStatusPanelStyle(statusPanel);
     Theme::applyControlPanelStyle(controlPanel);
     Theme::applySonarPanelStyle(sonarPanel);
     Theme::applyDataPanelStyle(dataPanel);
     Theme::applyPerformancePanelStyle(performancePanel);
-
-    // Status panel left empty (connection status moved to data panel)
 
     // Add connection status and sonar data widget to data panel
     QVBoxLayout* dataLayout = new QVBoxLayout(dataPanel);
@@ -107,7 +103,7 @@ void MainWindow::createPanels()
     sonarLayout->addWidget(m_sonarVisualizationWidget);
 
     // Set widgets in main layout (SRP: MainLayout only arranges)
-    m_mainLayout->setStatusWidget(statusPanel);
+    // Note: Status panel removed - space given to performance panel
     m_mainLayout->setControlWidget(controlPanel);
     m_mainLayout->setCenterWidget(sonarPanel);
     m_mainLayout->setDataWidget(dataPanel);

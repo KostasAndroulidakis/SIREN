@@ -108,8 +108,8 @@ void MainLayout::setPerformanceWidget(QWidget* widget)
     m_performanceWidget = widget;
 
     if (widget != nullptr) {
-        // Add at bottom
-        m_mainLayout->addWidget(widget, 0); // No stretch
+        // Add at bottom with increased height allocation (gained from removed status panel)
+        m_mainLayout->addWidget(widget, 1); // Stretch factor increased from 0 to 1
     }
 }
 
