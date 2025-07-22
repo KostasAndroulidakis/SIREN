@@ -26,17 +26,14 @@ SonarVisualizationWidget::SonarVisualizationWidget(QWidget* parent)
 {
     initializeComponents();
 
-    // Set sonar display size
-    setFixedSize(SONAR_DISPLAY_WIDTH, SONAR_DISPLAY_HEIGHT);
+    // Set minimum size
+    setMinimumSize(MIN_WIDGET_SIZE, MIN_WIDGET_SIZE);
 
     // Enable painting
     setAttribute(Qt::WA_OpaquePaintEvent);
 
-    // Set background
-    setAutoFillBackground(true);
-    QPalette pal = palette();
-    pal.setColor(QPalette::Window, QColor(colors::BACKGROUND));
-    setPalette(pal);
+    // Manual background clearing - no auto fill needed with WA_OpaquePaintEvent
+    // Background will be explicitly cleared in drawBackground() method
 }
 
 SonarVisualizationWidget::~SonarVisualizationWidget() = default;
@@ -101,7 +98,6 @@ void SonarVisualizationWidget::paintEvent(QPaintEvent* event)
     drawDataPoints(painter);
     drawSweepLine(painter);
     drawScaleLabels(painter);
-    drawTitle(painter);
 }
 
 void SonarVisualizationWidget::resizeEvent(QResizeEvent* event)
@@ -134,7 +130,8 @@ void SonarVisualizationWidget::updateDisplayGeometry()
 
 void SonarVisualizationWidget::drawBackground(QPainter& painter) const
 {
-    // Background is handled by widget palette
+    // Explicitly clear entire widget area to eliminate trailing shadows
+    painter.fillRect(rect(), QColor(colors::BACKGROUND));
 }
 
 void SonarVisualizationWidget::drawPolarGrid(QPainter& painter) const
@@ -223,23 +220,16 @@ void SonarVisualizationWidget::drawDataPoints(QPainter& painter) const
     for (const auto& point : points) {
         if (!point.valid) continue;
 
-        // Calculate decay factor for fading
-        const double decay = point.getDecayFactor(currentTime, POINT_FADE_START_MS, POINT_LIFETIME_MS);
-        if (decay <= 0.0) continue;
+        // Skip fade calculation - display all valid points without fading
+        // Remove any trailing shadow effects by displaying points at full opacity
 
         // Convert to screen coordinates
         const QPoint screenPoint = m_coordinateConverter->polarToScreen(point.angle, point.distance);
 
-        // Set color based on age
-        QColor pointColor;
-        if (decay >= 0.9) {
-            pointColor = QColor(colors::DATA_POINT_RECENT);
-        } else if (decay >= 0.5) {
-            pointColor = QColor(colors::DATA_POINT);
-        } else {
-            pointColor = QColor(colors::DATA_POINT_FADING);
-        }
-        pointColor.setAlphaF(decay);
+        // Use solid color without any fading effects
+        QColor pointColor(colors::DATA_POINT_RECENT);
+        // Completely remove alpha effects to eliminate shadow trails
+        pointColor.setAlpha(255);
 
         // Draw point
         painter.setPen(Qt::NoPen);
@@ -252,10 +242,12 @@ void SonarVisualizationWidget::drawSweepLine(QPainter& painter) const
 {
     const std::uint16_t sweepAngle = m_animationController->getCurrentAngle();
 
-    // Draw sweep line only (no trailing effect)
+    // Draw single sweep line with no shadow or trailing effects
     painter.setPen(QPen(QColor(colors::SWEEP_LINE), SWEEP_LINE_WIDTH));
     const QPoint sweepEnd = m_coordinateConverter->polarToScreen(sweepAngle, DISPLAY_MAX_DISTANCE);
     painter.drawLine(m_centerPoint, sweepEnd);
+    
+    // Explicitly do NOT draw any trailing shadow or gradient effects
 }
 
 void SonarVisualizationWidget::drawTitle(QPainter& painter) const

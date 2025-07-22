@@ -154,10 +154,10 @@ private:
     bool m_dataReceiving{false};
 
     // Display constants (SSOT for widget appearance)
-    static constexpr int WIDGET_MARGIN = 10;
-    static constexpr int ROW_SPACING = 8;
-    static constexpr int LABEL_MIN_WIDTH = 80;
-    static constexpr int VALUE_MIN_WIDTH = 100;
+    static constexpr int WIDGET_MARGIN = 15;
+    static constexpr int ROW_SPACING = 12;
+    static constexpr int LABEL_MIN_WIDTH = 100;
+    static constexpr int VALUE_MIN_WIDTH = 150;
     static constexpr int INDICATOR_SIZE = 12;
 
     // Text constants (SSOT for display strings)

@@ -165,8 +165,10 @@ void SonarDataWidget::applyMilitaryTheme()
         "QLabel {"
         "    color: #FFFFFF;"
         "    font-family: 'Courier New', monospace;"
-        "    font-size: 14px;"
+        "    font-size: 13px;"
         "    background-color: transparent;"
+        "    padding: 2px;"
+        "    margin: 1px;"
         "}"
         "QFrame {"
         "    background-color: transparent;"
@@ -181,27 +183,30 @@ QFrame* SonarDataWidget::createDataRow(const QString& label, QWidget* valueWidge
 {
     QFrame* row = new QFrame(this);
     QHBoxLayout* layout = new QHBoxLayout(row);
-    layout->setContentsMargins(0, 0, 0, 0);
-    layout->setSpacing(10);
+    layout->setContentsMargins(5, 2, 5, 2);
+    layout->setSpacing(15);  // Increased spacing to prevent overlap
 
     // Create label
     QLabel* labelWidget = new QLabel(label, row);
     labelWidget->setMinimumWidth(LABEL_MIN_WIDTH);
-    labelWidget->setAlignment(Qt::AlignLeft);
+    labelWidget->setMaximumWidth(LABEL_MIN_WIDTH);  // Fixed width to prevent expansion
+    labelWidget->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    labelWidget->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
 
     // Set value widget properties
     valueWidget->setMinimumWidth(VALUE_MIN_WIDTH);
+    valueWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     // Set alignment if it's a QLabel
     QLabel* labelValueWidget = qobject_cast<QLabel*>(valueWidget);
     if (labelValueWidget != nullptr) {
-        labelValueWidget->setAlignment(Qt::AlignLeft);
+        labelValueWidget->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        labelValueWidget->setWordWrap(false);  // Prevent text wrapping
     }
 
-    // Add to layout
-    layout->addWidget(labelWidget);
-    layout->addWidget(valueWidget);
-    layout->addStretch(); // Push content to left
+    // Add to layout with proper stretch factors
+    layout->addWidget(labelWidget, 0);  // Don't stretch label
+    layout->addWidget(valueWidget, 1);  // Allow value to expand
 
     return row;
 }

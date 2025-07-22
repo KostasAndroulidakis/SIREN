@@ -33,9 +33,7 @@ constexpr int LABEL_FONT_SIZE = 12;
 constexpr std::uint16_t DISPLAY_MIN_ANGLE = 0;    // Display shows full range
 constexpr std::uint16_t DISPLAY_MAX_ANGLE = 180;  // Display shows full range
 
-// Hardware specifications (actual servo operating range from firmware)
-constexpr std::uint16_t SERVO_MIN_ANGLE = 5;      // Firmware safety limit (5° margin)  
-constexpr std::uint16_t SERVO_MAX_ANGLE = 175;    // Firmware safety limit (5° margin)
+// Sensor specifications (for display reference only)
 constexpr std::uint16_t SENSOR_MIN_DISTANCE = 2;   // HC-SR04 minimum (cm)
 constexpr std::uint16_t SENSOR_MAX_DISTANCE = 400; // HC-SR04 maximum (cm)
 
@@ -60,7 +58,7 @@ namespace colors {
     constexpr const char* GRID_MAJOR = "#006600";           // Dark green
     constexpr const char* GRID_PRIMARY = "#00AA00";         // Medium green
     constexpr const char* SWEEP_LINE = "#00FF00";           // Bright green
-    constexpr const char* SWEEP_TRAIL = "#004400";          // Dark green trail
+    // SWEEP_TRAIL removed - no trailing shadow effects in military-grade display
     constexpr const char* DATA_POINT = "#FFFF00";           // Yellow
     constexpr const char* DATA_POINT_RECENT = "#FF0000";    // Red for fresh data
     constexpr const char* DATA_POINT_FADING = "#888800";    // Darker yellow
