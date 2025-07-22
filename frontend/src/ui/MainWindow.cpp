@@ -11,6 +11,7 @@
 #include "network/WebSocketClient.h"
 #include "data/SonarDataParser.h"
 #include "constants/LayoutConstants.h"
+#include "constants/Network.h"
 #include <QWidget>
 #include <QUrl>
 #include <QJsonDocument>
@@ -171,7 +172,7 @@ void MainWindow::initializeWebSocketClient()
             });
 
     // Connect to backend server automatically
-    const QUrl serverUrl("ws://localhost:8080");
+    const QUrl serverUrl(Constants::Network::BACKEND_URL);
     m_webSocketClient->connectToServer(serverUrl);
 }
 
