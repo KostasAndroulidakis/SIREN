@@ -20,7 +20,7 @@ ConnectionStatusWidget::ConnectionStatusWidget(QWidget* parent)
 {
     initializeUI();
     applyTheme();
-    updatThemeate(ConnectionState::DISCONNECTED);
+    updateConnectionState(ConnectionState::DISCONNECTED);
 }
 
 void ConnectionStatusWidget::updateConnectionState(ConnectionState state)
@@ -127,7 +127,7 @@ void ConnectionStatusWidget::initializeUI()
 }
 
 void ConnectionStatusWidget::applyTheme()
-{Theme
+{
     // Apply military theme styling to match SonarDataWidget appearance
     const QString widgetStyle = QString(
         "ConnectionStatusWidget {"
