@@ -70,14 +70,14 @@ constexpr int DEGREE_STEP = 2;           ///< Conservative 2° steps for reliabl
 int calculateSettlingTime(int targetAngle) {
   int angleDifference = abs(targetAngle - currentServoPosition);
   int settlingTime = static_cast<int>(angleDifference / SG90_SPEED_DEG_PER_MS);
-  
+
   // Ensure settling time is within safe bounds
   if (settlingTime < MIN_SETTLE_TIME) {
     settlingTime = MIN_SETTLE_TIME;
   } else if (settlingTime > MAX_SETTLE_TIME) {
     settlingTime = MAX_SETTLE_TIME;
   }
-  
+
   return settlingTime;
 }
 
@@ -138,10 +138,10 @@ void moveServoToAngle(int angle) {
   if (angle < MIN_ANGLE || angle > MAX_ANGLE) {
     return;  // Reject invalid angles to protect servo hardware
   }
-  
+
   // Calculate dynamic settling time based on movement distance
   int settlingTime = calculateSettlingTime(angle);
-  
+
   sonarServo.write(angle);
   currentServoPosition = angle;  // Update position tracker
   delay(settlingTime);  // SG90 datasheet-compliant dynamic settling time
@@ -169,7 +169,7 @@ int getSensorTime() {
  *
  * Returns the lower limit of the servo's operational range (5°).
  * Provides 5° safety margin from SG90's absolute minimum (0°)
- * for reliable operation while maximizing radar coverage.
+ * for reliable operation while maximizing sonar coverage.
  */
 int getMinAngle() {
   return MIN_ANGLE;
@@ -181,7 +181,7 @@ int getMinAngle() {
  *
  * Returns the upper limit of the servo's operational range (175°).
  * Provides 5° safety margin from SG90's absolute maximum (180°)
- * for reliable operation while maximizing radar coverage.
+ * for reliable operation while maximizing sonar coverage.
  */
 int getMaxAngle() {
   return MAX_ANGLE;
