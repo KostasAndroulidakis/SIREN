@@ -1,8 +1,12 @@
 # SIREN
 
+Sonic Imaging for Range Exploration and Navigation
+
 ![SIREN Logo](siren-logo.png)
 
-A minimal radar system built from first principles.
+## Overview
+
+A minimal sonar system built from first principles.
 
 An ultrasonic sensor sweeps 180 degrees on a servo motor, measuring distances.
 
