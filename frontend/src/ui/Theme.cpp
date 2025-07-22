@@ -176,7 +176,7 @@ void Theme::applySecondaryButtonStyle(QWidget* button)
             QPushButton:pressed {
                 background-color: %3;
             }
-        )").arg(PRIMARY_BACKGROUND, SECONDARY_ACCENT, "#CC3300", MONOSPACE_FONT);
+        )").arg(PRIMARY_BACKGROUND, SECONDARY_ACCENT, SECONDARY_PRESSED, MONOSPACE_FONT);
 
         button->setStyleSheet(style);
     }
@@ -203,7 +203,7 @@ void Theme::applyDangerButtonStyle(QWidget* button)
             QPushButton:pressed {
                 background-color: %3;
             }
-        )").arg(PRIMARY_BACKGROUND, DANGER_COLOR, "#CC0000", MONOSPACE_FONT);
+        )").arg(PRIMARY_BACKGROUND, DANGER_COLOR, DANGER_PRESSED, MONOSPACE_FONT);
 
         button->setStyleSheet(style);
     }

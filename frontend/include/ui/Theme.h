@@ -118,8 +118,10 @@ private:
 
     static constexpr const char* PRIMARY_ACCENT = "#00FFFF";        // Cyan (main color)
     static constexpr const char* SECONDARY_ACCENT = "#FF4500";      // Orange-red
+    static constexpr const char* SECONDARY_PRESSED = "#CC3300";     // Dark orange-red (pressed)
     static constexpr const char* SUCCESS_COLOR = "#00FF00";         // Green (connected)
     static constexpr const char* DANGER_COLOR = "#FF0000";          // Red (disconnected)
+    static constexpr const char* DANGER_PRESSED = "#CC0000";        // Dark red (pressed)
     static constexpr const char* WARNING_COLOR = "#FFFF00";         // Yellow (warning)
 
     static constexpr const char* PRIMARY_TEXT = "#FFFFFF";          // White text
