@@ -26,8 +26,8 @@ SonarVisualizationWidget::SonarVisualizationWidget(QWidget* parent)
 {
     initializeComponents();
 
-    // Set minimum size
-    setMinimumSize(MIN_WIDGET_SIZE, MIN_WIDGET_SIZE);
+    // Set sonar display size
+    setFixedSize(SONAR_DISPLAY_WIDTH, SONAR_DISPLAY_HEIGHT);
 
     // Enable painting
     setAttribute(Qt::WA_OpaquePaintEvent);
@@ -47,8 +47,8 @@ void SonarVisualizationWidget::initializeComponents()
     connect(m_animationController.get(), &visualization::SonarAnimationController::angleChanged,
             this, [this](std::uint16_t) { update(); });
 
-    // Start animation
-    m_animationController->start();
+    // DO NOT start automatic animation - only use real servo data
+    // m_animationController->start();
 }
 
 void SonarVisualizationWidget::updateSonarData(const data::SonarDataPoint& sonarData)
@@ -252,33 +252,10 @@ void SonarVisualizationWidget::drawSweepLine(QPainter& painter) const
 {
     const std::uint16_t sweepAngle = m_animationController->getCurrentAngle();
 
-    // Draw sweep line
+    // Draw sweep line only (no trailing effect)
     painter.setPen(QPen(QColor(colors::SWEEP_LINE), SWEEP_LINE_WIDTH));
     const QPoint sweepEnd = m_coordinateConverter->polarToScreen(sweepAngle, DISPLAY_MAX_DISTANCE);
     painter.drawLine(m_centerPoint, sweepEnd);
-
-    // Draw sweep trail (fading line)
-    const int trailAngles = 5;
-    for (int i = 1; i <= trailAngles; ++i) {
-        int trailAngle = sweepAngle;
-
-        if (m_animationController->getCurrentDirection() ==
-            visualization::SonarAnimationController::SweepDirection::FORWARD) {
-            trailAngle -= i * 2;
-        } else {
-            trailAngle += i * 2;
-        }
-
-        if (trailAngle >= 0 && trailAngle <= SERVO_MAX_ANGLE) {
-            QColor trailColor(colors::SWEEP_TRAIL);
-            trailColor.setAlphaF(1.0 - (i / static_cast<double>(trailAngles + 1)));
-            painter.setPen(QPen(trailColor, SWEEP_LINE_WIDTH - 1));
-
-            const QPoint trailEnd = m_coordinateConverter->polarToScreen(
-                static_cast<std::uint16_t>(trailAngle), DISPLAY_MAX_DISTANCE);
-            painter.drawLine(m_centerPoint, trailEnd);
-        }
-    }
 }
 
 void SonarVisualizationWidget::drawTitle(QPainter& painter) const

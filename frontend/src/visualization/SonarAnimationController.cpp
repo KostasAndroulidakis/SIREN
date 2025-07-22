@@ -147,8 +147,8 @@ void SonarAnimationController::syncWithServoPosition(std::uint16_t servoAngle)
         clampedAngle = SERVO_MAX_ANGLE;
     }
 
-    // Update direction based on target change
-    if (clampedAngle != m_targetAngle) {
+    // Update direction based on angle change
+    if (clampedAngle != m_currentAngle) {
         if (clampedAngle > m_currentAngle) {
             if (m_currentDirection != SweepDirection::FORWARD) {
                 m_currentDirection = SweepDirection::FORWARD;
@@ -161,16 +161,13 @@ void SonarAnimationController::syncWithServoPosition(std::uint16_t servoAngle)
             }
         }
 
-        // Set new target for smooth interpolation
+        // Immediately snap to servo position (no interpolation delay)
+        m_currentAngle = clampedAngle;
         m_targetAngle = clampedAngle;
-        m_isInterpolating = true;
-
-        // Ensure animation timer is running for smooth movement
-        if (!m_isAnimating) {
-            m_isAnimating = true;
-            m_lastUpdateTime = QDateTime::currentMSecsSinceEpoch();
-            m_animationTimer->start();
-        }
+        m_isInterpolating = false;
+        
+        // Emit immediate change
+        emit angleChanged(m_currentAngle);
     }
 }
 

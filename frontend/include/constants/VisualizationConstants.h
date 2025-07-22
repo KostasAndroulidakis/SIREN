@@ -12,7 +12,9 @@ namespace constants {
 namespace visualization {
 
 // Display geometry constants
-constexpr int MIN_WIDGET_SIZE = 400;
+constexpr int SONAR_DISPLAY_WIDTH = 1080;   // Sonar display widget width
+constexpr int SONAR_DISPLAY_HEIGHT = 720;   // Sonar display widget height
+constexpr int MIN_WIDGET_SIZE = 400;         // Minimum size fallback
 constexpr int DISPLAY_MARGIN = 40;
 constexpr int DISPLAY_PADDING = 20;
 
