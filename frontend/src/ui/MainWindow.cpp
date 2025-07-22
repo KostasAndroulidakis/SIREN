@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget* parent)
 void MainWindow::initializeUI()
 {
     // Set window properties
-    setWindowTitle("SIREN - Sonar Detection System");
+    setWindowTitle("SIREN");
     resize(constants::layout::WINDOW_WIDTH, constants::layout::WINDOW_HEIGHT);
     setMinimumSize(constants::layout::MIN_WINDOW_WIDTH, constants::layout::MIN_WINDOW_HEIGHT);
 
@@ -96,7 +96,7 @@ void MainWindow::createPanels()
     statusLayout->addWidget(m_connectionStatus);
     statusLayout->addStretch(); // Push connection status to the left
 
-    // Add sonar data widget to data panel
+    // Add sonar data widget to data panel (clean rebuild)
     QVBoxLayout* dataLayout = new QVBoxLayout(dataPanel);
     dataLayout->setContentsMargins(
         constants::layout::PANEL_MARGIN,
@@ -104,8 +104,9 @@ void MainWindow::createPanels()
         constants::layout::PANEL_MARGIN,
         constants::layout::PANEL_MARGIN
     );
+    
     dataLayout->addWidget(m_sonarDataWidget);
-    dataLayout->addStretch(); // Push sonar data to the top
+    dataLayout->addStretch(); // Push content to the top
 
     // Add sonar visualization to sonar panel
     QVBoxLayout* sonarLayout = new QVBoxLayout(sonarPanel);
@@ -156,13 +157,14 @@ void MainWindow::initializeWebSocketClient()
     // Connect to sonar data messages
     connect(m_webSocketClient, &Network::IWebSocketClient::textMessageReceived,
             this, [this](const QString& message) {
+                qDebug() << "📨 WebSocket message received:" << message;
                 // Parse incoming sonar data
                 data::SonarDataPoint sonarData;
                 const auto parseResult = data::SonarDataParser::parseJsonText(message, sonarData);
 
                 if (parseResult == data::SonarDataParser::ParseResult::SUCCESS) {
                     // Successfully parsed sonar data
-                    qDebug() << "Sonar data received:" << sonarData.toString();
+                    qDebug() << "✅ Sonar data received:" << sonarData.toString();
 
                     // Update sonar data widget (SRP: only displays data)
                     m_sonarDataWidget->updateSonarData(sonarData);
@@ -172,7 +174,7 @@ void MainWindow::initializeWebSocketClient()
                 } else {
                     // Log parsing errors for debugging
                     const QString errorDesc = data::SonarDataParser::getErrorDescription(parseResult);
-                    qDebug() << "Failed to parse sonar data:" << errorDesc << "Message:" << message;
+                    qDebug() << "❌ Failed to parse sonar data:" << errorDesc << "Message:" << message;
                 }
             });
 

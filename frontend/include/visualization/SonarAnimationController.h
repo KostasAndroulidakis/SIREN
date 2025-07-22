@@ -116,7 +116,7 @@ public:
 
     /**
      * @brief Synchronize cursor with actual servo position
-     * @param servoAngle Current servo angle in degrees (5-175)
+     * @param servoAngle Current servo angle in degrees from backend
      * 
      * This method synchronizes the display cursor with the real servo motor position.
      * It overrides any simulated animation and tracks the actual hardware position.
@@ -167,10 +167,6 @@ private:
     // Display range (full semicircle shown)
     static constexpr std::uint16_t DISPLAY_MIN_ANGLE = 0;
     static constexpr std::uint16_t DISPLAY_MAX_ANGLE = 180;
-    
-    // Servo operating range (actual hardware limits)
-    static constexpr std::uint16_t SERVO_MIN_ANGLE = 5;   // Firmware safety limits
-    static constexpr std::uint16_t SERVO_MAX_ANGLE = 175; // Firmware safety limits
     
     // Smooth interpolation
     static constexpr double INTERPOLATION_SPEED = 120.0;  // degrees per second for smooth tracking

@@ -54,9 +54,9 @@ void SonarAnimationController::resume()
 
 void SonarAnimationController::reset()
 {
-    m_currentAngle = SERVO_MIN_ANGLE;  // Start at actual servo minimum
-    m_targetAngle = SERVO_MIN_ANGLE;   // Reset target too
-    m_isInterpolating = false;         // Stop any interpolation
+    m_currentAngle = DISPLAY_MIN_ANGLE;  // Start at display minimum
+    m_targetAngle = DISPLAY_MIN_ANGLE;   // Reset target too
+    m_isInterpolating = false;           // Stop any interpolation
     m_currentDirection = SweepDirection::FORWARD;
     emit angleChanged(m_currentAngle);
     emit directionChanged(m_currentDirection);
@@ -107,18 +107,18 @@ void SonarAnimationController::updateAnimation()
         if (m_currentDirection == SweepDirection::FORWARD) {
             newAngle += deltaAngle;
             
-            // Check if we've reached the servo maximum
-            if (newAngle >= static_cast<double>(SERVO_MAX_ANGLE)) {
-                newAngle = static_cast<double>(SERVO_MAX_ANGLE);
+            // Check if we've reached the display maximum
+            if (newAngle >= static_cast<double>(DISPLAY_MAX_ANGLE)) {
+                newAngle = static_cast<double>(DISPLAY_MAX_ANGLE);
                 m_currentDirection = SweepDirection::BACKWARD;
                 emit directionChanged(m_currentDirection);
             }
         } else {
             newAngle -= deltaAngle;
             
-            // Check if we've reached the servo minimum
-            if (newAngle <= static_cast<double>(SERVO_MIN_ANGLE)) {
-                newAngle = static_cast<double>(SERVO_MIN_ANGLE);
+            // Check if we've reached the display minimum
+            if (newAngle <= static_cast<double>(DISPLAY_MIN_ANGLE)) {
+                newAngle = static_cast<double>(DISPLAY_MIN_ANGLE);
                 m_currentDirection = SweepDirection::FORWARD;
                 emit directionChanged(m_currentDirection);
                 emit sweepCycleCompleted();
@@ -139,31 +139,26 @@ void SonarAnimationController::updateAnimation()
 
 void SonarAnimationController::syncWithServoPosition(std::uint16_t servoAngle)
 {
-    // Clamp to actual servo operating range (5-175)
-    std::uint16_t clampedAngle = servoAngle;
-    if (clampedAngle < SERVO_MIN_ANGLE) {
-        clampedAngle = SERVO_MIN_ANGLE;
-    } else if (clampedAngle > SERVO_MAX_ANGLE) {
-        clampedAngle = SERVO_MAX_ANGLE;
-    }
-
+    // Accept actual servo angle from backend without clamping
+    // Backend/firmware handles its own safety limits
+    
     // Update direction based on angle change
-    if (clampedAngle != m_currentAngle) {
-        if (clampedAngle > m_currentAngle) {
+    if (servoAngle != m_currentAngle) {
+        if (servoAngle > m_currentAngle) {
             if (m_currentDirection != SweepDirection::FORWARD) {
                 m_currentDirection = SweepDirection::FORWARD;
                 emit directionChanged(m_currentDirection);
             }
-        } else if (clampedAngle < m_currentAngle) {
+        } else if (servoAngle < m_currentAngle) {
             if (m_currentDirection != SweepDirection::BACKWARD) {
                 m_currentDirection = SweepDirection::BACKWARD;
                 emit directionChanged(m_currentDirection);
             }
         }
 
-        // Immediately snap to servo position (no interpolation delay)
-        m_currentAngle = clampedAngle;
-        m_targetAngle = clampedAngle;
+        // Immediately snap to actual servo position
+        m_currentAngle = servoAngle;
+        m_targetAngle = servoAngle;
         m_isInterpolating = false;
         
         // Emit immediate change

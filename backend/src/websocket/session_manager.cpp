@@ -51,9 +51,6 @@ std::shared_ptr<WebSocketSession> SessionManager::createSession(
         // Notify session creation
         notifySessionEvent(endpoint, true);
 
-        // Check if cleanup is needed
-        checkPeriodicCleanup();
-
         std::cout << "[" << COMPONENT_NAME << "] Created session for " << endpoint
                   << " (total: " << getActiveSessionCount() << ")" << std::endl;
 

@@ -34,7 +34,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 qt_add_resources(RESOURCES resources/resources.qrc)
 
 # Create executable
-qt_add_executable(SIREN
+qt_add_executable(SIREN_frontend
     src/main.cpp
     src/ui/controls/WindowControlButton.cpp
     src/ui/controls/MinimizeButton.cpp
@@ -82,7 +82,7 @@ qt_add_executable(SIREN
 )
 
 # Link Qt6 libraries including WebSockets
-target_link_libraries(SIREN PRIVATE
+target_link_libraries(SIREN_frontend PRIVATE
     Qt6::Widgets
     Qt6::Gui
     Qt6::Core

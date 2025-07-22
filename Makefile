@@ -4,7 +4,7 @@
 
 CXX = clang++
 CXXFLAGS = -std=c++17 -O3 -Wall -Wextra -DNDEBUG
-TARGET = SIREN_launcher
+TARGET = SIREN
 SOURCE = main.cpp
 
 # macOS M1 optimization
