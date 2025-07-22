@@ -44,8 +44,8 @@ SonarDataParser::ParseResult SonarDataParser::parseMessage(const QJsonObject& js
 
     const QString messageType = jsonMessage[MESSAGE_TYPE_FIELD].toString();
 
-    // Support both "sonar_data" and legacy "sonar_data" for compatibility
-    if (messageType != SONAR_DATA_TYPE && messageType != SONAR_DATA_TYPE) {
+    // Support both "sonar_data" and legacy "radar_data" for compatibility
+    if (messageType != SONAR_DATA_TYPE && messageType != "radar_data") {
         return ParseResult::UNKNOWN_MESSAGE;
     }
 
