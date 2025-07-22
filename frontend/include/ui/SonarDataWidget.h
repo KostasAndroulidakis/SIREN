@@ -89,7 +89,7 @@ private:
     /**
      * @brief Apply military theme styling
      */
-    void applyMilitaryTheme();
+    void applyTheme();
 
     /**
      * @brief Create data display row

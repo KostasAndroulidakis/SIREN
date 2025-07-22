@@ -16,7 +16,7 @@ namespace ui {
  *
  * This class has ONE job: Create panel widgets with proper structure.
  * It does NOT style panels, manage their lifecycle, or handle their behavior.
- * Styling is handled by MilitaryTheme, behavior by individual panel classes.
+ * Styling is handled by Theme, behavior by individual panel classes.
  *
  * MISRA C++ Compliance:
  * - Rule 12.4.1: No dynamic allocation after initialization

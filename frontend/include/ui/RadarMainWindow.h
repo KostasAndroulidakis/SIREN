@@ -72,7 +72,7 @@ private:
     void setupMenuBar();
     void setupCentralWidget();
     void setupStatusBar();
-    void applyMilitaryTheme();
+    void applyTheme();
 
     // UI Update methods
     void updateConnectionStatus(bool connected);

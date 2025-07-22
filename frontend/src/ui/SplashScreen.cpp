@@ -34,7 +34,7 @@ SplashScreen::SplashScreen(QWidget* parent)
 
     if (m_initializationComplete) {
         m_logoLoaded = loadLogo();
-        applyMilitaryTheme();
+        applyTheme();
 
         if (!m_logoLoaded) {
             createFallbackDisplay();
@@ -137,7 +137,7 @@ bool SplashScreen::loadLogo()
     return true;
 }
 
-void SplashScreen::applyMilitaryTheme()
+void SplashScreen::applyTheme()
 {
     // Apply MIL-STD-1472 compliant styling
     const QString militaryStyleSheet = R"(

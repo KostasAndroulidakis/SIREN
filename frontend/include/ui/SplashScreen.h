@@ -108,7 +108,7 @@ private:
     /**
      * @brief Apply military-standard styling (MIL-STD-1472)
      */
-    void applyMilitaryTheme();
+    void applyTheme();
 
     /**
      * @brief Create fallback display if logo fails to load

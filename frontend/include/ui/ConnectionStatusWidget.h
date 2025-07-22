@@ -82,7 +82,7 @@ private:
     /**
      * @brief Apply military theme styling
      */
-    void applyMilitaryTheme();
+    void applyTheme();
 
     /**
      * @brief Get status text for given state

@@ -27,7 +27,7 @@ SonarDataWidget::SonarDataWidget(QWidget* parent)
     , m_dataReceiving(false)
 {
     initializeUI();
-    applyMilitaryTheme();
+    applyTheme();
     clearData();
 }
 
@@ -139,7 +139,7 @@ void SonarDataWidget::initializeUI()
     m_mainLayout->addStretch(); // Push content to top
 }
 
-void SonarDataWidget::applyMilitaryTheme()
+void SonarDataWidget::applyTheme()
 {
     // Apply military theme styling
     const QString widgetStyle = QString(
