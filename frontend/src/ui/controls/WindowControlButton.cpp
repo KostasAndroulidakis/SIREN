@@ -58,7 +58,7 @@ void WindowControlButton::initializeButton()
 
     // Set up opacity effect for animations
     setGraphicsEffect(m_opacityEffect.get());
-    m_opacityEffect->setOpacity(1.0);
+    m_opacityEffect->setOpacity(OPACITY_NORMAL);
 
     // Configure state animation
     m_stateAnimation->setTargetObject(m_opacityEffect.get());
@@ -213,7 +213,7 @@ void WindowControlButton::enterEvent(QEnterEvent* event)
     if (isEnabled()) {
         m_isHovered = true;
         updateButtonState("hover");
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
     }
     QPushButton::enterEvent(event);
 }
@@ -227,7 +227,7 @@ void WindowControlButton::leaveEvent(QEvent* event)
         } else {
             updateButtonState("normal");
         }
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
     }
     QPushButton::leaveEvent(event);
 }
@@ -237,7 +237,7 @@ void WindowControlButton::mousePressEvent(QMouseEvent* event)
     if (isEnabled() && event->button() == Qt::LeftButton) {
         m_isPressed = true;
         updateButtonState("pressed");
-        createStateTransition(0.8);
+        createStateTransition(OPACITY_PRESSED);
     }
     QPushButton::mousePressEvent(event);
 }
@@ -253,7 +253,7 @@ void WindowControlButton::mouseReleaseEvent(QMouseEvent* event)
         } else {
             updateButtonState("normal");
         }
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
     }
     QPushButton::mouseReleaseEvent(event);
 }
@@ -263,7 +263,7 @@ void WindowControlButton::focusInEvent(QFocusEvent* event)
     if (isEnabled()) {
         m_isFocused = true;
         updateButtonState("focus");
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
     }
     QPushButton::focusInEvent(event);
 }
@@ -277,7 +277,7 @@ void WindowControlButton::focusOutEvent(QFocusEvent* event)
         } else {
             updateButtonState("normal");
         }
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
     }
     QPushButton::focusOutEvent(event);
 }
@@ -287,7 +287,7 @@ void WindowControlButton::keyPressEvent(QKeyEvent* event)
     if (isEnabled() && (event->key() == Qt::Key_Return || event->key() == Qt::Key_Space)) {
         m_isPressed = true;
         updateButtonState("pressed");
-        createStateTransition(0.8);
+        createStateTransition(OPACITY_PRESSED);
     }
     QPushButton::keyPressEvent(event);
 }
@@ -297,7 +297,7 @@ void WindowControlButton::keyReleaseEvent(QKeyEvent* event)
     if (isEnabled() && (event->key() == Qt::Key_Return || event->key() == Qt::Key_Space)) {
         m_isPressed = false;
         updateButtonState("focus");
-        createStateTransition(1.0);
+        createStateTransition(OPACITY_NORMAL);
 
         // Emit clicked signal for keyboard activation
         emit clicked();

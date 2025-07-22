@@ -157,6 +157,10 @@ protected:
     void paintEvent(QPaintEvent* event) override;
 
 private:
+    // MISRA C++ 2023 Compliance: Named constants for opacity values
+    static constexpr double OPACITY_NORMAL = 1.0;    ///< Normal button opacity (fully visible)
+    static constexpr double OPACITY_PRESSED = 0.8;   ///< Pressed button opacity (dimmed feedback)
+
     /**
      * @brief Initialize button appearance and behavior
      */
