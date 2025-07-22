@@ -130,16 +130,11 @@ private:
     // UI Components (managed by Qt parent-child hierarchy)
     QVBoxLayout* m_mainLayout{nullptr};
 
-    // Data display labels
-    QLabel* m_angleLabel{nullptr};
+    // Data display value widgets (labels created in createDataRow)
     QLabel* m_angleValue{nullptr};
-    QLabel* m_distanceLabel{nullptr};
     QLabel* m_distanceValue{nullptr};
-    QLabel* m_timestampLabel{nullptr};
     QLabel* m_timestampValue{nullptr};
-    QLabel* m_qualityLabel{nullptr};
     QLabel* m_qualityIndicator{nullptr};
-    QLabel* m_statusLabel{nullptr};
     QLabel* m_statusIndicator{nullptr};
 
     // Data rows
@@ -157,7 +152,7 @@ private:
     static constexpr int WIDGET_MARGIN = 15;
     static constexpr int ROW_SPACING = 12;
     static constexpr int LABEL_MIN_WIDTH = 100;
-    static constexpr int VALUE_MIN_WIDTH = 150;
+    static constexpr int VALUE_MIN_WIDTH = 200;
     static constexpr int INDICATOR_SIZE = 12;
 
     // Text constants (SSOT for display strings)

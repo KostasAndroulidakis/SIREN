@@ -99,7 +99,6 @@ private:
     [[nodiscard]] static QString getIndicatorColor(ConnectionState state);
 
     // UI Components (managed by Qt parent-child hierarchy)
-    QHBoxLayout* m_layout{nullptr};
     QLabel* m_indicator{nullptr};      // Colored circle indicator
     QLabel* m_statusLabel{nullptr};    // "Connected" / "Disconnected" text
     QLabel* m_addressLabel{nullptr};   // Server address display
@@ -110,8 +109,9 @@ private:
 
     // Display constants (SSOT for widget appearance)
     static constexpr int INDICATOR_SIZE = 16;
-    static constexpr int WIDGET_SPACING = 8;
-    static constexpr int WIDGET_MARGIN = 4;
+    static constexpr int ROW_SPACING = 12;        // Match SonarDataWidget
+    static constexpr int WIDGET_MARGIN = 15;      // Match SonarDataWidget
+    static constexpr int LABEL_MIN_WIDTH = 100;   // Match SonarDataWidget
     static constexpr const char* DISCONNECTED_TEXT = "Disconnected";
     static constexpr const char* CONNECTING_TEXT = "Connecting...";
     static constexpr const char* CONNECTED_TEXT = "Connected";

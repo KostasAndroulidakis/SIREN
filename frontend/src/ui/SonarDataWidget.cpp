@@ -13,15 +13,10 @@ namespace ui {
 SonarDataWidget::SonarDataWidget(QWidget* parent)
     : QWidget(parent)
     , m_mainLayout(nullptr)
-    , m_angleLabel(nullptr)
     , m_angleValue(nullptr)
-    , m_distanceLabel(nullptr)
     , m_distanceValue(nullptr)
-    , m_timestampLabel(nullptr)
     , m_timestampValue(nullptr)
-    , m_qualityLabel(nullptr)
     , m_qualityIndicator(nullptr)
-    , m_statusLabel(nullptr)
     , m_statusIndicator(nullptr)
     , m_angleRow(nullptr)
     , m_distanceRow(nullptr)
@@ -112,24 +107,14 @@ void SonarDataWidget::initializeUI()
     m_mainLayout->setContentsMargins(WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN);
     m_mainLayout->setSpacing(ROW_SPACING);
 
-    // Create labels and values
-    m_angleLabel = new QLabel(ANGLE_LABEL_TEXT, this);
+    // Create value widgets only - labels are created in createDataRow
     m_angleValue = new QLabel(NO_DATA_TEXT, this);
-    m_distanceLabel = new QLabel(DISTANCE_LABEL_TEXT, this);
     m_distanceValue = new QLabel(NO_DATA_TEXT, this);
-    m_timestampLabel = new QLabel(TIMESTAMP_LABEL_TEXT, this);
     m_timestampValue = new QLabel(NO_DATA_TEXT, this);
-    m_qualityLabel = new QLabel(QUALITY_LABEL_TEXT, this);
     m_qualityIndicator = new QLabel(INVALID_TEXT, this);
-    m_statusLabel = new QLabel(STATUS_LABEL_TEXT, this);
     m_statusIndicator = new QLabel(NO_SIGNAL_TEXT, this);
 
-    // Set label properties
-    m_angleLabel->setMinimumWidth(LABEL_MIN_WIDTH);
-    m_distanceLabel->setMinimumWidth(LABEL_MIN_WIDTH);
-    m_timestampLabel->setMinimumWidth(LABEL_MIN_WIDTH);
-    m_qualityLabel->setMinimumWidth(LABEL_MIN_WIDTH);
-    m_statusLabel->setMinimumWidth(LABEL_MIN_WIDTH);
+    // Label properties are set in createDataRow function
 
     // Set value properties
     m_angleValue->setMinimumWidth(VALUE_MIN_WIDTH);
@@ -184,7 +169,7 @@ QFrame* SonarDataWidget::createDataRow(const QString& label, QWidget* valueWidge
     QFrame* row = new QFrame(this);
     QHBoxLayout* layout = new QHBoxLayout(row);
     layout->setContentsMargins(5, 2, 5, 2);
-    layout->setSpacing(15);  // Increased spacing to prevent overlap
+    layout->setSpacing(20);  // Optimal spacing for readability
 
     // Create label
     QLabel* labelWidget = new QLabel(label, row);
@@ -195,7 +180,7 @@ QFrame* SonarDataWidget::createDataRow(const QString& label, QWidget* valueWidge
 
     // Set value widget properties
     valueWidget->setMinimumWidth(VALUE_MIN_WIDTH);
-    valueWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    valueWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
 
     // Set alignment if it's a QLabel
     QLabel* labelValueWidget = qobject_cast<QLabel*>(valueWidget);
@@ -217,7 +202,7 @@ void SonarDataWidget::updateDataQuality(bool isValid, bool isWithinLimits)
         m_qualityIndicator->setText(VALID_TEXT);
         m_qualityIndicator->setStyleSheet(QString("color: %1; font-weight: bold;").arg(VALID_COLOR));
     } else if (isValid && !isWithinLimits) {
-        m_qualityIndicator->setText("Out of Range");
+        m_qualityIndicator->setText("Range Error");
         m_qualityIndicator->setStyleSheet(QString("color: %1; font-weight: bold;").arg(WARNING_COLOR));
     } else {
         m_qualityIndicator->setText(INVALID_TEXT);

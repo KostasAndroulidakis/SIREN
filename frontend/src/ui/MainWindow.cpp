@@ -85,18 +85,9 @@ void MainWindow::createPanels()
     Theme::applyDataPanelStyle(dataPanel);
     Theme::applyPerformancePanelStyle(performancePanel);
 
-    // Add connection status to status panel
-    QHBoxLayout* statusLayout = new QHBoxLayout(statusPanel);
-    statusLayout->setContentsMargins(
-        constants::layout::PANEL_MARGIN,
-        constants::layout::PANEL_MARGIN,
-        constants::layout::PANEL_MARGIN,
-        constants::layout::PANEL_MARGIN
-    );
-    statusLayout->addWidget(m_connectionStatus);
-    statusLayout->addStretch(); // Push connection status to the left
+    // Status panel left empty (connection status moved to data panel)
 
-    // Add sonar data widget to data panel (clean rebuild)
+    // Add connection status and sonar data widget to data panel
     QVBoxLayout* dataLayout = new QVBoxLayout(dataPanel);
     dataLayout->setContentsMargins(
         constants::layout::PANEL_MARGIN,
@@ -105,7 +96,8 @@ void MainWindow::createPanels()
         constants::layout::PANEL_MARGIN
     );
     
-    dataLayout->addWidget(m_sonarDataWidget);
+    dataLayout->addWidget(m_connectionStatus);  // Connection status at top of right panel
+    dataLayout->addWidget(m_sonarDataWidget);   // Data below connection status
     dataLayout->addStretch(); // Push content to the top
 
     // Add sonar visualization to sonar panel

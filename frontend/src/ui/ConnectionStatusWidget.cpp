@@ -12,7 +12,6 @@ namespace ui {
 
 ConnectionStatusWidget::ConnectionStatusWidget(QWidget* parent)
     : QWidget(parent)
-    , m_layout(nullptr)
     , m_indicator(nullptr)
     , m_statusLabel(nullptr)
     , m_addressLabel(nullptr)
@@ -59,47 +58,91 @@ void ConnectionStatusWidget::updateServerAddress(const QString& address)
     m_serverAddress = address;
 
     if (m_addressLabel != nullptr) {
-        m_addressLabel->setText(QString("Server: %1").arg(address));
+        m_addressLabel->setText(address); // Just show address without "Server:" prefix
     }
 }
 
 void ConnectionStatusWidget::initializeUI()
 {
-    // Create main horizontal layout
-    m_layout = new QHBoxLayout(this);
-    m_layout->setContentsMargins(WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN);
-    m_layout->setSpacing(WIDGET_SPACING);
+    // Create main vertical layout to match data widget style
+    QVBoxLayout* mainLayout = new QVBoxLayout(this);
+    mainLayout->setContentsMargins(WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN, WIDGET_MARGIN);
+    mainLayout->setSpacing(ROW_SPACING); // Match SonarDataWidget row spacing
 
-    // Create indicator (colored circle)
+    // Create server address row (top) - no frame styling like data widget
+    QFrame* serverRow = new QFrame(this);
+    QHBoxLayout* serverLayout = new QHBoxLayout(serverRow);
+    serverLayout->setContentsMargins(5, 2, 5, 2); // Match SonarDataWidget row margins
+    serverLayout->setSpacing(20); // Match SonarDataWidget spacing
+    
+    QLabel* serverLabel = new QLabel("Server:", this);
+    serverLabel->setMinimumWidth(LABEL_MIN_WIDTH); // Match SonarDataWidget exactly
+    serverLabel->setMaximumWidth(LABEL_MIN_WIDTH);
+    serverLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    
+    m_addressLabel = new QLabel(m_serverAddress, this); // Just show address without "Server:" prefix
+    m_addressLabel->setObjectName("connectionAddressText");
+    m_addressLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    
+    serverLayout->addWidget(serverLabel, 0);
+    serverLayout->addWidget(m_addressLabel, 1);
+    
+    // Create connection status row (bottom) - no frame styling like data widget
+    QFrame* statusRow = new QFrame(this);
+    QHBoxLayout* statusLayout = new QHBoxLayout(statusRow);
+    statusLayout->setContentsMargins(5, 2, 5, 2);
+    statusLayout->setSpacing(20); // Match SonarDataWidget spacing exactly
+    
+    QLabel* connectionLabel = new QLabel("Status:", this);
+    connectionLabel->setMinimumWidth(LABEL_MIN_WIDTH);
+    connectionLabel->setMaximumWidth(LABEL_MIN_WIDTH);
+    connectionLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    
+    // Create indicator and status text in a horizontal container
+    QWidget* statusContainer = new QWidget(this);
+    QHBoxLayout* statusContainerLayout = new QHBoxLayout(statusContainer);
+    statusContainerLayout->setContentsMargins(0, 0, 0, 0);
+    statusContainerLayout->setSpacing(8); // Keep small spacing for indicator-text pair
+    
     m_indicator = new QLabel(this);
     m_indicator->setFixedSize(INDICATOR_SIZE, INDICATOR_SIZE);
     m_indicator->setObjectName("connectionIndicator");
-
-    // Create status text label
+    
     m_statusLabel = new QLabel(DISCONNECTED_TEXT, this);
     m_statusLabel->setObjectName("connectionStatusText");
-
-    // Create server address label
-    m_addressLabel = new QLabel(QString("Server: %1").arg(m_serverAddress), this);
-    m_addressLabel->setObjectName("connectionAddressText");
-
-    // Add widgets to layout
-    m_layout->addWidget(m_indicator);
-    m_layout->addWidget(m_statusLabel);
-    m_layout->addStretch(); // Push address to the right
-    m_layout->addWidget(m_addressLabel);
-
-    setLayout(m_layout);
+    m_statusLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    
+    statusContainerLayout->addWidget(m_indicator);
+    statusContainerLayout->addWidget(m_statusLabel);
+    statusContainerLayout->addStretch();
+    
+    statusLayout->addWidget(connectionLabel, 0);
+    statusLayout->addWidget(statusContainer, 1);
+    
+    // Add rows to main layout
+    mainLayout->addWidget(serverRow);
+    mainLayout->addWidget(statusRow);
+    
+    setLayout(mainLayout);
 }
 
 void ConnectionStatusWidget::applyMilitaryTheme()
 {
-    // Apply military theme styling
-    Theme::applyConnectionIndicatorStyle(this);
-
-    // Additional widget-specific styling
+    // Apply military theme styling to match SonarDataWidget appearance
     const QString widgetStyle = QString(
         "ConnectionStatusWidget {"
+        "    background-color: transparent;"
+        "    border: none;"
+        "}"
+        "QLabel {"
+        "    color: #FFFFFF;"
+        "    font-family: 'Courier New', monospace;"
+        "    font-size: 13px;"
+        "    background-color: transparent;"
+        "    padding: 2px;"
+        "    margin: 1px;"
+        "}"
+        "QFrame {"
         "    background-color: transparent;"
         "    border: none;"
         "}"
@@ -107,12 +150,20 @@ void ConnectionStatusWidget::applyMilitaryTheme()
         "    color: #FFFFFF;"
         "    font-family: 'Courier New', monospace;"
         "    font-weight: bold;"
-        "    font-size: 14px;"
+        "    font-size: 13px;"
+        "    background-color: transparent;"
+        "    border: none;"
         "}"
         "#connectionAddressText {"
         "    color: #CCCCCC;"
         "    font-family: 'Courier New', monospace;"
-        "    font-size: 12px;"
+        "    font-size: 13px;"
+        "    background-color: transparent;"
+        "    border: none;"
+        "}"
+        "#connectionIndicator {"
+        "    background-color: transparent;"
+        "    border: none;"
         "}"
     );
 
