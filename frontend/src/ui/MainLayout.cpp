@@ -3,6 +3,7 @@
 // Single Responsibility: Widget Arrangement ONLY
 
 #include "ui/MainLayout.h"
+#include "constants/LayoutConstants.h"
 
 namespace siren {
 namespace ui {
@@ -62,7 +63,8 @@ void MainLayout::setControlWidget(QWidget* widget)
     m_controlWidget = widget;
 
     if (widget != nullptr) {
-        // Insert at position 0 (left)
+        // Set fixed width for perfect centering and insert at position 0 (left)
+        widget->setFixedWidth(constants::layout::CONTROL_PANEL_WIDTH);
         m_centerLayout->insertWidget(0, widget, 0); // No stretch
     }
 }
@@ -93,7 +95,8 @@ void MainLayout::setDataWidget(QWidget* widget)
     m_dataWidget = widget;
 
     if (widget != nullptr) {
-        // Add to right (end of layout)
+        // Set fixed width for perfect centering and add to right (end of layout)
+        widget->setFixedWidth(constants::layout::DATA_PANEL_WIDTH);
         m_centerLayout->addWidget(widget, 0); // No stretch
     }
 }

@@ -34,12 +34,13 @@ constexpr std::uint16_t MIN_WINDOW_HEIGHT = 800;        // Minimum window height
 
 // Panel Dimensions (optimized for 1920x1080)
 constexpr std::uint16_t STATUS_PANEL_HEIGHT = 60;       // Top status bar
-constexpr std::uint16_t CONTROL_PANEL_WIDTH = 320;      // Left control panel (16.7% of width)
-constexpr std::uint16_t DATA_PANEL_WIDTH = 420;         // Right data panel - increased for text spacing
+constexpr std::uint16_t SIDE_PANEL_WIDTH = 300;         // Equal width for left and right panels
+constexpr std::uint16_t CONTROL_PANEL_WIDTH = SIDE_PANEL_WIDTH;  // Left control panel
+constexpr std::uint16_t DATA_PANEL_WIDTH = SIDE_PANEL_WIDTH;     // Right data panel
 constexpr std::uint16_t PERFORMANCE_PANEL_HEIGHT = 140; // Bottom performance panel
 
 // Center sonar display area (calculated)
-// Width: 1920 - 320 - 420 = 1180px
+// Width: 1920 - 300 - 300 = 1320px (perfectly centered)
 // Height: 1080 - 60 - 140 = 880px
 
 // Spacing and Margins
