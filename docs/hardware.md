@@ -51,3 +51,17 @@
 🟢 DATA         ──→  UNO D4
 ⚫ GND          ──→  Breadboard (-)
 ```
+
+### Passive Buzzer
+
+```text
+🔴 +            ──→  UNO D8
+⚫ -            ──→  Breadboard (-)
+```
+
+### Red LED
+
+```text
+🔴 +            ──→  UNO D13
+⚫ -            ──→  Breadboard (-)
+```
