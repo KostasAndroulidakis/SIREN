@@ -11,8 +11,6 @@
 
 // Military sonar performance configuration (Hardware compliant)
 constexpr int SWEEP_DELAY_MS = 50;      ///< Minimal delay between cycles for continuous military operation
-constexpr bool PERFORMANCE_MODE = true; ///< Enable military-grade performance optimizations
-constexpr bool HARDWARE_SAFE_MODE = true; ///< Ensure all operations respect SG90 and HC-SR04 limits
 
 // Function declarations - implemented in separate module files
 void initMotor();                           ///< Initialize servo motor (motor.ino)
