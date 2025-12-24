@@ -30,12 +30,12 @@ float Ultrasonic::getDistance(float soundSpeed) {
     // 2. Send HIGH pulse for at least 10μs
     // 3. Sensor will emit 8 pulses at 40kHz
 
-    digitalWrite(TRIG_PIN, LOW);
+    PORTD &= ~(1 << TRIG_PIN);      // TRIG LOW - clear bit
     delayMicroseconds(2);           // Ensure clean LOW state
     
-    digitalWrite(TRIG_PIN, HIGH);
+    PORTD |= (1 << TRIG_PIN);       // TRIG HIGH - set bit
     delayMicroseconds(12);          // >10μs required by datasheet
-    digitalWrite(TRIG_PIN, LOW);
+    PORTD &= ~(1 << TRIG_PIN);      // TRIG LOW
 
     // ECHO MEASUREMENT:
     // pulseIn() returns the duration (in μs) that ECHO pin stays HIGH.
