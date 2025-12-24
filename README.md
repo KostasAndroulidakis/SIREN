@@ -166,6 +166,12 @@ The Arduino `digitalWrite()` function is convenient but slow. It performs multip
 
 Direct port manipulation like `PORTD |= (1 << 2)` compiles to a single assembly instruction, executing in approximately 0.125μs - about 50 times faster. For the ultrasonic sensor trigger sequence, which requires precise timing, this improved consistency in measurements. The tradeoff is reduced portability (code is specific to ATmega328P) and readability, but for a hardware project targeting a specific board, this is acceptable.
 
+### Why use constexpr instead of #define?
+
+C-style `#define` macros are simple text replacement - the preprocessor substitutes values before compilation with no type information. This can lead to subtle bugs: `#define PIN 2` could accidentally be used where a float is expected.
+
+C++ `constexpr` provides type-safe constants evaluated at compile time. By specifying `static constexpr uint8_t TRIG_PIN = 2`, the compiler knows this is an 8-bit unsigned integer, can perform type checking, and optimizes it the same way as a macro - no RAM is used. The `static` keyword prevents duplicate definitions when the header is included in multiple files.
+
 ## What I Learned
 
 This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
