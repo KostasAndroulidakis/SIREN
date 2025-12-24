@@ -59,7 +59,7 @@ void setup() {
     // Initialize serial communication
     // 115200 baud for fast data transmission during sweep
     Serial.begin(SERIAL_BAUD);
-    Serial.println("=== SONAR SYSTEM ===");
+    Serial.println("=== S I R E N ===");
     Serial.println("Sonic Imaging for Range Exploration and Navigation");
     
     // Initialize all components
