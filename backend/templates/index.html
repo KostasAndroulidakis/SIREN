@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sonar Test</title>
+</head>
+<body>
+    <h1>Sonar Data</h1>
+    <div id="data">
+        <p>Angle: <span id="angle">-</span>°</p>
+        <p>Distance: <span id="distance">-</span> cm</p>
+        <p>Humidity: <span id="humidity">-</span> %</p>
+        <p>Temperature (Celsius): <span id="temperatureC">-</span> °C</p>
+        <p>Temperature (Fahrenheit): <span id="temperatureF">-</span> °F</p>
+    </div>
+
+    <script>
+        function fetchData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('angle').textContent = data.angle;
+                    document.getElementById('distance').textContent = data.distance.toFixed(2);
+                    document.getElementById('humidity').textContent = data.humidity.toFixed(1);
+                    document.getElementById('temperatureC').textContent = data.temperatureC.toFixed(1);
+                    document.getElementById('temperatureF').textContent = data.temperatureF.toFixed(1);
+                })
+        }
+        
+        // Poll every 100ms
+        setInterval(fetchData, 100);
+    </script>
+</body>
+</html>
