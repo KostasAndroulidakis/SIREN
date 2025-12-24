@@ -32,7 +32,7 @@ void Alert::init() {
 unsigned int Alert::getIntervalMs(float distance) {
     // BPM increases by 1 for each cm closer
     // At 100cm: 60 BPM, at 11cm: 149 BPM
-    int bpm = BASE_BPM + (int)(ALERT_THRESHOLD - distance);
+    int bpm = BASE_BPM + 2 * (int)(ALERT_THRESHOLD - distance);
     return MS_PER_MINUTE / bpm / 2;  // /2 because we toggle twice per beat
 }
 
