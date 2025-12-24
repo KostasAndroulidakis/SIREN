@@ -2,6 +2,7 @@
 // Orchestrates servo sweep with ultrasonic measurements
 
 #include <Arduino.h>
+#include "Servo.h"
 #include "Scanner.h"
 
 // DEPENDENCY INJECTION:
