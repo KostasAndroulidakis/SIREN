@@ -28,8 +28,8 @@ Firmware (Arduino) <--> Backend (Websocket) <--> Frontend (GUI)
 
 ### Backend
 
-- Language: 
-- Framework:
+- Language: Python
+- Framework: Flask
 - Location: `backend/`
 - Purpose: serial communication, real-time data processing
 
