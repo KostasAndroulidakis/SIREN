@@ -4,6 +4,10 @@
 #include <Arduino.h>
 #include "Alert.h"
 
+// Direct port manipulation for LED
+// D13 = PORTB bit 5 (13 - 8 = 5)
+#define LED_BIT 5
+
 // ZONE THRESHOLDS
 #define ALERT_THRESHOLD 100.0   // cm - below this, warning zone starts
 #define DANGER_THRESHOLD 10.0   // cm - below this, constant alarm
@@ -20,7 +24,7 @@
 void Alert::init() {
     pinMode(LED_PIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
-    digitalWrite(LED_PIN, LOW);
+    PORTB &= ~(1 << 5);   // LED LOW (D13 = PORTB bit 5)
     noTone(BUZZER_PIN);
     active = false;
     state = false;
@@ -59,7 +63,7 @@ void Alert::update(float distance) {
     if (distance <= DANGER_THRESHOLD) {
         active = true;
         state = true;
-        digitalWrite(LED_PIN, HIGH);
+        PORTB |= (1 << 5);    // LED HIGH
         tone(BUZZER_PIN, BUZZER_FREQ);
         return;
     }
@@ -77,7 +81,11 @@ void Alert::update(float distance) {
         lastToggle = now;
         state = !state;
 
-        digitalWrite(LED_PIN, state);
+        if (state) {
+            PORTB |= (1 << 5);    // LED HIGH
+        } else {
+            PORTB &= ~(1 << 5);   // LED LOW
+        }
         
         // Buzzer follows LED state
         if (state) {
@@ -93,7 +101,7 @@ void Alert::stop() {
     if (active) {
         active = false;
         state = false;
-        digitalWrite(LED_PIN, LOW);
+        PORTB &= ~(1 << 5);   // LED LOW
         noTone(BUZZER_PIN);
     }
 }
