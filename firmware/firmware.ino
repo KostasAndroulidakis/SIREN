@@ -59,8 +59,8 @@ void setup() {
     // Initialize serial communication
     // 115200 baud for fast data transmission during sweep
     Serial.begin(SERIAL_BAUD);
-    Serial.println("=== S I R E N ===");
-    Serial.println("Sonic Imaging for Range Exploration and Navigation");
+    Serial.println(F("=== S I R E N ==="));
+    Serial.println(F("Sonic Imaging for Range Exploration and Navigation"));
     
     // Initialize all components
     // Order matters: DHT needs 1 second startup delay
@@ -70,7 +70,7 @@ void setup() {
     alert.init();
     button.init();
     
-    Serial.println("Press button to start/stop");
+    Serial.println(F("Press button to start/stop"));
 }
 
 // ===========================================
@@ -82,12 +82,12 @@ void loop() {
     // Check for button press and toggle scanning state
     if (button.isPressed()) {
         scanning = !scanning;
-        Serial.println(scanning ? "SCAN STARTED" : "SCAN STOPPED");
+        Serial.println(scanning ? F("SCAN STARTED") : F("SCAN STOPPED"));
         
         // Ensure alert is off when stopping
         if (!scanning) {
             // Print CSV header for data parsing
-            Serial.println("angle,distance,humidity,temperatureC,temperatureF");
+            Serial.println(F("angle,distance,humidity,temperatureC,temperatureF"));
         } else {
             alert.stop();
         }
@@ -125,6 +125,6 @@ void loop() {
     // Returns false if interrupted by button press.
     if (!scanner.scan(&envData, soundSpeed)) {
         scanning = false;
-        Serial.println("SCAN STOPPED");
+        Serial.println(F("SCAN STOPPED"));
     }
 }

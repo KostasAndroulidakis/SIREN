@@ -18,7 +18,7 @@ void Button::init() {
     pinMode(BUTTON_PIN, INPUT_PULLUP);  // Active LOW
     lastState = HIGH;           // Assume button starts released
     lastDebounceTime = 0;
-    Serial.println("Button initialized"); 
+    Serial.println(F("Button initialized")); 
 }
 
 bool Button::isPressed() {
@@ -38,10 +38,9 @@ bool Button::isPressed() {
             return true;    // Valid press detected
         }
 
-        // CRITICAL: Don't update lastState here!
-        // If we're within the debounce period, we want to
-        // preserve the transition so it can be detected
-        // once the debounce period expires.
+        // Within debounce period - ignore this press.
+        // We don't update lastState here so that we can
+        // detect a genuine new press after cooldown.
         return false;
     }
     

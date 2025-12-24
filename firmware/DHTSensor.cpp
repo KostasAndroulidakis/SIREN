@@ -21,7 +21,7 @@ void DHTSensor::init() {
     // (datasheet: "pass the unstable status")
     delay(1000);
 
-    Serial.println("DHT11 initialized");
+    Serial.println(F("DHT11 initialized"));
 }
 
 bool DHTSensor::read(THReading* result) {
@@ -44,7 +44,7 @@ bool DHTSensor::read(THReading* result) {
     
     // Check for NaN (sensor communication error)
     if (isnan(h) || isnan(tC) || isnan(tF)) {
-        Serial.println("DHT read failed");
+        Serial.println(F("DHT read failed"));
         result->valid = false;
         return false;
     }
@@ -53,7 +53,7 @@ bool DHTSensor::read(THReading* result) {
     // Values outside this range indicate sensor malfunction
     if (tC < DHT_MIN_TEMP || tC > DHT_MAX_TEMP ||
         h < DHT_MIN_HUMIDITY || h > DHT_MAX_HUMIDITY) {
-        Serial.println("DHT reading out of range");
+        Serial.println(F("DHT reading out of range"));
         result->valid = false;
         return false;
     }
