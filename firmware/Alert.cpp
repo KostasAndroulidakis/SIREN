@@ -25,6 +25,7 @@ void Alert::init() {
     active = false;
     state = false;
     lastToggle = 0;
+    Serial.println("Alert system initialized");
 }
 
 // Calculate milliseconds between toggles for given distance

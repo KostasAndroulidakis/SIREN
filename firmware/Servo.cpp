@@ -8,6 +8,7 @@ void ServoMotor::init() {
     servo.attach(SERVO_PIN);
     servo.write(90);    // Start at center position
     delay(60);          // Allow servo to reach position
+    Serial.println("SG90 initialized");
 }
 
 void ServoMotor::setAngle(int angle) {

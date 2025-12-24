@@ -21,6 +21,7 @@ void Ultrasonic::init() {
     pinMode(TRIG_PIN, OUTPUT);
     pinMode(ECHO_PIN, INPUT);
     digitalWrite(TRIG_PIN, LOW);
+    Serial.println("HC-SR04 initialized");
 }
 
 float Ultrasonic::getDistance(float soundSpeed) {

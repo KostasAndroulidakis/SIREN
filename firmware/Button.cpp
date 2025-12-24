@@ -18,6 +18,7 @@ void Button::init() {
     pinMode(BUTTON_PIN, INPUT_PULLUP);  // Active LOW
     lastState = HIGH;           // Assume button starts released
     lastDebounceTime = 0;
+    Serial.println("Button initialized"); 
 }
 
 bool Button::isPressed() {
