@@ -1,4 +1,6 @@
 // config.h
+// Central configuration for ultrasonic radar system
+// All pin definitions and shared structs
 
 #ifndef CONFIG_H
 #define CONFIG_H
@@ -7,42 +9,18 @@
 // PIN DEFINITIONS
 // ============================================
 
-// Ultrasonic Sensor HC-SR04
-#define TRIG_PIN 2
+#define TRIG_PIN 2      // Ultrasonic Sensor HC-SR04
 #define ECHO_PIN 3
 
-// Servo Motor SG90
-#define SERVO_PIN 9
+#define SERVO_PIN 9     // Servo Motor SG90
 
-// Temperature & Humidity Sensor DHT11
-#define DHT_PIN 4
-#define DHT_TYPE DHT11
+#define DHT_PIN 4       // Temperature & Humidity Sensor DHT11
 
-// Passive Buzzer
-#define BUZZER_PIN 8
+#define BUZZER_PIN 8    // Passive Buzzer
 
-// Red LED
-#define LED_PIN 13
+#define LED_PIN 13      // Red LED
 
-// Button
-#define BUTTON_PIN 6
-
-// ============================================
-// SENSOR CONSTANTS
-// ============================================
-
-// Ultrasonic
-#define MIN_DISTANCE 2          // Minimum distance in cm
-#define MAX_DISTANCE 400        // Maximum distance in cm
-
-// Servo
-#define SERVO_MIN_ANGLE 0
-#define SERVO_MAX_ANGLE 180
-#define SERVO_STEP 1
-#define SERVO_DELAY 60          // Delay between steps (ms)
-
-// DHT11
-#define DHT_TYPE DHT11
+#define BUTTON_PIN 6    // Button
 
 // ============================================
 // TIMING CONSTANTS
