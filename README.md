@@ -34,7 +34,7 @@ What makes this project unique is the environmental compensation: a temperature 
 
 Sound doesn't travel at a constant speed. It varies with air conditions:
 
-```
+```text
 c = 331.3 + (0.606 × T) + (0.0124 × RH)
 ```
 
@@ -50,7 +50,7 @@ At 20°C and 50% humidity, sound travels at ~344 m/s. At 0°C, it's only 331 m/s
 
 The ultrasonic sensor emits a 40kHz pulse and measures how long it takes for the echo to return:
 
-```
+```text
 distance = (time × speed_of_sound) / 2
 ```
 
@@ -96,26 +96,89 @@ Uses `tone()` function for the passive buzzer to generate audible 2kHz signal.
 
 ## Design Decisions
 
-**Why detach the servo during measurements?**
+### Why refactor from .ino to .h/.cpp?
+
+Initially, I wrote the entire project using multiple `.ino` files in plain C. However, I discovered that the Arduino IDE compiles `.ino` files in alphabetical order and concatenates them into a single file. This created dependency issues and unpredictable behavior when code in one file referenced something defined in another.
+
+After researching solutions, I found that the recommended approach is to have a single `.ino` file for orchestration, with all other code in proper `.h` (header) and `.cpp` (implementation) files. This gives explicit control over compilation order through `#include` directives and follows standard C++ practices.
+
+### Why Object-Oriented Programming with classes?
+
+I considered three approaches:
+
+1. **Procedural C** - Simple functions with global state. Easy to write but leads to scattered state and naming conflicts as the project grows.
+
+2. **Structs with function pointers** - More organized but verbose syntax and manual "method" binding.
+
+3. **C++ Classes** - Clean encapsulation with clear ownership of state and behavior.
+
+I chose classes because they naturally group related data and functions together. Each hardware component becomes a self-contained unit: the `Ultrasonic` class owns its pin configuration and measurement logic, the `Alert` class owns its state and timing. This makes the code easier to understand and modify.
+
+### Why modular design?
+
+The project follows the Single Responsibility Principle (SRP): each module does one thing and does it well. The `Ultrasonic` class only measures distance. The `Alert` class only handles LED and buzzer. The `Scanner` class only orchestrates the sweep. This separation means I can modify or debug one component without affecting others.
+
+### Why centralize constants in config.h?
+
+All pin definitions and shared structures live in `config.h`. This follows the Single Source of Truth (SSOT) principle - there's exactly one place where pin assignments are defined. Without this, pin numbers would be scattered across multiple files, making wiring changes error-prone. With `config.h`, I can see all hardware connections at a glance and change them in one place.
+
+### Why struct with pointer for THReading?
+
+The `THReading` struct holds temperature and humidity data. I pass it by pointer (`THReading*`) rather than by value for two reasons:
+
+1. **Efficiency** - Passing a pointer (2 bytes on Arduino) is cheaper than copying the entire struct (13 bytes: 3 floats + 1 bool).
+
+2. **Mutability** - The `DHTSensor::read()` function needs to modify the struct to return new readings. Passing by pointer allows this without using return values for multiple pieces of data.
+
+I considered alternatives:
+
+- **Global variables** - Would work but creates hidden dependencies and makes testing harder.
+- **Return struct by value** - Copies data unnecessarily and doesn't clearly indicate the function modifies its argument.
+- **Separate pointer parameters** - Would require `read(float* temp, float* humidity, bool* valid)` which is verbose and error-prone.
+
+The struct-with-pointer approach keeps related data together while remaining efficient.
+
+### Why detach the servo during measurements?
+
 The Servo library and pulseIn() both use timer interrupts. Running them simultaneously causes jitter in timing measurements, leading to distance errors. Detaching the servo temporarily eliminates this interference.
 
-**Why 60ms delay between steps?**
+### Why 60ms delay between steps?
+
 The HC-SR04 datasheet recommends at least 60ms between measurements. The SG90 servo also needs time to physically reach each position (~1.7ms per degree). 60ms satisfies both requirements.
 
-**Why cache DHT readings?**
+### Why cache DHT readings?
+
 The DHT11 requires minimum 1 second between readings and each read blocks for ~25ms. Caching allows us to reuse recent readings without blocking the radar sweep.
 
-**Why median filtering was not implemented?**
-While median filtering could reduce noise, testing showed single readings were sufficiently stable for this application. The added complexity and ~4ms delay per reading were not justified.
+### Why manual debouncing instead of a library?
 
-**Why manual debouncing instead of a library?**
 For a CS50 project, implementing debouncing manually demonstrates understanding of timing-based input filtering, rather than hiding it behind a library abstraction.
+
+## What I Learned
+
+This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
+
+**Public vs Private**: I learned that `private` members are the class's internal state - things the outside world shouldn't touch directly. `public` members are the interface - how other code interacts with the class. For example, in `Alert`, the `active` and `state` variables are private because external code shouldn't manipulate them directly. Only `update()`, `stop()`, and `init()` are public because those are the legitimate ways to control the alert.
+
+**Encapsulation**: Each class hides its complexity. The `Scanner` doesn't know how `Ultrasonic` measures distance - it just calls `getDistance()`. This separation made debugging much easier. When distance readings were wrong, I knew the problem was in `Ultrasonic`, not scattered across the codebase.
+
+**Building on CS50**: The pointer concepts from CS50 (weeks 4-5) directly applied here. Understanding that `THReading* result` means "the address of a THReading struct" made the transition to C++ much smoother. Classes are essentially structs that also contain functions - the mental model I built in CS50 extended naturally.
+
+## AI Assistance Disclosure
+
+As permitted by CS50's final project guidelines, I used AI assistance (Claude by Anthropic) for specific parts of this project:
+
+1. **C++ Syntax for Refactoring** - I understood the logic I wanted to implement but lacked C++ syntax knowledge. AI helped translate my C/.ino code into proper .h/.cpp class structure.
+
+2. **Code Comments** - AI helped write comprehensive comments explaining the physics, timing calculations, and design decisions throughout the codebase.
+
+The core logic, hardware design, architecture decisions, and debugging were my own work. AI served as a syntax reference and documentation aid, not as a problem-solver.
 
 ## Output Format
 
 Serial output at 115200 baud, CSV format:
 
-```
+```text
 angle,distance,humidity,temperatureC,temperatureF
 0,45.23,52.00,24.30,75.74
 1,45.18,52.00,24.30,75.74
@@ -130,3 +193,7 @@ Distance of `-1` indicates no object detected or out-of-range reading.
 - Multiple ultrasonic sensors for faster scanning
 - Data logging to SD card
 - WiFi transmission for remote monitoring
+
+## Documentation
+
+- **[Hardware](docs/hardware.md)** - Component specifications and wiring diagrams
