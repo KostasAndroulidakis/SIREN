@@ -1,94 +1,14 @@
-# Remix compiler artifacts
-**/artifacts/
-**/artifacts/**
-
-# Remix plugin state folders
-deps/
-states/
-
-# Debug info
-*.dbg.json
-*.tsbuildinfo
-
-# Optional
-.env
-.env.local
-
-# VSCode specific files
-.vscode/
-
-# macOS specific files
+ macOS
 .DS_Store
 
-# C++ build artifacts
-backend/build/
-backend/*.o
-backend/*.obj
-backend/*.exe
-backend/*.out
-backend/*.a
-backend/*.so
-backend/*.dll
-backend/*.dylib
-
-backend/.cache/
-
-# CMake
-backend/CMakeCache.txt
-backend/CMakeFiles/
-backend/CMakeScripts/
-backend/cmake_install.cmake
-backend/Makefile
-backend/install_manifest.txt
-backend/compile_commands.json
-backend/CTestTestfile.cmake
-backend/_deps/
-
-# frontend build artifacts
-frontend/build/
-frontend/.cache/
-
-.cache/
-
-# Debug files
-*.dSYM/
-*.pdb
-*.ilk
-
-# IDE files
-*.vcxproj*
-*.sln
-*.suo
-*.user
-
-# Ignore Claude files
-.claude/
-.context/
-CLAUDE.md
-
-# referrer files
-frontend_referrence/
-
-# Compiled executables
-SIREN_launcher
-
-# Build directories
-build/
-*/build/
-
-# Object files and libraries
-*.o
-*.a
-*.so
-*.dylib
-
-# IDE files
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# macOS
-.DS_Store
+# Python virtual environment
+.venv/
 
-tests/
+# Arduino build artifacts (if using arduino-cli)
+firmware/build/
