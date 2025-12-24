@@ -154,6 +154,18 @@ The DHT11 requires minimum 1 second between readings and each read blocks for ~2
 
 For a CS50 project, implementing debouncing manually demonstrates understanding of timing-based input filtering, rather than hiding it behind a library abstraction.
 
+### Why use F() macro for string literals?
+
+Arduino Uno has only 2KB of RAM but 32KB of Flash memory. By default, string literals like `Serial.println("text")` are copied to RAM at startup and stay there throughout execution. With many debug messages, this quickly consumes precious RAM needed for variables and stack.
+
+The `F()` macro tells the compiler to keep strings in Flash and read them directly when needed. This simple change - `Serial.println(F("text"))` - reduced RAM usage from 643 bytes (31%) to 321 bytes (15%), freeing 322 bytes for runtime operations. The tradeoff is slightly slower string access, but Serial communication is already slow enough that this is imperceptible.
+
+### Why use direct port manipulation instead of digitalWrite()?
+
+The Arduino `digitalWrite()` function is convenient but slow. It performs multiple operations: looking up which register corresponds to the pin, checking for PWM conflicts, disabling interrupts, and finally changing the bit. This takes approximately 6μs per call.
+
+Direct port manipulation like `PORTD |= (1 << 2)` compiles to a single assembly instruction, executing in approximately 0.125μs - about 50 times faster. For the ultrasonic sensor trigger sequence, which requires precise timing, this improved consistency in measurements. The tradeoff is reduced portability (code is specific to ATmega328P) and readability, but for a hardware project targeting a specific board, this is acceptable.
+
 ## What I Learned
 
 This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
