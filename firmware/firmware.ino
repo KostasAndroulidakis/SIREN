@@ -86,6 +86,9 @@ void loop() {
         
         // Ensure alert is off when stopping
         if (!scanning) {
+            // Print CSV header for data parsing
+            Serial.println("angle,distance,humidity,temperatureC,temperatureF");
+        } else {
             alert.stop();
         }
     }
