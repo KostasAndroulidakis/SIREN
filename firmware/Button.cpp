@@ -22,7 +22,7 @@ void Button::init() {
 }
 
 bool Button::isPressed() {
-    bool reading = (PIND & (1 << 6));  // D6 = PORTD bit 6, inverted for active LOW
+    bool reading = (PIND & (1 << 6)) != 0;  // D6: HIGH when released, LOW when pressed
     unsigned long now = millis();
     
     // EDGE DETECTION:
