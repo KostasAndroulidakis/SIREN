@@ -76,7 +76,7 @@ The firmware is organized into modular components, each handling a specific resp
 
 ### Actuator Modules
 
-**Servo.h / Servo.cpp** - Wrapper for the SG90 servo motor. Implements detach/attach pattern to avoid PWM interference with ultrasonic timing measurements. The Arduino's Timer1 is used by both the Servo library and pulseIn(), so we temporarily disable the servo during distance readings.
+**Servo.h / Servo.cpp** - Wrapper for the SG90 servo motor. Implements detach/attach pattern to avoid PWM interference with ultrasonic timing measurements. The Arduino's Timer1 is shared between the Servo library and our Input Capture code, so we temporarily disable the servo during distance readings.
 
 **Alert.h / Alert.cpp** - Manages the LED and buzzer alert system. Implements three zones:
 
@@ -93,6 +93,19 @@ Uses `tone()` function for the passive buzzer to generate audible 2kHz signal.
 ### Orchestration
 
 **Scanner.h / Scanner.cpp** - Coordinates the scanning process. Performs bidirectional sweeps (0→180→0) and outputs data in CSV format: `angle,distance,humidity,temperatureC,temperatureF`. Checks for button interrupts during scan to allow stopping mid-sweep.
+
+## Output Format
+
+Serial output at 115200 baud, CSV format:
+
+```text
+angle,distance,humidity,temperatureC,temperatureF
+0,45.23,52.00,24.30,75.74
+1,45.18,52.00,24.30,75.74
+...
+```
+
+Distance of `-1` indicates no object detected or out-of-range reading.
 
 ## Design Decisions
 
@@ -190,6 +203,10 @@ PINB = (1 << 5);
 
 This only works for toggle operations. Setting a specific state (HIGH or LOW) still requires PORTB manipulation.
 
+### Why use direct port reading for button input?
+
+Similar to LED control, we replaced `digitalRead(BUTTON_PIN)` with direct port reading: `(PIND >> 6) & 1`. This reads bit 6 of PORTD directly, returning 1 (HIGH/released) or 0 (LOW/pressed) - matching `digitalRead()` behavior but executing 50x faster. For debouncing logic that runs every loop iteration, this reduces CPU overhead.
+
 ### Why use Timer1 Input Capture instead of pulseIn()?
 
 The Arduino `pulseIn()` function uses a software polling loop that checks `micros()` repeatedly. This introduces timing jitter of ±4μs due to interrupt handling and function call overhead. Timer1 Input Capture is a hardware feature of the ATmega328P that automatically records the timer value when an edge is detected on the ICP1 pin (D8). The hardware captures the exact moment of the edge transition, regardless of what the CPU is doing.
@@ -237,20 +254,9 @@ As permitted by CS50's final project guidelines, I used AI assistance (Claude by
 
 2. **Code Comments** - AI helped write comprehensive comments explaining the physics, timing calculations, and design decisions throughout the codebase.
 
+3. **Code Review & Optimization** - AI reviewed my code for bugs and suggested bare-metal optimizations like Timer1 Input Capture and direct port manipulation.
+
 The core logic, hardware design, architecture decisions, and debugging were my own work. AI served as a syntax reference and documentation aid, not as a problem-solver.
-
-## Output Format
-
-Serial output at 115200 baud, CSV format:
-
-```text
-angle,distance,humidity,temperatureC,temperatureF
-0,45.23,52.00,24.30,75.74
-1,45.18,52.00,24.30,75.74
-...
-```
-
-Distance of `-1` indicates no object detected or out-of-range reading.
 
 ## Future Improvements
 
