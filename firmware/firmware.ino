@@ -85,10 +85,11 @@ void loop() {
         Serial.println(scanning ? F("SCAN STARTED") : F("SCAN STOPPED"));
         
         // Ensure alert is off when stopping
-        if (!scanning) {
-            // Print CSV header for data parsing
+        if (scanning) {
+            // Print CSV header when starting
             Serial.println(F("angle,distance,humidity,temperatureC,temperatureF"));
         } else {
+            // Stop alert when stopping
             alert.stop();
         }
     }
