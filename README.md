@@ -192,27 +192,16 @@ This only works for toggle operations. Setting a specific state (HIGH or LOW) st
 
 ### Why use Timer1 Input Capture instead of pulseIn()?
 
-The Arduino `pulseIn()` function uses a software polling loop that checks
-`micros()` repeatedly. This introduces timing jitter of ±4μs due to
-interrupt handling and function call overhead.
-
-Timer1 Input Capture is a hardware feature of the ATmega328P that
-automatically records the timer value when an edge is detected on the
-ICP1 pin (D8). The hardware captures the exact moment of the edge
-transition, regardless of what the CPU is doing.
+The Arduino `pulseIn()` function uses a software polling loop that checks `micros()` repeatedly. This introduces timing jitter of ±4μs due to interrupt handling and function call overhead. Timer1 Input Capture is a hardware feature of the ATmega328P that automatically records the timer value when an edge is detected on the ICP1 pin (D8). The hardware captures the exact moment of the edge transition, regardless of what the CPU is doing.
 
 Practical impact on measurements:
 
 - `pulseIn()`: ±4μs jitter → ±0.7mm distance error
 - Timer1 IC: ±0.5μs resolution → ±0.09mm distance error
 
-This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping
-the buzzer to D3. The code saves and restores Timer1's configuration
-to maintain compatibility with the Servo library, which also uses Timer1.
+This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping the buzzer to D3. The code saves and restores Timer1's configuration to maintain compatibility with the Servo library, which also uses Timer1.
 
-The tradeoff is reduced portability (ATmega-specific code) and slightly
-more complex implementation, but the improved measurement consistency
-is valuable for a radar application where accuracy matters.
+The tradeoff is reduced portability (ATmega-specific code) and slightly more complex implementation, but the improved measurement consistency is valuable for a radar application where accuracy matters.
 
 ## What I Learned
 
@@ -222,7 +211,15 @@ This project significantly deepened my understanding of Object-Oriented Programm
 
 **Encapsulation**: Each class hides its complexity. The `Scanner` doesn't know how `Ultrasonic` measures distance - it just calls `getDistance()`. This separation made debugging much easier. When distance readings were wrong, I knew the problem was in `Ultrasonic`, not scattered across the codebase.
 
-**Building on CS50**: The pointer concepts from CS50 (weeks 4-5) directly applied here. Understanding that `THReading* result` means "the address of a THReading struct" made the transition to C++ much smoother. Classes are essentially structs that also contain functions - the mental model I built in CS50 extended naturally.
+**Embedded Systems & Hardware Optimization**: Beyond OOP, this project taught me how microcontrollers actually work at the register level. The Arduino framework is a convenient abstraction, but understanding what happens underneath revealed significant optimization opportunities.
+
+**The abstraction cost**: Functions like `digitalWrite()` and `digitalRead()` are convenient but slow. Each call performs pin mapping lookups, PWM conflict checks, and interrupt disabling - taking ~6μs per operation. Direct port manipulation (`PORTB |= (1 << 5)`) compiles to a single assembly instruction executing in ~0.06μs. This 100x speedup matters when timing is critical.
+
+**Timer hardware**: The ATmega328P has dedicated timer/counter units that operate independently of the CPU. Instead of using `pulseIn()` which polls in a software loop, I configured Timer1's Input Capture feature to record timestamps in hardware. The timer captures the exact moment an edge occurs, regardless of what the CPU is doing. This eliminated timing jitter from interrupt handling.
+
+**Memory architecture**: Arduino Uno has only 2KB RAM but 32KB Flash. Understanding this split explained why the `F()` macro matters - it keeps strings in Flash instead of copying them to RAM. I also learned the difference between compile-time constants (`constexpr`) and preprocessor macros (`#define`), and why type-safe constants help catch bugs.
+
+**Connecting to CS50**: The pointer arithmetic from weeks 4-5 directly applied to register manipulation. `PORTB |= (1 << 5)` is essentially bit-level pointer manipulation - setting specific bits at a memory-mapped I/O address. Understanding memory layout in C made the jump to embedded programming much smoother.
 
 ## AI Assistance Disclosure
 
