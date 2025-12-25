@@ -203,6 +203,14 @@ This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping the buzzer
 
 The tradeoff is reduced portability (ATmega-specific code) and slightly more complex implementation, but the improved measurement consistency is valuable for a radar application where accuracy matters.
 
+### Why define TRIG_PORT and TRIG_BIT separately from TRIG_PIN?
+
+Direct port manipulation requires knowing both the PORT register and the bit position within that register. Arduino pin numbers don't map directly to these - pin 2 is PORTD bit 2, but pin 10 is PORTB bit 2.
+
+By defining `TRIG_PORT`, `TRIG_DDR`, and `TRIG_BIT` alongside `TRIG_PIN` in config.h, we maintain a single source of truth for hardware configuration while enabling bare-metal speed. If the wiring changes, all three values must be updated together - a comment in config.h documents this requirement.
+
+This approach provides consistent bare-metal performance across the codebase while keeping configuration centralized. The alternative - using `digitalWrite()` for portability - would create inconsistency between the trigger (Arduino-style) and echo (bare-metal Timer1 Input Capture) implementations.
+
 ## What I Learned
 
 This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
