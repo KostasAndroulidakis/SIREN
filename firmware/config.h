@@ -19,6 +19,10 @@ static constexpr uint8_t ECHO_PIN = 8;
 #define TRIG_DDR  DDRD
 #define TRIG_BIT  2
 
+// Direct port manipulation for ECHO (D8 = PORTB bit 0)
+#define ECHO_DDR  DDRB
+#define ECHO_BIT  0
+
 static constexpr uint8_t SERVO_PIN = 9;     // Servo Motor SG90
 
 static constexpr uint8_t DHT_PIN = 4;       // Temperature & Humidity Sensor DHT11

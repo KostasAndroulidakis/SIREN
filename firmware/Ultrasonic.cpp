@@ -27,7 +27,7 @@
 
 void Ultrasonic::init() {
     TRIG_DDR |= (1 << TRIG_BIT);    // TRIG as OUTPUT
-    pinMode(ECHO_PIN, INPUT);       // ECHO stays Arduino-style (for clarity)
+    ECHO_DDR &= ~(1 << ECHO_BIT);   // ECHO as INPUT (D8 = PB0)
     TRIG_PORT &= ~(1 << TRIG_BIT);  // TRIG LOW
     Serial.println(F("HC-SR04 initialized (Timer1 IC)"));
 }
