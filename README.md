@@ -205,7 +205,7 @@ This only works for toggle operations. Setting a specific state (HIGH or LOW) st
 
 ### Why use direct port reading for button input?
 
-Similar to LED control, we replaced `digitalRead(BUTTON_PIN)` with direct port reading: `(PIND >> 6) & 1`. This reads bit 6 of PORTD directly, returning 1 (HIGH/released) or 0 (LOW/pressed) - matching `digitalRead()` behavior but executing 50x faster. For debouncing logic that runs every loop iteration, this reduces CPU overhead.
+Similar to LED control, we replaced `digitalRead(BUTTON_PIN)` with direct port reading: `(PIND & (1 << 6)) != 0`. This reads bit 6 of PORTD directly, returning 1 (HIGH/released) or 0 (LOW/pressed) - matching `digitalRead()` behavior but executing 50x faster. For debouncing logic that runs every loop iteration, this reduces CPU overhead.
 
 ### Why use Timer1 Input Capture instead of pulseIn()?
 
