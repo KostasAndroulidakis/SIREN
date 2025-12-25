@@ -14,6 +14,11 @@
 static constexpr uint8_t TRIG_PIN = 2;      // Ultrasonic Sensor HC-SR04
 static constexpr uint8_t ECHO_PIN = 8;
 
+// Direct port manipulation for TRIG (D2 = PORTD bit 2)
+#define TRIG_PORT PORTD
+#define TRIG_DDR  DDRD
+#define TRIG_BIT  2
+
 static constexpr uint8_t SERVO_PIN = 9;     // Servo Motor SG90
 
 static constexpr uint8_t DHT_PIN = 4;       // Temperature & Humidity Sensor DHT11

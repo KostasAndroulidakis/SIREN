@@ -26,9 +26,9 @@
 // Max measurable pulse: 65535 × 0.5μs = 32.7ms (enough for 400cm)
 
 void Ultrasonic::init() {
-    pinMode(TRIG_PIN, OUTPUT);
-    pinMode(ECHO_PIN, INPUT);
-    PORTD &= ~(1 << TRIG_PIN);    // TRIG LOW
+    TRIG_DDR |= (1 << TRIG_BIT);    // TRIG as OUTPUT
+    pinMode(ECHO_PIN, INPUT);       // ECHO stays Arduino-style (for clarity)
+    TRIG_PORT &= ~(1 << TRIG_BIT);  // TRIG LOW
     Serial.println(F("HC-SR04 initialized (Timer1 IC)"));
 }
 
@@ -55,12 +55,12 @@ float Ultrasonic::getDistance(float soundSpeed) {
     // 1. Ensure trigger is LOW
     // 2. Send HIGH pulse for at least 10μs
     // 3. Sensor will emit 8 pulses at 40kHz
-    PORTD &= ~(1 << TRIG_PIN);
+    TRIG_PORT &= ~(1 << TRIG_BIT);
     delayMicroseconds(2);
-    
-    PORTD |= (1 << TRIG_PIN);
+
+    TRIG_PORT |= (1 << TRIG_BIT);
     delayMicroseconds(12);
-    PORTD &= ~(1 << TRIG_PIN);
+    TRIG_PORT &= ~(1 << TRIG_BIT);
     
     // WAIT FOR RISING EDGE (pulse start):
     // ICF1 flag is set when edge is captured
