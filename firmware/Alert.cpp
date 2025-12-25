@@ -81,7 +81,7 @@ void Alert::update(float distance) {
         lastToggle = now;
         state = !state;
         
-        PINB = (1 << LED_BIT);
+        PINB |= (1 << LED_BIT);
         
         // Buzzer follows LED state
         if (state) {
