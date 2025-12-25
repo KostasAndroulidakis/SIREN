@@ -70,7 +70,7 @@ bool Scanner::scan(THReading* envData, float soundSpeed) {
             delay(SERVO_DELAY);     // Wait for servo to reach position
             
             // TAKE MEASUREMENT:
-            // Detach servo to avoid PWM interference with pulseIn()
+            // Detach servo to free Timer1 for ultrasonic Input Capture
             // See Servo.h for detailed explanation
             servo->detach();
             float distance = ultrasonic->getDistance(soundSpeed);

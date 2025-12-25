@@ -17,15 +17,15 @@ void ServoMotor::setAngle(int angle) {
 
 // DETACH/ATTACH PATTERN:
 // The Arduino Servo library uses Timer1 interrupts to generate
-// PWM signals. The pulseIn() function used by HC-SR04 also
-// relies on precise timing.
+// PWM signals. Our ultrasonic measurement also uses Timer1 for
+// Input Capture timing.
 //
-// When both run simultaneously, the servo's PWM interrupts can
-// cause jitter in pulseIn() measurements, leading to distance
+// When both run simultaneously, the servo's PWM configuration
+// conflicts with our Input Capture setup, leading to distance
 // errors of several centimeters.
 //
 // By detaching the servo during ultrasonic measurement, we
-// disable its PWM interrupts and get clean timing.
+// free Timer1 for accurate pulse timing.
 
 void ServoMotor::detach() {
     servo.detach();
