@@ -55,7 +55,10 @@ bool scanning = false;
 // SETUP
 // ===========================================
 
-void setup() {
+int main() {
+    // Arduino hardware initialization
+    init();
+
     // Initialize serial communication
     // 115200 baud for fast data transmission during sweep
     Serial.begin(SERIAL_BAUD);
@@ -71,61 +74,61 @@ void setup() {
     button.init();
     
     Serial.println(F("Press button to start/stop"));
-}
 
-// ===========================================
-// MAIN LOOP
-// ===========================================
+    // ===========================================
+    // MAIN LOOP
+    // ===========================================
 
-void loop() {
-    // STATE TOGGLE:
-    // Check for button press and toggle scanning state
-    if (button.isPressed()) {
-        scanning = !scanning;
-        Serial.println(scanning ? F("SCAN STARTED") : F("SCAN STOPPED"));
-        
-        // Ensure alert is off when stopping
-        if (scanning) {
-            // Print CSV header when starting
-            Serial.println(F("angle,distance,humidity,temperatureC,temperatureF"));
-        } else {
-            // Stop alert when stopping
-            alert.stop();
+    while (true) {
+        // STATE TOGGLE:
+        // Check for button press and toggle scanning state
+        if (button.isPressed()) {
+            scanning = !scanning;
+            Serial.println(scanning ? F("SCAN STARTED") : F("SCAN STOPPED"));
+            
+            // Ensure alert is off when stopping
+            if (scanning) {
+                // Print CSV header when starting
+                Serial.println(F("angle,distance,humidity,temperatureC,temperatureF"));
+            } else {
+                // Stop alert when stopping
+                alert.stop();
+            }
         }
-    }
-    
-    // IDLE STATE:
-    // If not scanning, exit loop early (saves power, reduces noise)
-    if (!scanning) {
-        return;
-    }
-    
-    // ===========================================
-    // ACTIVE SCANNING
-    // ===========================================
-    
-    // READ ENVIRONMENT:
-    // Get temperature and humidity for speed of sound calculation.
-    // This is non-blocking - returns cached value if called too soon.
-    THReading envData;
-    dht.read(&envData);
-    
-    // CALCULATE SPEED OF SOUND:
-    // Use environmental data if valid, otherwise fall back to
-    // standard value (343 m/s at 20°C, 50% humidity).
-    // See SpeedOfSound.h for the physics explanation.
-    float soundSpeed;
-    if (envData.valid) {
-        soundSpeed = calculateSpeedOfSound(envData.temperatureC, envData.humidity);
-    } else {
-        soundSpeed = 343.0;     // Fallback: standard conditions
-    }
-    
-    // PERFORM SCAN:
-    // Execute one complete bidirectional sweep (0→180→0).
-    // Returns false if interrupted by button press.
-    if (!scanner.scan(&envData, soundSpeed)) {
-        scanning = false;
-        Serial.println(F("SCAN STOPPED"));
+        
+        // IDLE STATE:
+        // If not scanning, exit loop early (saves power, reduces noise)
+        if (!scanning) {
+            continue;
+        }
+        
+        // ===========================================
+        // ACTIVE SCANNING
+        // ===========================================
+        
+        // READ ENVIRONMENT:
+        // Get temperature and humidity for speed of sound calculation.
+        // This is non-blocking - returns cached value if called too soon.
+        THReading envData;
+        dht.read(&envData);
+        
+        // CALCULATE SPEED OF SOUND:
+        // Use environmental data if valid, otherwise fall back to
+        // standard value (343 m/s at 20°C, 50% humidity).
+        // See SpeedOfSound.h for the physics explanation.
+        float soundSpeed;
+        if (envData.valid) {
+            soundSpeed = calculateSpeedOfSound(envData.temperatureC, envData.humidity);
+        } else {
+            soundSpeed = 343.0;     // Fallback: standard conditions
+        }
+        
+        // PERFORM SCAN:
+        // Execute one complete bidirectional sweep (0→180→0).
+        // Returns false if interrupted by button press.
+        if (!scanner.scan(&envData, soundSpeed)) {
+            scanning = false;
+            Serial.println(F("SCAN STOPPED"));
+        }
     }
 }
