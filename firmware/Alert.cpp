@@ -24,7 +24,7 @@
 void Alert::init() {
     pinMode(LED_PIN, OUTPUT);
     pinMode(BUZZER_PIN, OUTPUT);
-    PORTB &= ~(1 << 5);   // LED LOW (D13 = PORTB bit 5)
+    PORTB &= ~(1 << LED_BIT);   // LED LOW (D13 = PORTB bit 5)
     noTone(BUZZER_PIN);
     active = false;
     state = false;
@@ -63,7 +63,7 @@ void Alert::update(float distance) {
     if (distance <= DANGER_THRESHOLD) {
         active = true;
         state = true;
-        PORTB |= (1 << 5);    // LED HIGH
+        PORTB |= (1 << LED_BIT);    // LED HIGH
         tone(BUZZER_PIN, BUZZER_FREQ);
         return;
     }
@@ -81,7 +81,7 @@ void Alert::update(float distance) {
         lastToggle = now;
         state = !state;
         
-        PINB = (1 << 5);
+        PINB = (1 << LED_BIT);
         
         // Buzzer follows LED state
         if (state) {
@@ -97,7 +97,7 @@ void Alert::stop() {
     if (active) {
         active = false;
         state = false;
-        PORTB &= ~(1 << 5);   // LED LOW
+        PORTB &= ~(1 << LED_BIT);   // LED LOW
         noTone(BUZZER_PIN);
     }
 }
