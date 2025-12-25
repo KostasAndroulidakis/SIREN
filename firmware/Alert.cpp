@@ -80,12 +80,8 @@ void Alert::update(float distance) {
     if (now - lastToggle >= interval) {
         lastToggle = now;
         state = !state;
-
-        if (state) {
-            PORTB |= (1 << 5);    // LED HIGH
-        } else {
-            PORTB &= ~(1 << 5);   // LED LOW
-        }
+        
+        PINB = (1 << 5);
         
         // Buzzer follows LED state
         if (state) {

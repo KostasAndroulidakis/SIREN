@@ -22,7 +22,7 @@ void Button::init() {
 }
 
 bool Button::isPressed() {
-    bool reading = digitalRead(BUTTON_PIN);
+    bool reading = (PIND & (1 << 6));  // D6 = PORTD bit 6, inverted for active LOW
     unsigned long now = millis();
     
     // EDGE DETECTION:
