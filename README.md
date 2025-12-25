@@ -81,7 +81,7 @@ The firmware is organized into modular components, each handling a specific resp
 **Alert.h / Alert.cpp** - Manages the LED and buzzer alert system. Implements three zones:
 
 - **Safe (>100cm)**: No alert
-- **Warning (10-100cm)**: Blinking/beeping at 60-150 BPM, faster as objects get closer
+- **Warning (10-100cm)**: Blinking/beeping at 60-238 BPM, faster as objects get closer
 - **Danger (≤10cm)**: Continuous LED and buzzer
 
 Uses `tone()` function for the passive buzzer to generate audible 2kHz signal.

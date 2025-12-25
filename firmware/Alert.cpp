@@ -35,8 +35,8 @@ void Alert::init() {
 // Calculate milliseconds between toggles for given distance
 // We toggle twice per beat (on and off), hence /2
 unsigned int Alert::getIntervalMs(float distance) {
-    // BPM increases by 1 for each cm closer
-    // At 100cm: 60 BPM, at 11cm: 149 BPM
+    // BPM increases by 2 for each cm closer
+    // At 100cm: 60 BPM, at 11cm: 238 BPM
     int bpm = BASE_BPM + 2 * (int)(ALERT_THRESHOLD - distance);
     return MS_PER_MINUTE / bpm / 2;  // /2 because we toggle twice per beat
 }
