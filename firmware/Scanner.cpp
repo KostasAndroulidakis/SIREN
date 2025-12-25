@@ -25,11 +25,15 @@ void Scanner::printData(int angle, float distance, THReading* envData) {
     Serial.print(",");
     Serial.print(distance);
     Serial.print(",");
-    Serial.print(envData->humidity);
-    Serial.print(",");
-    Serial.print(envData->temperatureC);
-    Serial.print(",");
-    Serial.println(envData->temperatureF);
+    if (envData->valid) {
+        Serial.print(envData->humidity);
+        Serial.print(",");
+        Serial.print(envData->temperatureC);
+        Serial.print(",");
+        Serial.println(envData->temperatureF);
+    } else {
+        Serial.println(",,");
+    }
 }
 
 bool Scanner::scan(THReading* envData, float soundSpeed) {
