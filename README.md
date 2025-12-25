@@ -220,6 +220,26 @@ This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping the buzzer
 
 The tradeoff is reduced portability (ATmega-specific code) and slightly more complex implementation, but the improved measurement consistency is valuable for a radar application where accuracy matters.
 
+### Why use main() instead of setup()/loop()?
+
+The Arduino framework provides a hidden `main()` that calls `setup()` once, then calls `loop()` repeatedly while also polling for serial events. By writing my own `main()`, I bypass this abstraction:
+
+```cpp
+// Arduino's hidden main()          // My main()
+int main() {                         int main() {
+    init();                              init();
+    setup();                             // setup code here
+    for (;;) {                           while (true) {
+        loop();                              // loop code here
+        serialEventRun();  // ←             }
+    }                                }
+}
+```
+
+The performance gain is negligible (~0.5μs per iteration on a 100ms loop cycle). The real benefit is transparency — I know exactly what runs and in what order, with no hidden function calls. This aligns with the project's bare-metal philosophy of understanding what happens at every level.
+
+The tradeoff is reduced portability: `serialEvent()` won't work, and other boards may require different initialization. Since SIREN targets the ATmega328P specifically, this is acceptable.
+
 ### Why define TRIG_PORT and TRIG_BIT separately from TRIG_PIN?
 
 Direct port manipulation requires knowing both the PORT register and the bit position within that register. Arduino pin numbers don't map directly to these - pin 2 is PORTD bit 2, but pin 10 is PORTB bit 2.
