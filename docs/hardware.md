@@ -32,7 +32,7 @@
 ```text
 🔴 VCC          ──→  Breadboard (+)
 🟡 Trig         ──→  UNO D2
-🟢 Echo         ──→  UNO D3 PWM
+🟢 Echo         ──→  UNO D8
 ⚫ GND          ──→  Breadboard (-)
 ```
 
@@ -55,7 +55,7 @@
 ### Passive Buzzer
 
 ```text
-🔴 +            ──→  UNO D8
+🔴 +            ──→  UNO D3 PWM
 ⚫ -            ──→  Breadboard (-)
 ```
 

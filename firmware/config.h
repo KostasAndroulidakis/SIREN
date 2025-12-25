@@ -12,13 +12,13 @@
 // uint8_t is sufficient for pin numbers (0-255).
 
 static constexpr uint8_t TRIG_PIN = 2;      // Ultrasonic Sensor HC-SR04
-static constexpr uint8_t ECHO_PIN = 3;
+static constexpr uint8_t ECHO_PIN = 8;
 
 static constexpr uint8_t SERVO_PIN = 9;     // Servo Motor SG90
 
 static constexpr uint8_t DHT_PIN = 4;       // Temperature & Humidity Sensor DHT11
 
-static constexpr uint8_t BUZZER_PIN = 8;    // Passive Buzzer
+static constexpr uint8_t BUZZER_PIN = 3;    // Passive Buzzer
 
 static constexpr uint8_t LED_PIN = 13;      // Red LED
 

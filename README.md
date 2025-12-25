@@ -190,6 +190,30 @@ PINB = (1 << 5);
 
 This only works for toggle operations. Setting a specific state (HIGH or LOW) still requires PORTB manipulation.
 
+### Why use Timer1 Input Capture instead of pulseIn()?
+
+The Arduino `pulseIn()` function uses a software polling loop that checks
+`micros()` repeatedly. This introduces timing jitter of ±4μs due to
+interrupt handling and function call overhead.
+
+Timer1 Input Capture is a hardware feature of the ATmega328P that
+automatically records the timer value when an edge is detected on the
+ICP1 pin (D8). The hardware captures the exact moment of the edge
+transition, regardless of what the CPU is doing.
+
+Practical impact on measurements:
+
+- `pulseIn()`: ±4μs jitter → ±0.7mm distance error
+- Timer1 IC: ±0.5μs resolution → ±0.09mm distance error
+
+This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping
+the buzzer to D3. The code saves and restores Timer1's configuration
+to maintain compatibility with the Servo library, which also uses Timer1.
+
+The tradeoff is reduced portability (ATmega-specific code) and slightly
+more complex implementation, but the improved measurement consistency
+is valuable for a radar application where accuracy matters.
+
 ## What I Learned
 
 This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
