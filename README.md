@@ -172,6 +172,24 @@ C-style `#define` macros are simple text replacement - the preprocessor substitu
 
 C++ `constexpr` provides type-safe constants evaluated at compile time. By specifying `static constexpr uint8_t TRIG_PIN = 2`, the compiler knows this is an 8-bit unsigned integer, can perform type checking, and optimizes it the same way as a macro - no RAM is used. The `static` keyword prevents duplicate definitions when the header is included in multiple files.
 
+### Why use PINB for LED toggle?
+
+Writing to the PINx register on ATmega microcontrollers toggles the corresponding PORTx bit. This hardware feature allows replacing a conditional statement with a single instruction:
+
+```cpp
+// Before: 8 bytes compiled, branch instruction
+if (state) {
+    PORTB |= (1 << 5);
+} else {
+    PORTB &= ~(1 << 5);
+}
+
+// After: 2 bytes compiled, single instruction
+PINB = (1 << 5);
+```
+
+This only works for toggle operations. Setting a specific state (HIGH or LOW) still requires PORTB manipulation.
+
 ## What I Learned
 
 This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
