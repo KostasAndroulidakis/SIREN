@@ -124,7 +124,7 @@ int main() {
         }
         
         // PERFORM SCAN:
-        // Execute one complete bidirectional sweep (0→180→0).
+        // Execute one complete bidirectional sweep (10→170→10).
         // Returns false if interrupted by button press.
         if (!scanner.scan(&envData, soundSpeed)) {
             scanning = false;
