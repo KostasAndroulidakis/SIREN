@@ -29,8 +29,8 @@
 #include "config.h"
 
 // Servo movement limits
-#define SERVO_MIN_ANGLE 0
-#define SERVO_MAX_ANGLE 180
+#define SERVO_MIN_ANGLE 10
+#define SERVO_MAX_ANGLE 170
 
 // Sweep configuration
 // Note: HC-SR04 has 15° beam width, so 1° step creates overlap

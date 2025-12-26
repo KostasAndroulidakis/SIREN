@@ -8,18 +8,18 @@
 //
 // SWEEP PATTERN:
 // Bidirectional sweep for smooth visualization:
-//   1. Forward:  0° → 180° (left to right)
-//   2. Backward: 180° → 0° (right to left)
+//   1. Forward:  10° → 170° (left to right)
+//   2. Backward: 170° → 10° (right to left)
 //   3. Repeat...
 //
-// This creates a continuous scanning motion without the
-// jarring snap-back that a unidirectional sweep would have.
+// Using 10-170 instead of 0-180 to avoid servo mechanical stops.
+// Cheap SG90 clones often can't reach full range without straining.
 //
 // TIMING:
 // Each step takes approximately:
 //   60ms servo delay + 2ms trigger + up to 30ms echo
 //   ≈ 90-100ms per degree
-// Full sweep (362 steps): ~22 seconds
+// Full sweep (322 steps): ~20 seconds
 //
 // OUTPUT FORMAT (CSV):
 // angle,distance,humidity,temperatureC,temperatureF

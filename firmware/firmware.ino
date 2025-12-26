@@ -8,7 +8,7 @@
 // 1. User presses button to start scanning
 // 2. DHT11 reads temperature/humidity (cached, non-blocking)
 // 3. Speed of sound calculated from environmental data
-// 4. Servo sweeps 0→180→0 while ultrasonic measures distance
+// 4. Servo sweeps 10°→170°→10° while ultrasonic measures distance
 // 5. Alert activates if objects detected within 100cm
 // 6. Data transmitted via serial in CSV format
 // 7. User presses button again to stop

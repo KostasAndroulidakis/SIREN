@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include "Servo.h"
 #include "Scanner.h"
+#include "config.h"
 
 // DEPENDENCY INJECTION:
 // Scanner doesn't create its own components - they're passed in.
@@ -41,7 +42,7 @@ bool Scanner::scan(THReading* envData, float soundSpeed) {
     // Instead of always starting at 0, we alternate directions.
     // angles[0]=0, steps[0]=+1   → sweep 0 to 180
     // angles[1]=180, steps[1]=-1 → sweep 180 to 0
-    int angles[] = {0, 180};
+    int angles[] = {SERVO_MIN_ANGLE, SERVO_MAX_ANGLE};
     int steps[] = {1, -1};
     
     // Perform both sweeps (forward and backward)
@@ -51,9 +52,9 @@ bool Scanner::scan(THReading* envData, float soundSpeed) {
         
         // SWEEP LOOP:
         // Continue while angle is within valid range
-        // Forward:  while angle <= 180
-        // Backward: while angle >= 0
-        while ((step > 0 && angle <= 180) || (step < 0 && angle >= 0)) {
+        // Forward:  while angle <= SERVO_MAX_ANGLE
+        // Backward: while angle >= SERVO_MIN_ANGLE
+        while ((step > 0 && angle <= SERVO_MAX_ANGLE) || (step < 0 && angle >= SERVO_MIN_ANGLE)) {
             
             // CHECK FOR INTERRUPT:
             // Allow user to stop mid-sweep by pressing button.

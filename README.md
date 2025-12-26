@@ -12,11 +12,19 @@ Sonic Imaging for Range Exploration and Navigation
 
 SIREN is an ultrasonic radar system built with Arduino that detects objects within a 180-degree field of view. The system combines multiple sensors to achieve accurate distance measurements by compensating for environmental conditions in real-time.
 
+## Why This Project?
+
+I'm 37, a music producer with an audio engineering background, and I'm preparing to study Electrical & Computer Engineering. Before CS50, I had earned Python certifications (PCEP, PCAP, freeCodeCamp) and bought an Elegoo starter kit to teach myself C and embedded basics.
+
+I chose to build a radar for two reasons. First, I've always been drawn to military technology. Second, I wanted to go deeper than Arduino tutorials usually go. Most examples use `digitalWrite()` and `delay()` without explaining what actually happens at the hardware level. I wanted to understand what's under the hood.
+
+This project forced me to read datasheets, manipulate registers directly, and think about timing at the microsecond level. It's the kind of challenge I was looking for.
+
 ## What It Does
 
-The system rotates an ultrasonic sensor using a servo motor, sweeping from 0 to 180 degrees and back. At each angle, it measures the distance to the nearest object and transmits the data over serial connection. When an object comes within 100cm, an alert system activates with LED and buzzer feedback that increases in urgency as the object gets closer.
+The system rotates an ultrasonic sensor using a servo motor, sweeping from 10 to 170 degrees and back. At each angle, it measures the distance to the nearest object and transmits the data over serial connection. When an object comes within 100cm, an alert system activates with LED and buzzer feedback that increases in urgency as the object gets closer.
 
-What makes this project unique is the environmental compensation: a temperature and humidity sensor continuously monitors air conditions to calculate the actual speed of sound, rather than assuming a fixed value of 343 m/s. This can improve measurement accuracy by up to 5% in varying conditions.
+A temperature and humidity sensor monitors air conditions to calculate the actual speed of sound, rather than assuming a fixed 343 m/s. This can improve measurement accuracy by up to 5% in varying conditions.
 
 ## Hardware Components
 
@@ -68,31 +76,29 @@ The firmware is organized into modular components, each handling a specific resp
 
 ### Sensor Modules
 
-**Ultrasonic.h / Ultrasonic.cpp** - Driver for the HC-SR04 sensor. Implements the trigger-echo sequence and converts time measurements to distance. Includes timeout handling for out-of-range objects.
+**Ultrasonic.h / Ultrasonic.cpp** - Driver for the HC-SR04 sensor. Uses Timer1 Input Capture for precise pulse timing. Includes timeout handling for out-of-range objects.
 
-**DHTSensor.h / DHTSensor.cpp** - Non-blocking driver for the DHT11 sensor. Uses a caching pattern to avoid blocking the main loop: readings are cached and only updated every 2 seconds (the minimum interval allowed by the sensor's datasheet).
+**DHTSensor.h / DHTSensor.cpp** - Non-blocking driver for the DHT11 sensor. Uses a caching pattern to avoid blocking the main loop: readings are cached and only updated every 2 seconds.
 
-**SpeedOfSound.h / SpeedOfSound.cpp** - Calculates the speed of sound based on current temperature and humidity. Contains the physics formula with documentation explaining the derivation.
+**SpeedOfSound.h / SpeedOfSound.cpp** - Calculates the speed of sound based on current temperature and humidity.
 
 ### Actuator Modules
 
-**Servo.h / Servo.cpp** - Wrapper for the SG90 servo motor. Implements detach/attach pattern to avoid PWM interference with ultrasonic timing measurements. The Arduino's Timer1 is shared between the Servo library and our Input Capture code, so we temporarily disable the servo during distance readings.
+**Servo.h / Servo.cpp** - Wrapper for the SG90 servo motor. Implements detach/attach pattern because both Servo library and our ultrasonic code use Timer1.
 
-**Alert.h / Alert.cpp** - Manages the LED and buzzer alert system. Implements three zones:
+**Alert.h / Alert.cpp** - Manages the LED and buzzer alert system. Three zones:
 
 - **Safe (>100cm)**: No alert
 - **Warning (10-100cm)**: Blinking/beeping at 60-238 BPM, faster as objects get closer
 - **Danger (≤10cm)**: Continuous LED and buzzer
 
-Uses `tone()` function for the passive buzzer to generate audible 2kHz signal.
-
 ### Input Module
 
-**Button.h / Button.cpp** - Debounced button input for start/stop control. Implements software debouncing with 50ms delay to filter mechanical contact bounce. The debounce logic preserves button press events even if they occur during the cooldown period.
+**Button.h / Button.cpp** - Debounced button input for start/stop control. Implements software debouncing with 50ms delay to filter mechanical contact bounce.
 
 ### Orchestration
 
-**Scanner.h / Scanner.cpp** - Coordinates the scanning process. Performs bidirectional sweeps (0→180→0) and outputs data in CSV format: `angle,distance,humidity,temperatureC,temperatureF`. Checks for button interrupts during scan to allow stopping mid-sweep.
+**Scanner.h / Scanner.cpp** - Coordinates the scanning process. Performs bidirectional sweeps (10→170→10) and outputs data in CSV format.
 
 ## Output Format
 
@@ -109,181 +115,63 @@ Distance of `-1` indicates no object detected or out-of-range reading.
 
 ## Design Decisions
 
-### Why refactor from .ino to .h/.cpp?
+### Code Organization
 
-Initially, I wrote the entire project using multiple `.ino` files in plain C. However, I discovered that the Arduino IDE compiles `.ino` files in alphabetical order and concatenates them into a single file. This created dependency issues and unpredictable behavior when code in one file referenced something defined in another.
+Initially, I wrote everything in multiple `.ino` files. Bad idea. The Arduino IDE compiles them alphabetically and concatenates them, which created dependency nightmares. After some frustration, I refactored to a single `.ino` with proper `.h/.cpp` pairs. This gave me explicit control over compilation order and forced me to think about interfaces.
 
-After researching solutions, I found that the recommended approach is to have a single `.ino` file for orchestration, with all other code in proper `.h` (header) and `.cpp` (implementation) files. This gives explicit control over compilation order through `#include` directives and follows standard C++ practices.
+I went with C++ classes over plain C structs because they naturally group related data and functions. Each hardware component is self-contained: `Ultrasonic` owns its pin configuration and measurement logic, `Alert` owns its state and timing. The code follows Single Responsibility Principle — each module does one thing well. All pin definitions live in `config.h` (Single Source of Truth), so wiring changes happen in one place.
 
-### Why Object-Oriented Programming with classes?
+### Bare-Metal Optimizations
 
-I considered three approaches:
+The Arduino framework is convenient but hides a lot. I wanted to see what's underneath, so I replaced several abstractions with direct hardware access:
 
-1. **Procedural C** - Simple functions with global state. Easy to write but leads to scattered state and naming conflicts as the project grows.
+**Direct port manipulation** - `digitalWrite()` takes ~6μs because it does pin lookups, PWM checks, and interrupt handling. Direct register access like `PORTD |= (1 << 2)` compiles to one instruction at ~0.06μs. For the ultrasonic trigger sequence, this consistency matters.
 
-2. **Structs with function pointers** - More organized but verbose syntax and manual "method" binding.
+**Timer1 Input Capture** - The standard `pulseIn()` polls in a software loop, introducing ±4μs jitter. Timer1's Input Capture feature records timestamps in hardware, giving ±0.5μs resolution. This required rewiring ECHO to pin D8 (the ICP1 pin) and understanding how to save/restore timer configuration since the Servo library also uses Timer1.
 
-3. **C++ Classes** - Clean encapsulation with clear ownership of state and behavior.
+**PINB toggle trick** - Writing to PINx toggles the corresponding PORTx bit. Instead of an if/else for LED blinking, `PINB = (1 << 5)` does the job in one instruction.
 
-I chose classes because they naturally group related data and functions together. Each hardware component becomes a self-contained unit: the `Ultrasonic` class owns its pin configuration and measurement logic, the `Alert` class owns its state and timing. This makes the code easier to understand and modify.
+**Custom main()** - Arduino's hidden `main()` calls `setup()`, then loops calling `loop()` and `serialEventRun()`. I wrote my own `main()` to know exactly what runs and when. The performance gain is negligible, but the transparency matters to me.
 
-### Why modular design?
+### Other Choices
 
-The project follows the Single Responsibility Principle (SRP): each module does one thing and does it well. The `Ultrasonic` class only measures distance. The `Alert` class only handles LED and buzzer. The `Scanner` class only orchestrates the sweep. This separation means I can modify or debug one component without affecting others.
+**constexpr over #define** - Type-safe constants catch bugs that preprocessor macros miss.
 
-### Why centralize constants in config.h?
+**F() macro for strings** - Keeps string literals in Flash instead of copying to RAM. Reduced RAM usage from 643 bytes to 321 bytes.
 
-All pin definitions and shared structures live in `config.h`. This follows the Single Source of Truth (SSOT) principle - there's exactly one place where pin assignments are defined. Without this, pin numbers would be scattered across multiple files, making wiring changes error-prone. With `config.h`, I can see all hardware connections at a glance and change them in one place.
+**Servo detach during measurement** - Both Servo library and Timer1 Input Capture need Timer1. Detaching the servo frees the timer for accurate pulse measurement.
 
-### Why struct with pointer for THReading?
+**60ms step delay** - HC-SR04 datasheet recommends 60ms between measurements. The servo also needs time to physically move. 60ms satisfies both.
 
-The `THReading` struct holds temperature and humidity data. I pass it by pointer (`THReading*`) rather than by value for two reasons:
+**DHT caching** - DHT11 requires 1 second between reads and blocks for ~25ms. Caching lets the radar sweep continue smoothly.
 
-1. **Efficiency** - Passing a pointer (2 bytes on Arduino) is cheaper than copying the entire struct (13 bytes: 3 floats + 1 bool).
-
-2. **Mutability** - The `DHTSensor::read()` function needs to modify the struct to return new readings. Passing by pointer allows this without using return values for multiple pieces of data.
-
-I considered alternatives:
-
-- **Global variables** - Would work but creates hidden dependencies and makes testing harder.
-- **Return struct by value** - Copies data unnecessarily and doesn't clearly indicate the function modifies its argument.
-- **Separate pointer parameters** - Would require `read(float* temp, float* humidity, bool* valid)` which is verbose and error-prone.
-
-The struct-with-pointer approach keeps related data together while remaining efficient.
-
-### Why detach the servo during measurements?
-
-The Servo library and pulseIn() both use timer interrupts. Running them simultaneously causes jitter in timing measurements, leading to distance errors. Detaching the servo temporarily eliminates this interference.
-
-### Why 60ms delay between steps?
-
-The HC-SR04 datasheet recommends at least 60ms between measurements. The SG90 servo also needs time to physically reach each position (~1.7ms per degree). 60ms satisfies both requirements.
-
-### Why cache DHT readings?
-
-The DHT11 requires minimum 1 second between readings and each read blocks for ~25ms. Caching allows us to reuse recent readings without blocking the radar sweep.
-
-### Why manual debouncing instead of a library?
-
-For a CS50 project, implementing debouncing manually demonstrates understanding of timing-based input filtering, rather than hiding it behind a library abstraction.
-
-### Why use F() macro for string literals?
-
-Arduino Uno has only 2KB of RAM but 32KB of Flash memory. By default, string literals like `Serial.println("text")` are copied to RAM at startup and stay there throughout execution. With many debug messages, this quickly consumes precious RAM needed for variables and stack.
-
-The `F()` macro tells the compiler to keep strings in Flash and read them directly when needed. This simple change - `Serial.println(F("text"))` - reduced RAM usage from 643 bytes (31%) to 321 bytes (15%), freeing 322 bytes for runtime operations. The tradeoff is slightly slower string access, but Serial communication is already slow enough that this is imperceptible.
-
-### Why use direct port manipulation instead of digitalWrite()?
-
-The Arduino `digitalWrite()` function is convenient but slow. It performs multiple operations: looking up which register corresponds to the pin, checking for PWM conflicts, disabling interrupts, and finally changing the bit. This takes approximately 6μs per call.
-
-Direct port manipulation like `PORTD |= (1 << 2)` compiles to a single assembly instruction, executing in approximately 0.125μs - about 50 times faster. For the ultrasonic sensor trigger sequence, which requires precise timing, this improved consistency in measurements. The tradeoff is reduced portability (code is specific to ATmega328P) and readability, but for a hardware project targeting a specific board, this is acceptable.
-
-### Why use constexpr instead of #define?
-
-C-style `#define` macros are simple text replacement - the preprocessor substitutes values before compilation with no type information. This can lead to subtle bugs: `#define PIN 2` could accidentally be used where a float is expected.
-
-C++ `constexpr` provides type-safe constants evaluated at compile time. By specifying `static constexpr uint8_t TRIG_PIN = 2`, the compiler knows this is an 8-bit unsigned integer, can perform type checking, and optimizes it the same way as a macro - no RAM is used. The `static` keyword prevents duplicate definitions when the header is included in multiple files.
-
-### Why use PINB for LED toggle?
-
-Writing to the PINx register on ATmega microcontrollers toggles the corresponding PORTx bit. This hardware feature allows replacing a conditional statement with a single instruction:
-
-```cpp
-// Before: 8 bytes compiled, branch instruction
-if (state) {
-    PORTB |= (1 << 5);
-} else {
-    PORTB &= ~(1 << 5);
-}
-
-// After: 2 bytes compiled, single instruction
-PINB = (1 << 5);
-```
-
-This only works for toggle operations. Setting a specific state (HIGH or LOW) still requires PORTB manipulation.
-
-### Why use direct port reading for button input?
-
-Similar to LED control, we replaced `digitalRead(BUTTON_PIN)` with direct port reading: `(PIND & (1 << 6)) != 0`. This reads bit 6 of PORTD directly, returning 1 (HIGH/released) or 0 (LOW/pressed) - matching `digitalRead()` behavior but executing 50x faster. For debouncing logic that runs every loop iteration, this reduces CPU overhead.
-
-### Why use Timer1 Input Capture instead of pulseIn()?
-
-The Arduino `pulseIn()` function uses a software polling loop that checks `micros()` repeatedly. This introduces timing jitter of ±4μs due to interrupt handling and function call overhead. Timer1 Input Capture is a hardware feature of the ATmega328P that automatically records the timer value when an edge is detected on the ICP1 pin (D8). The hardware captures the exact moment of the edge transition, regardless of what the CPU is doing.
-
-Practical impact on measurements:
-
-- `pulseIn()`: ±4μs jitter → ±0.7mm distance error
-- Timer1 IC: ±0.5μs resolution → ±0.09mm distance error
-
-This required rewiring ECHO from D3 to D8 (the ICP1 pin) and swapping the buzzer to D3. The code saves and restores Timer1's configuration to maintain compatibility with the Servo library, which also uses Timer1.
-
-The tradeoff is reduced portability (ATmega-specific code) and slightly more complex implementation, but the improved measurement consistency is valuable for a radar application where accuracy matters.
-
-### Why use main() instead of setup()/loop()?
-
-The Arduino framework provides a hidden `main()` that calls `setup()` once, then calls `loop()` repeatedly while also polling for serial events. By writing my own `main()`, I bypass this abstraction:
-
-```cpp
-// Arduino's hidden main()          // My main()
-int main() {                         int main() {
-    init();                              init();
-    setup();                             // setup code here
-    for (;;) {                           while (true) {
-        loop();                              // loop code here
-        serialEventRun();  // ←             }
-    }                                }
-}
-```
-
-The performance gain is negligible (~0.5μs per iteration on a 100ms loop cycle). The real benefit is transparency — I know exactly what runs and in what order, with no hidden function calls. This aligns with the project's bare-metal philosophy of understanding what happens at every level.
-
-The tradeoff is reduced portability: `serialEvent()` won't work, and other boards may require different initialization. Since SIREN targets the ATmega328P specifically, this is acceptable.
-
-### Why define TRIG_PORT and TRIG_BIT separately from TRIG_PIN?
-
-Direct port manipulation requires knowing both the PORT register and the bit position within that register. Arduino pin numbers don't map directly to these - pin 2 is PORTD bit 2, but pin 10 is PORTB bit 2.
-
-By defining `TRIG_PORT`, `TRIG_DDR`, and `TRIG_BIT` alongside `TRIG_PIN` in config.h, we maintain a single source of truth for hardware configuration while enabling bare-metal speed. If the wiring changes, all three values must be updated together - a comment in config.h documents this requirement.
-
-This approach provides consistent bare-metal performance across the codebase while keeping configuration centralized. The alternative - using `digitalWrite()` for portability - would create inconsistency between the trigger (Arduino-style) and echo (bare-metal Timer1 Input Capture) implementations.
+**10°-170° servo range** - The SG90 is rated for 0-180° but cheap clones (like those in the Elegoo kit) often have mechanical stops before reaching the extremes. Pushing against these stops causes whining, overheating, and eventual gear damage. Using 10-170° avoids this with minimal loss of coverage.
 
 ## What I Learned
 
-This project significantly deepened my understanding of Object-Oriented Programming. Coming from CS50's C-based curriculum, I was familiar with structs and pointers, but classes were new territory.
+Coming into this project, I knew Python reasonably well and had played with Arduino tutorials, but I'd never gone this deep into embedded systems.
 
-**Public vs Private**: I learned that `private` members are the class's internal state - things the outside world shouldn't touch directly. `public` members are the interface - how other code interacts with the class. For example, in `Alert`, the `active` and `state` variables are private because external code shouldn't manipulate them directly. Only `update()`, `stop()`, and `init()` are public because those are the legitimate ways to control the alert.
+The biggest time sink was figuring out how to organize the code. I obsessed over keeping things modular — Single Responsibility, Single Source of Truth — and it paid off during debugging. When distance readings were wrong, I knew the problem was in `Ultrasonic.cpp`, not scattered across the codebase. But getting there meant refactoring from `.ino` spaghetti to proper `.h/.cpp` structure, which meant learning C++ syntax I'd never seen before.
 
-**Encapsulation**: Each class hides its complexity. The `Scanner` doesn't know how `Ultrasonic` measures distance - it just calls `getDistance()`. This separation made debugging much easier. When distance readings were wrong, I knew the problem was in `Ultrasonic`, not scattered across the codebase.
+The embedded concepts were the real education: GPIO, registers, interrupts, timers, serial protocols. I finally understand what `PORTB |= (1 << 5)` actually does — it's bit manipulation at a memory-mapped I/O address, same pointer concepts from CS50 weeks 4-5 but applied to hardware. Timer1 Input Capture was particularly satisfying to figure out. The datasheet was dense, but once it clicked, I understood how hardware can do precise timing independently of the CPU.
 
-**Embedded Systems & Hardware Optimization**: Beyond OOP, this project taught me how microcontrollers actually work at the register level. The Arduino framework is a convenient abstraction, but understanding what happens underneath revealed significant optimization opportunities.
+I also learned some C++ along the way. Classes, public/private, constructors, dependency injection. It's not deep knowledge, but enough to write modular embedded code.
 
-**The abstraction cost**: Functions like `digitalWrite()` and `digitalRead()` are convenient but slow. Each call performs pin mapping lookups, PWM conflict checks, and interrupt disabling - taking ~6μs per operation. Direct port manipulation (`PORTB |= (1 << 5)`) compiles to a single assembly instruction executing in ~0.06μs. This 100x speedup matters when timing is critical.
-
-**Timer hardware**: The ATmega328P has dedicated timer/counter units that operate independently of the CPU. Instead of using `pulseIn()` which polls in a software loop, I configured Timer1's Input Capture feature to record timestamps in hardware. The timer captures the exact moment an edge occurs, regardless of what the CPU is doing. This eliminated timing jitter from interrupt handling.
-
-**Memory architecture**: Arduino Uno has only 2KB RAM but 32KB Flash. Understanding this split explained why the `F()` macro matters - it keeps strings in Flash instead of copying them to RAM. I also learned the difference between compile-time constants (`constexpr`) and preprocessor macros (`#define`), and why type-safe constants help catch bugs.
-
-**Connecting to CS50**: The pointer arithmetic from weeks 4-5 directly applied to register manipulation. `PORTB |= (1 << 5)` is essentially bit-level pointer manipulation - setting specific bits at a memory-mapped I/O address. Understanding memory layout in C made the jump to embedded programming much smoother.
+The audio engineering background helped more than expected. Years of working with signal flow, timing, and understanding how sound behaves made the physics intuitive. Calculating speed of sound compensation felt natural.
 
 ## AI Assistance Disclosure
 
-As permitted by CS50's final project guidelines, I used AI assistance (Claude by Anthropic) for specific parts of this project:
+As permitted by CS50's final project guidelines, I used AI assistance (Claude by Anthropic) for:
 
-1. **C++ Syntax for Refactoring** - I understood the logic I wanted to implement but lacked C++ syntax knowledge. AI helped translate my C/.ino code into proper .h/.cpp class structure.
+1. **C++ Syntax** - I knew what I wanted to implement but not the C++ syntax. AI helped translate my logic into proper class structure.
 
-2. **Code Comments** - AI helped write comprehensive comments explaining the physics, timing calculations, and design decisions throughout the codebase.
+2. **Code Review** - AI reviewed for bugs and suggested bare-metal optimizations like Timer1 Input Capture.
 
-3. **Code Review & Optimization** - AI reviewed my code for bugs and suggested bare-metal optimizations like Timer1 Input Capture and direct port manipulation.
-
-The core logic, hardware design, architecture decisions, and debugging were my own work. AI served as a syntax reference and documentation aid, not as a problem-solver.
+The architecture, hardware design, debugging, and problem-solving were my own work.
 
 ## Future Improvements
 
-- Processing/Python visualization frontend
-- Multiple ultrasonic sensors for faster scanning
-- Data logging to SD card
-- WiFi transmission for remote monitoring
+- Visualization
 
 ## Documentation
 
