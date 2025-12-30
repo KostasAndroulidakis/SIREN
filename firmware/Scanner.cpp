@@ -73,9 +73,13 @@ bool Scanner::scan(THReading* envData, float soundSpeed) {
             // TAKE MEASUREMENT:
             // Detach servo to free Timer1 for ultrasonic Input Capture
             // See Servo.h for detailed explanation
-            servo->detach();
+            servo->detach();             // cut PWM after move
+            delayMicroseconds(50);       // stabilization
+
             float distance = ultrasonic->getDistance(soundSpeed);
+
             servo->attach();
+            delay(5);
             
             // UPDATE ALERT:
             // Check if object is within alert threshold and

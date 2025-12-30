@@ -41,7 +41,7 @@
 // Must allow servo to reach position before measurement
 // SG90 needs ~1.7ms per degree, but we use 60ms for stability
 // and to meet HC-SR04's recommended 60ms measurement cycle
-#define SERVO_DELAY 60
+#define SERVO_DELAY 25
 
 class ServoMotor {
 public:
