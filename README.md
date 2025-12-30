@@ -6,7 +6,7 @@ Sonic Imaging for Range Exploration and Navigation
 
 #### Video Demo
 
-<>
+[YouTube Video](https://youtu.be/8TxDGz97N5Q)
 
 #### Description
 
